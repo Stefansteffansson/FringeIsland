@@ -31,7 +31,7 @@ The design system is the **shared visual language** that every FringeIsland Surf
 
 - **Is:** the canonical vocabulary of tokens, components, and patterns that the Hub, the Gimbal, and the Studios all consume to render their interfaces. Owns the visual identity, motion language, and accessibility posture of the family as a whole.
 - **Is not:** a Hub UI library. A component that "feels right in Hub" but doesn't fit Gimbal's viewport, a device at another point in equipment space, or a Studio's denser creator workflow is a *bug*, not a Hub-specific feature. The design system is consumed by every Surface; designing for one and assuming the rest will adapt is a category error per `docs/design-system/CLAUDE.md`.
-- **Is not:** several visual languages. The places of the worlds topology (per the cosmology core, `../fringeisland-thinking/canon--cosmology--worlds-topology.md`) inform mood, motion, and atmosphere — but the design system is **one** vocabulary that serves them all via theming, not forked vocabularies. See §7 for the theming mechanism.
+- **Is not:** several visual languages. The places of the worlds topology (per the bible's worlds chapter, `../fringeisland-thinking/bible--fringeisland-universe.md`) inform mood, motion, and atmosphere — but the design system is **one** vocabulary that serves them all via theming, not forked vocabularies. See §7 for the theming mechanism.
 - **Is not:** a product utility. The design system has the highest blast radius in the ecosystem — a token change ripples to every Surface simultaneously. That blast radius is what justifies the tier-specific stability discipline in §4.
 
 ### 2. Architecture position
@@ -109,7 +109,7 @@ Breaking either side of this contract is a structural failure — a Surface besp
 
 ### 7. The worlds and theming
 
-The places of FringeIsland's worlds topology (per the cosmology core, `../fringeisland-thinking/canon--cosmology--worlds-topology.md` — the Ordinary World, the Fringe, the village) affect mood, motion, and atmosphere in the rendered experience. The load-bearing rule from `docs/design-system/CLAUDE.md`: *the worlds inform the visual language, but the design system is not several visual languages.* Theming is the mechanism that makes that rule satisfiable.
+The places of FringeIsland's worlds topology (per the bible's worlds chapter, `../fringeisland-thinking/bible--fringeisland-universe.md` — the Ordinary World, the Fringe, the village) affect mood, motion, and atmosphere in the rendered experience. The load-bearing rule from `docs/design-system/CLAUDE.md`: *the worlds inform the visual language, but the design system is not several visual languages.* Theming is the mechanism that makes that rule satisfiable.
 
 This section earns its own L2 surface because it is the load-bearing answer to a question every component author and every Surface engineer will eventually ask: *"how do I make this feel like the Void?"* Folding the answer into §5 Constraints would bury it; folding it into §3 Distribution would miss the point. The answer is: through tokens and theme primitives, never by forking the component.
 

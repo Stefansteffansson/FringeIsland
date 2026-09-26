@@ -18,7 +18,7 @@ These boundaries are not about gatekeeping. They are about protecting the values
 
 ## The Four Contributor Groups
 
-*These groups are permission tiers, not castes. In the canonical role taxonomy ([roles core](../../fringeisland-thinking/canon--roles--taxonomy.md)), roles are modes a person occupies — several at once, moved between fluidly — granted via group and role permissions. (Within a given group, the per-group support roles are Steward, Guide, Participant, and Observer — Participant, not Member, which remains purely the platform synonym for FIM.)*
+*These groups are permission tiers, not castes. In the canonical role taxonomy ([the bible's roles and governance chapter](../../fringeisland-thinking/bible--fringeisland-universe.md#6-roles-and-governance)), roles are modes a person occupies — several at once, moved between fluidly — granted via group and role permissions. (Within a given group, the per-group support roles are Steward, Guide, Participant, and Observer — Participant, not Member, which remains purely the platform synonym for FIM.)*
 
 ### Group 0 — Mists
 A Mist is someone who has found their way to the island but has not yet arrived fully. They drift through FringeIsland like mist — present, sensing the atmosphere, glimpsing what is possible — but not yet anchored, not yet leaving a permanent mark.
@@ -35,7 +35,7 @@ Anyone who has registered and arrived on FringeIsland. Their profile persists be
 ### Group 2 — Dreamineers
 Members in their authorial, dream-it-into-being mode — FIMs granted the authority to contribute to the world itself. Dreamineer is a mode a FIM occupies, not a kind of person, with four specialisations, each gating a studio: **Creators** and **Anthropologists** (World Studio, hard and soft side), **Tellers** (Arc Studio), and **Wayfinders** (Journey Studio).
 
-Dreamineer authority is granted via group and role permissions; how a FIM acquires it — earned, granted, or applied for — is an open thread in the [roles core](../../fringeisland-thinking/canon--roles--taxonomy.md).
+Dreamineer authority is granted via group and role permissions; how a FIM acquires it — earned, granted, or applied for — is an open thread in the [bible's roles and governance chapter](../../fringeisland-thinking/bible--fringeisland-universe.md#6-roles-and-governance).
 
 ### Group 3 — Enterprise Stewardship and the Foundation
 The enterprise-stewardship plane — the **Universeers**, the **FringeIsland Council**, and **DeusEx** — together with the Foundation as legal holder. Responsible for the values, the red thread, the manifesto, the brand, and the core architecture of the world. These are the guardians — not the owners.

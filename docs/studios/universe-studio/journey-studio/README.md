@@ -1,7 +1,7 @@
 # Journey Studio
 
 **Entity:** Studio (child of [Universe Studio](../README.md), per [ADR-U026](../../../architecture/decisions/ADR-U026-studio-decomposition-universe-studio-parent.md))
-**Gate:** Wayfinder — entering Journey Studio is a permission check against the Wayfinder authority, a Dreamineer specialisation (see the [roles core](../../../fringeisland-thinking/canon--roles--taxonomy.md))
+**Gate:** Wayfinder — entering Journey Studio is a permission check against the Wayfinder authority, a Dreamineer specialisation (see the [bible's roles and governance chapter](../../../fringeisland-thinking/bible--fringeisland-universe.md#6-roles-and-governance))
 **Feature ID prefix:** `JS`
 **Writes to:** Journeys (DS-3) — Journey Studio is the authoring + management surface; Journeys is the runtime that delivers journeys to FIMs.
 

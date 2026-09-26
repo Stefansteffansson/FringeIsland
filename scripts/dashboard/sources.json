@@ -26,10 +26,8 @@
         { "type": "intro", "label": "Vision", "path": "docs/ecosystem/VISION.md" },
         { "type": "intro", "label": "Manifesto", "path": "docs/ecosystem/MANIFESTO.md" },
         { "type": "intro", "label": "AI principles", "path": "docs/ecosystem/PRINCIPLES-AI.md" },
-        { "type": "intro", "label": "Cosmology (canonical core)", "path": "docs/fringeisland-thinking/canon--cosmology--worlds-topology.md" },
-        { "type": "intro", "label": "Roles (canonical core)", "path": "docs/fringeisland-thinking/canon--roles--taxonomy.md" },
-        { "type": "intro", "label": "Beings — the Whisp & NPCs (canonical core)", "path": "docs/fringeisland-thinking/canon--beings--whisp-and-npcs.md" },
-        { "type": "group", "note": "**research--** (study the world)  →  feeds  →  **discovery--** (generate our ideas)  →  graduates  →  **canon--** (the world as it is) — one flat folder, `docs/fringeisland-thinking/`, the filename prefix is the register", "blocks": [
+        { "type": "intro", "label": "The Universe Bible — the single truth (start with chapter 1)", "path": "docs/fringeisland-thinking/bible--fringeisland-universe.md" },
+        { "type": "group", "note": "**research--** (study the world)  →  feeds  →  **discovery--** (generate our ideas)  →  is baked into  →  **bible--** (the world as it is) — one flat folder, `docs/fringeisland-thinking/`, the filename prefix is the register", "blocks": [
           { "type": "links", "label": "Foundations — research", "items": [
             { "label": "Kegan & Immunity to Change — how adults grow", "path": "docs/fringeisland-thinking/research--growth--kegan-immunity-to-change.md" },
             { "label": "What Fills a Life — human flourishing", "path": "docs/fringeisland-thinking/research--growth--what-fills-a-life.md" },

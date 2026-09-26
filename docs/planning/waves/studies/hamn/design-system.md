@@ -2,8 +2,8 @@
 
 > **SUPERSEDED-MODEL NOTICE (2026-06-10, reconciliation Session B).** This is a temporal
 > planning record, preserved as written. The "three worlds - real world / Void / FringeIsland"
-> framing it references has since been superseded by the canonical cosmology core: see
-> `docs/fringeisland-thinking/canon--cosmology--worlds-topology.md`. Where this file conflicts with it, the core wins.
+> framing it references has since been superseded by the canonical the bible's worlds chapter: see
+> `docs/fringeisland-thinking/bible--fringeisland-universe.md`. Where this file conflicts with it, the core wins.
 
 **Wave:** Hamn
 **Category:** Features

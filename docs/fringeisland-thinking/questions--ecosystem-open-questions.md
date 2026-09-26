@@ -1,6 +1,6 @@
 # Ecosystem — Open Questions
 
-**Last Updated:** June 24, 2026
+**Last Updated:** 2026-09-26 (the universe questions now carried in the Universe Bible)
 
 ---
 
@@ -40,6 +40,7 @@
 **Status:** Open — deferred (premature until universe-mechanics fundamentals are firm; see note)
 **Scope:** Ferd, Hamn
 **Raised:** 2026-04-12 (extracted from OLD_VISION.md)
+**In the bible:** the first hour is Open box S-14 in the story chapter; the fundamentals it waits for are W-05.
 **Blocks:** Ferd user onboarding flow, Hamn "Journey Zero" onboarding journey, Kickstarter campaign design
 **Blocked by:** the universe-mechanics fundamentals (how the near and far ends of place 2 and place 3 actually look and function) — tracked in the [discovery backlog](discovery--the-universe-in-the-making.md#discovery-backlog-open-topics-awaiting-sessions).
 **Context:** Four deep design sessions have explored what FringeIsland *is* — none have designed what a new member actually *does* when they arrive. The founding narrative, the story that members first enter, the mystery, the conflict, the world that comes to life for the first time. This is the single highest-risk gap: everything else is irrelevant if the first experience does not work.
@@ -76,6 +77,7 @@
 **Status:** Open — Active
 **Scope:** Universe / governance (Arc Studio, Universe Studio, Dreamineer Council)
 **Raised:** 2026-09-24 (universe-discovery Session 03, S75–S76)
+**In the bible:** the knowledge tiers, fixed points, mythology arcs and the canon function are settled in the story chapter (5.9); who keeps the canon after the founder is Open box S-12.
 **Blocks:** the story bible for Tellers and Wayfinders; any season or episode that carries the backdrop ("mythology" arcs); the breadcrumb register
 **Context:** Session 03 gave the universe a backdrop (S66–S74: the Whisp as the FIM's own future self reaching back; AI forks the future; growth into higher orders of mind as the lever). S76 ruled that the in-world myth is never told but discovered, kept for a while and not forever, while the founders' conviction is public in the MANIFESTO. S75 proposed three knowledge tiers modelled on television practice: a **deep bible** (the full backdrop, held by the canon keepers), a **story bible** for authors (rules, fixed points, what may be hinted but not what it means), and **breadcrumbs** for FIMs, plus a breadcrumb register. Open: who belongs to the canon keepers after the founder (a role, the Council, a scope under ADR-U028 governance by scope); how an author moves from the story bible to the deep bible (by growing into it, as FIMs do, or by appointment); which seasons count as mythology arcs and pass through the canon keepers; and where the deep bible lives, given that the discovery log already records the backdrop in the repository.
 **Wider frame:** this question is the sharp end of a larger one — how FringeIsland governs the authoring of seasons and episodes at scale (the writers'-room model: canon keeper in the showrunner role, mythology arcs versus free episodes, story bible, breadcrumb register). That larger topic is carried as a discovery-backlog row ("Narrative governance at scale") in Part 1 of `discovery--the-universe-in-the-making.md`; the TV practice it draws on is summarised under S75.
@@ -91,6 +93,7 @@
 **Status:** Open — Active (not urgent while the repository is private and solo)
 **Scope:** All waves; must be settled before the first outside contributor is given access, and at the latest before any repository is made public (Kickstarter / Hamn)
 **Raised:** 2026-09-24 (universe-discovery Session 03, from CQ-018 part 4)
+**In the bible:** the deep-bible notice at its head cites this question; the bible is deep-bible tier.
 **Blocks:** opening the repository to Dreamineers or other contributors; any public or open-source release of code or documentation
 **Context:** Today one private repository holds everything: code, public-facing documents (VISION, MANIFESTO), the deep backdrop (the discovery log, S66–S77), security and breach-response records, and strategy. That is fine while the founder works alone. It stops being fine when others join, for three reasons. (1) **Git history is permanent:** a file that was ever committed stays in the history, so if a repository is later made public or widely shared, everything it ever contained goes with it unless the history is rewritten or a fresh repository is started. The split has to be made *before* opening, not after. (2) **Access is per repository:** GitHub grants access by repository (and by team), not per folder, so "contributors may see the code but not the deep bible" needs separate repositories. (3) **Different audiences:** community authors need the story bible and code; canon keepers need the deep bible; only a few need security, legal and financial material.
 **Recommendation (Claude, not decided):** plan for **tiered repositories** when outside contributors are near: a contributor/public repository (code, public docs, the story bible); a private canon repository for the canon keepers (discovery log, deep bible, breadcrumb register); and a private operations repository for security, legal and financial material. Keep secrets (keys, credentials) out of git entirely, as now. Standard hygiene at that point: two-factor authentication required, least-privilege teams, branch protection and CODEOWNERS on canon files. Until then, no action is needed beyond keeping the repository private — and noting that everything written today will travel with whichever repository it lives in.
@@ -132,6 +135,7 @@
 **Status:** Parked
 **Scope:** Ferd, Eid
 **Raised:** 2026-04-12 (extracted from OLD_VISION.md)
+**In the bible:** the Whisp's appearance without augmented reality is part of Open box B-07 in the beings chapter.
 **Blocks:** Ferd Whisp representation (if attempted before Eid), Eid Whisp MVP design
 **Context:** The Whisp's most vivid expressions — AR overlay (Brim), void visualisation (Brim), fullness-as-fidelity — all depend on technology slated for later waves. Ferd is a web platform; Eid will introduce the first Whisp encounter phenomenology and practical UI specifications. If the Whisp is the emotional core of FringeIsland, its Wave 1/Wave 2 expressions must be compelling even in a browser. That design problem is entirely untouched.
 
@@ -139,6 +143,7 @@
 **Status:** Parked
 **Scope:** Hamn, Urd
 **Raised:** 2026-04-12 (extracted from OLD_VISION.md)
+**In the bible:** how NPCs are driven is Open box B-17 in the beings chapter; the mechanism stays here.
 **Blocks:** Hamn NPC system, AI-driven seasonal content
 **Context:** NPCs are central to the world, but the authoring mechanism is unspecified. Prompt engineering? Behaviour graphs? Learning models? This is prerequisite for any NPC implementation.
 

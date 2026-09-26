@@ -22,7 +22,7 @@ universe-studio/          <- parent: umbrella + binding frame (prefix US — umb
 
 ## Who may enter: the studio gates
 
-Per the [roles core](../fringeisland-thinking/canon--roles--taxonomy.md):
+Per the [bible's roles and governance chapter](../fringeisland-thinking/bible--fringeisland-universe.md#6-roles-and-governance):
 
 | Dreamineer specialisation | Studio | Authors |
 |---|---|---|

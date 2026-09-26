@@ -8,7 +8,7 @@
 
 ## What makes this entity different
 
-DS-1 owns the **state of the created universe** and sits at the **bottom of the Domain dependency order**: it depends on no other Domain Service, and the other six all consume it. Its ground truth is not a product decision or an API contract — it is the cosmology core ([`docs/fringeisland-thinking/canon--cosmology--worlds-topology.md`](../../../fringeisland-thinking/canon--cosmology--worlds-topology.md)). When a DS-1 question feels open, the answer is usually already in that core; check it before designing.
+DS-1 owns the **state of the created universe** and sits at the **bottom of the Domain dependency order**: it depends on no other Domain Service, and the other six all consume it. Its ground truth is not a product decision or an API contract — it is the bible's worlds chapter ([`docs/fringeisland-thinking/bible--fringeisland-universe.md`](../../../fringeisland-thinking/bible--fringeisland-universe.md#2-the-worlds)). When a DS-1 question feels open, the answer is usually already in that core; check it before designing.
 
 ## Rules that only apply at this entity
 
@@ -26,5 +26,5 @@ DS-1 owns the **state of the created universe** and sits at the **bottom of the 
 ## Where to go next
 
 - **The service spec:** [`../world-model.md`](../world-model.md) — L2 identity + §7 invariants + §L3 capability inventory (Steps 1-3 complete 2026-06-10; zero-delta stress-test — all capabilities full forward-commitment, nothing exists in code yet).
-- **Ground truth:** the cosmology core; roles core (scope tiers, Dreamineer gating); beings core (the Whisp's two faces, NPC layers).
+- **Ground truth:** the bible's worlds chapter; the bible's roles and governance chapter (scope tiers, Dreamineer gating); the bible's beings chapter (the Whisp's two faces, NPC layers).
 - **Relevant decisions:** ADR-U023 (anatomy) · ADR-U025/U026 (entities; World Studio writes → DS-1) · ADR-U031 (Mist lifecycle) · ADR-U028 (governance by scope) · the Whisp-split ADR candidate in [`PENDING.md`](../../../architecture/decisions/PENDING.md).
