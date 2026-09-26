@@ -107,6 +107,10 @@ Hub/Gimbal identities as complementary surfaces, and it removes device bookkeepi
   capabilities over time (shell features stay); a conformance-pass correction, not a same-day move.
 - **Neutral:** "Product" remains the tier word — redefined, not retired.
 
+## Amendment — 2026-09-26: the Gimbal is the phone (vocabulary, from the Universe Bible)
+
+On the platform the Gimbal is the FIM's own mobile phone running the FringeIsland app — the senses surface on the device the FIM already carries (Session 04, S93; Session 05, S110, ruling R-44). The ball is bound to the FIM's account, not to hardware: the phone becomes a Gimbal when its FIM signs in, and a lost or new phone is a sign-in on the new device and a sign-out of the old, the session management the Hub already carries (S84, S93). Physical objects — a glass ball linked to the account, a Gimbal shell that gives the phone the look of the ancient instrument — exist as optional keepsakes and are never needed (S94). Nothing in this ADR's decision changes: Hub and Gimbal remain equipment profiles, not devices; this names the device that carries the senses profile first.
+
 ## Pros and cons of each option
 
 ### Option A — Device entities (status quo)

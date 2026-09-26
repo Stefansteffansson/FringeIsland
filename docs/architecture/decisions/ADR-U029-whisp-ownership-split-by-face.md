@@ -56,8 +56,12 @@ The Whisp is the highest-consequence concept in the roadmap — each FIM's inner
 - Pros: one entity, one owner, nominally clean.
 - Cons: **rejected as a thin orchestrator** — it would own almost no data of its own, merely coordinating DS-1 + DS-7 state; an anatomy smell under ADR-U023.
 
+## Amendment — 2026-09-26: vocabulary, from the Universe Bible
+
+"The beings core" in the text above is now the Universe Bible's beings chapter (`docs/fringeisland-thinking/bible--fringeisland-universe.md`, chapter 3), where the entity stays canonical and both framings are stated; the planned `whisp.md` canon sub-page is the bible's Open box B-01, the Whisp's full specification. Vocabulary only; the split by face is unchanged.
+
 ## Links
 
 - Related ADRs: ADR-U023 (Platform Core / Domain Services decomposition — the boundary law this decision operates within); ADR-U005 (profile_data — DS-7's accumulation shape); ADR-U031 (Mist lifecycle — Mists carry their own Whisp from the start; supersedes ADR-U027, which called the Mist the Shadow).
 - Provenance: ratified at the DS-1 descent (bridge `docs/planning/sessions/2026-06-10_02_-_DS1-DESCENT-PHASE0-PHASE1-LANDED.md`); parked in `decisions/PENDING.md` 2026-06-10; promoted at the DS-7 descent (spec commit `255daad`, closing bridge `2026-06-11_02_-_DS7-LANDED.md`) — the DS-7 derivation surfaced nothing contradicting the split.
-- Spec anchors: `docs/platform/domain/world-model.md` (Whisp-presence area; salience channel; §8 Q7) · `docs/platform/domain/intelligence.md` (§1 being-face; §7 invariants; §8 Q3) · the beings core `docs/fringeisland-thinking/canon--beings--whisp-and-npcs.md` ("two framings, one entity").
+- Spec anchors: `docs/platform/domain/world-model.md` (Whisp-presence area; salience channel; §8 Q7) · `docs/platform/domain/intelligence.md` (§1 being-face; §7 invariants; §8 Q3) · the Universe Bible's beings chapter, `docs/fringeisland-thinking/bible--fringeisland-universe.md` (chapter 3, "The avatar": two framings, one entity).
