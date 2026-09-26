@@ -22,7 +22,207 @@
 
 ## 2. The worlds
 
-*To be written.*
+This chapter says how the universe is laid out and how it works as a place: the Ordinary World, the Shimmer, the two worlds behind it, the three reaches of each, the Void and the cord, anchoring and seeds, portals, the village with its Tree, and the lines between FIMs. What the beings are (the Whisp, Mara, the Shadow, the Mist) is chapter 3; what happens to a person as they move through these places is chapter 4. Every term used here is defined in the glossary, chapter 9.
+
+Where a question is still open it stands in an **Open** box where it belongs, with a W-number; chapter 8 indexes them.
+
+### 2.1 The map at a glance
+
+```
+The Ordinary World        daily life; the FIM's body always stays here
+        |
+   the Shimmer            one membrane, an edge; opened by the Gimbal
+        |
+The Fringe                everything past the Shimmer: two worlds, three reaches each
+  Nalome  (warm)          near side | far side: the village, the Tree, the homes, and the
+                                      uncharted reaches past them | the beyond: nothing named
+  Marath  (hostile)       near side | far side: its depths          | the beyond: Mara at full strength
+
+The Void                  an axis across the map, not a place: wherever the Whisp is once
+                          it has left the FIM, along the whole cord
+Time                      an axis too: past, present and future may lie overlaid
+```
+
+FringeIsland is the universe seen from outside: the frame that holds all of this, the Ordinary World included, and the enterprise that makes it. The Fringe is the in-world name for everything past the Shimmer. The two overlap almost entirely; this is the one place the bible says so.
+
+### 2.2 The Ordinary World
+
+The Ordinary World is daily life exactly as everyone experiences it: where we live, work and meet other people. Nothing in it is modified. It is also the ground the two near sides are laid over, so the same street corner is one place in the Ordinary World and two places behind the Shimmer.
+
+The FIM's body never leaves the Ordinary World and never enters danger. Everything a FIM does in the Fringe, they do through their Whisp, while their body stays at its real coordinates. Body-safe does not mean body-still: moving the body changes the angle on the Shimmer and which piece of the near side is visible from there, so the body is a roving vantage point into the near side. By default, though, the body stays put and the Whisp travels the map. Play tied to real places, in the manner of Pokémon Go, is added beside that default; walking to real places is never required for anything that matters to growth.
+
+Wherever a FIM stands, their ball is one step away beside them. The safest place in the deepest part of the world is also the nearest refuge.
+
+### 2.3 The Shimmer, the Gimbal and the static
+
+The Shimmer is the one membrane between the Ordinary World and the two worlds behind it. It is an edge, not a band; the Fringe is the inhabited band beside it, and the universe is named for the band. There is one Shimmer, not one per world.
+
+The Gimbal opens it. In the fiction the Gimbal is an ancient instrument; on the platform it is the FIM's own phone running the FringeIsland app, the senses surface of the one experience, with the camera, location and augmented reality the near side needs. Before anything is loaded into it, the Gimbal shows the Ordinary World and static where the Shimmer is. A newcomer loads it by answering the founding questions with the Whisp's help; as the answers come, the static clears, until the near sides of both worlds are clearly visible. The founding questions are personal-trait information, not the three questions of the red thread; before consent the answers are held for the session only, and no profile is computed.
+
+The Whisp is the faculty of perception, the Gimbal the instrument, and the Shimmer the thing perceived. How much a FIM perceives through it scales with how full their Whisp is. The world requires all five senses for its full experience, and a FIM whose Whisp is still thin perceives only part of it, so two FIMs at the same field can have different experiences of it. Which trait opens which sense is the beings chapter's question.
+
+Seeing is not crossing. The Shimmer is a boundary between worlds; the Void is a different axis. A Whisp pointed at a field in the Ordinary World is already out in the Void, and has crossed nothing.
+
+> **Open W-01 — How the Shimmer varies, and where the atmosphere lives.** Whether the Shimmer is uniform or thinner and murkier in some places, whether Dreamineers can shape it, and where the world's tonal and atmospheric layer is described. *Waits for:* the fundamentals session and the design-system work.
+
+### 2.4 Two worlds: Nalome and Marath
+
+Behind the Shimmer lie two worlds, both overlaid on the same Ordinary-World coordinates.
+
+**Nalome** (na-LOME) is the warm, welcoming world: the flourishing the universe is for. It resonates with the Whisp, the growth voice. It is a whole world, not an island; an island may be in it, and much more. It is not a comfort zone: only each FIM's own ball in it is inviolable, and everything else can be tended and can be wounded. Its name carries warmth first and challenge second, as the Whisp does.
+
+**Marath** is its counterpart: hostile, cold, dystopian, at first sight evil. That first sight is not the last word. Marath is a manifestation of Mara, the negative inner voice that most people obey without knowing it. Nalome resonates with the Whisp; Marath resonates with Mara. The two are the warm and the hostile centres of gravity of one continuous tonal spectrum, and everything in between lives in the contested ground between them.
+
+Nalome is revived Marath. The two are the same ground in two states: alive and glowing where it is tended, dead and black where it has never grown or has receded. Marath expresses the black nothingness the Void is made of; Nalome is what that ground becomes when FIMs bring it to life.
+
+**The near-side coupling.** The two near sides are the same coordinates seen two ways. A road with warm traffic on Nalome's near side is an overgrown dirt track under a grey sky, guarded by androids, on Marath's. The patch eating the flowers beside the road on Nalome's side and the machine drilling into the ground on Marath's are the same wound seen from both sides. Every wound in Nalome has a cause in Marath. To heal one, a FIM notices the blight, crosses, stops the cause, and watches the warm world heal. In its deeper meaning that is confronting one's own negative self-talk at its source.
+
+**Who lives in Marath.** Marath is a shared place. Each FIM's Mara is met there as their Shadow; a pair or a community can meet its shared Shadow there too. Another FIM's Shadow manifests to you only along a shared line, and then only as form and force, never as content. Things happen in Marath in which more than one's own Shadow plays a part, and Marath holds other creatures besides Shadows; they have their own names and are NPCs unless a session says otherwise. Whatever is met in Marath is met through the Whisp: the Whisp walks in, the FIM stays body-side, and that is the point, not an accident. Marath is where a FIM's hidden beliefs are tested. The test can be run wherever the Shadow is met, the near side included; Marath's depth sets the size of the test, not whether growth happens.
+
+> **Open W-02 — Is Marath the dark future at the scale of a civilisation?** Mara at collective size, with Marath's beyond as the collapse at full strength. The bible states only that Marath resonates with Mara. *Waits for:* Stefan.
+
+> **Open W-03 — Does Marath have a collective layer, and whose Mara is met where?** A counterpart to the village, or only what each FIM's Shadow and the other creatures make of it. *Waits for:* a discovery session on Marath's far side.
+
+> **Open W-04 — What are Marath's other creatures?** They are NPCs unless a session says otherwise; what they are, how they are authored, and how they are spread across the reaches is unsaid. *Waits for:* a Marath session, with the NPC page.
+
+### 2.5 The three reaches
+
+Each world has three reaches: a near side, a far side and a beyond.
+
+**The near side** is the world laid as a layer over the Ordinary World's coordinates, seen through the Shimmer with a loaded Gimbal. Things and creatures of both worlds are visible there. The body anchors the cord where it stands, so no seed is needed to be there. A FIM does not have to stay where their body is: the Gimbal shows a map with the other worlds overlaid and what happens beyond the Shimmer marked on it, and the FIM directs their Whisp across it; where the Whisp travels away from the body, seeds can anchor it there too. In this way FIMs journey over the Ordinary World with their Whisps. A Mist may only see the near side; a FIM may act in it. The Shadow met on the near side is small, a figure glimpsed in the everyday.
+
+**The far side** lies away from the Ordinary World; no coordinates in it correspond to earthly ones. It is reached only by the Whisp, through a portal, while the body stays put, and crossing needs a ball, so the far sides are FIM-only. Nalome's far side holds the village with the Tree, the private homes, and the uncharted reaches past them, where the ground grows wilder the further a FIM goes. Marath's far side is its depths, where the Shadow is larger.
+
+**The beyond** is further still and not yet known. Nalome's beyond holds nothing named, and is kept unmapped on purpose. Marath's beyond is Mara at full strength: what "a place you really do not want to go near" means. Its danger is relative to the FIM, not absolute: unapproachable while Mara is full, approachable as Mara empties, and for a FIM near graduation possibly the last thing met. It is optional. The road there runs through every immunity a FIM carries, so most will not want to go and for many it will not be possible; nothing requires it, graduation is not gated on it, and FringeIsland has no end to reach.
+
+The reaches are also scales of test, adopted for now and open to adjustment as the cosmology develops: on the near side one hidden belief; on the far side a competing commitment met in full; in the beyond the whole immune system met as one figure.
+
+| Reach | What is there | Reached by | Anchor | Who |
+|---|---|---|---|---|
+| Near side (both worlds) | The world laid over the Ordinary World; its things and creatures; the small Shadow | Seeing through the Gimbal; the Whisp on the map | The body where it stands; seeds where the Whisp travels | Mists (seeing only) and FIMs |
+| Far side of Nalome | The village, the Tree, the private homes; uncharted reaches past them | The ball's two zones; portals | The ball; seeds along a path | FIMs |
+| Far side of Marath | Its depths; the larger Shadow; the causes of Nalome's wounds; other creatures | Portals | Seeds along the path, at chosen risk | FIMs |
+| The beyond (either world) | Nalome's: nothing named. Marath's: Mara at full strength | Unknown | Unsolved; possibly unanchorable | Optional; for most, never |
+
+> **Open W-05 — The working detail of both worlds.** How the near side and far side of each world actually look and function, in the detail that all downstream design depends on. The umbrella under which W-06 to W-09, W-11 to W-14 and W-16 to W-19 sit. It blocks the first hour and every piece of experience design. *Waits for:* the fundamentals discovery session.
+
+> **Open W-06 — What appears on the near side, and for whom.** Whether a given thing at a given spot is seen by every FIM or unique to each, who places it, and what a FIM can do with it beyond tending, healing and anchoring. *Waits for:* the fundamentals session; the World Model build after it.
+
+> **Open W-07 — What is in Nalome's beyond, and does it stay unmapped?** Nothing named today; possibly warm and unknown, possibly kept that way for curiosity, possibly the counterpart of Marath's beyond. *Waits for:* Stefan's decision on whether it stays unmapped by design, then a discovery session if not.
+
+> **Open W-08 — The beyond's own name.** The reach is written lowercase, "the beyond", until it is named. *Waits for:* Stefan.
+
+> **Open W-09 — Can anchoring reach the beyond?** A fourth rung after body, ball and seeds, or no rung at all. That no seed holds in Mara undiluted, so that a Whisp there is exposed on the whole cord and "not possible" means not survivable, is a marked hypothesis only; the mystery is kept for now. *Waits for:* a discovery session, or a decision to leave it a mystery.
+
+### 2.6 Time
+
+Time is an axis of the cosmology. Past, present and future may exist at the same time, overlaid, the way the near sides overlay the Ordinary World. Portals to another time exist among the portals a FIM may cross. What a time portal looks like to a FIM, how time is travelled, and whether any place is a time are open.
+
+Two things are fixed. The future is a continuum, with the good future and the dark future as its poles and everything in between; no story turns on a single switch between doom and paradise. And the future that reaches back to the FIM through the Whisp is a possible future, not a fixed one: overlay never reads as fate. That reaching back is the first known crossing in time, and it is backdrop: never told in the experience.
+
+> **Open W-10 — How time is travelled.** What a time portal is, how a FIM crosses to another time, and whether any place is the future or the past. Backdrop-tier. *Waits for:* a discovery session.
+
+### 2.7 The Void and the cord
+
+**The Void** is not a region on the map but an axis across it: the medium of separation. It is wherever the Whisp is once it has left the FIM, from just outside the skull, along the whole length of the cord, to wherever the Whisp has gone, in the Ordinary World as much as beyond the Shimmer. The worlds say where the Whisp travelled; the Void is the fact that it left and hangs exposed on its lifeline. The Void is also the primordial state, the black un-grown nothingness that Marath expresses and Nalome is revived from. Two facets, one Void.
+
+**The cord** is the lifeline between a FIM and their Whisp: the FIM at the origin, the Whisp at the far end. It runs through the Void for its whole length and is exposed the whole way. If it is cut, the Whisp suffers and may die; never the FIM. Harm travels the cord toward the Whisp, never back. Every person has a cord from the first moment; a Mist's lies unpaid-out, the Whisp still in the skull. It pays out for the first time at the birth, when the ball gives it purchase on the far side, and it is kept from then on, never severed: FIM and Whisp are two, and bound.
+
+**The dial.** The FIM decides how long the cord may be: pay out to venture, reel in to retreat. The same dial is developmental intimacy, short when the Whisp is held close, long when it is trusted into distance. Two independent levers set the risk of any venture: how far the Whisp goes, and how well that distance is protected with seeds. The peril is opt-in.
+
+**Health and maturity.** The cord carries two signals. Its health is the current state of the bond: colour and integrity, whole or frayed, steady or flickering, warm or cold. Its maturity is how vivid it is: strong early, receding as the Whisp is internalised. A friend perceives your cord's health only along a shared line, as a glance and never a diagnosis; your own Whisp is the first responder. Maturity is yours alone.
+
+**Danger in the depths is both.** More cord out means more exposure: the far reaches are dangerous partly because more lifeline hangs in the Void. And Marath's depths are dangerous in themselves: the Shadow grows with depth. Neither is the only reason.
+
+**Void distance.** The distance that matters is how far the Whisp has ventured out on the cord, not how far the body walks. You can stand still and send your Whisp deep, or walk a mile with your Whisp close. Venture out for challenge, return home for safety, and out again: that breath-rhythm, rendered as geography, is the shape of growth in the world, and a return to comfort is part of the rhythm, not a step back. The zones of growth, comfort, fear, learning, growth and the panic fence, are bands on this one gradient, alongside the Shadow's growth with depth; they belong to chapter 4. Two rules of the gradient belong here: the Whisp never opens the panic zone, even when asked, and no one enters it before they have a home to return to. The Mist's lock on the far reaches is intrinsic, not a fence: no ball, no purchase.
+
+### 2.8 Anchoring, seeds and severance
+
+**Anchoring** is a concrete act: fastening the cord along a route the way a climber clips protection, so that a fall stops at the last anchor. A FIM and their Whisp anchor as often as they choose. Three things anchor: the body, on the near side, where reality itself holds you; the ball, the permanent root of every far-side venture; and seeds.
+
+**Seeds** are budded from the FIM's ball. A seed placed on a route is at once protection and a patch of Nalome's life reclaimed from the dead ground: anchoring and growing the world are the same gesture, world-genesis at small scale. Seeds may be placed at a portal's edge, along a path on a far side, or on the near side where the Whisp has travelled away from the body.
+
+Seeds split the cord into segments. Damage stays in the segment that is not secured: with a seed between the FIM and the harm, only the length beyond the seed needs healing. If the Whisp retracts to the last seed, the damaged length dissolves and a fresh one can be extended from there; if a seed is destroyed, the Whisp falls back to the seed behind it. A seed at a portal's edge is the FIM's choice, not a toll; a Whisp that crosses without one has nothing to fall back to short of the FIM, so damage can run the whole cord. The way back without a seed is the cord itself, reeled in by the FIM.
+
+**Severance** has two tiers. Anchored, the Whisp falls back to the last seed and resumes. Unanchored overreach sends it back to the very beginning. Recovery in both is reunion: the FIM and the Whisp retreat and find each other again before they continue. A portal that closes behind the Whisp leaves the cord dead if the seed at its edge was destroyed, and stuck if the seed lives: the length frozen, the Whisp moving only within its slack, unable to extend or withdraw through the shut door. Stuck is not lost. The door can be reopened, and a friend can rescue along a shared line, by reopening the door or re-anchoring. The human is never the thing stuck: the FIM's body stays in the Ordinary World with the ball beside it and can always withdraw to safety, at the cost of the venture.
+
+Anchoring encodes a lesson of growth: consolidate before advancing. Venturing far without anchoring is overshoot with a concrete consequence.
+
+A FIM's own seeds, and the paths their Whisp has taken, are visible only to the FIM by default; the FIM decides how far to reveal them.
+
+> **Open W-11 — Are seeds consumed on use, or effectively endless?** Left open by choice. *Waits for:* the fundamentals session.
+
+> **Open W-12 — The near side in detail: seeds and location.** What others may see of a seed planted on the near side (the revived patch, without who planted it, is the likely shape); and the levels, warnings and limits of a FIM choosing to share their location. *Waits for:* the fundamentals session and the privacy design.
+
+> **Open W-13 — How cord-healing between FIMs works in the fine grain.** Proximity, a deliberate act, a ritual, the two Whisps cooperating. Only the channel is fixed: along a shared line. *Waits for:* the fundamentals session; the World Model build.
+
+### 2.9 Portals
+
+Portals are doors, passages, rabbit holes: discrete crossings, as distinct from the Shimmer, which is a membrane. The Gimbal shows them in the near side; they lead to the far sides, to the other world, or to another time. The Whisp goes through; the body stays put.
+
+**The ball opens them.** The ball attached to the FIM's Gimbal is what lets a Whisp through a portal. Some portals open with the basic profile every FIM receives at the birth. Some open only for what a FIM has done or grown through: a portal may be sequenced, task B after task A. A portal never opens or stays shut because of a FIM's personality traits. Whether a sequenced portal is hidden until the FIM is ready or visible and sealed as a mystery, and how a FIM's uniqueness shapes which portals the Whisp suggests to them, is Dreamineer and Teller craft, not a rule of the universe. Every FIM's ball glows equal: equal in worth, not the same in person.
+
+**Danger portals** lead straight from the Ordinary World into Marath's depths: the cord runs from where the FIM physically stands, into the portal, and out into Marath by the Whisp. A seed at the edge is the FIM's choice.
+
+**The transcendence portal** is the one portal that opens without a ball. It opens for a FIM not yet born when their Gimbal is fully loaded and consent has been given, and it leads straight to the birth. No one walks a far side before being born; the village stays FIM-only.
+
+**The lock.** At the birth the Gimbal is locked to its FIM's ball. On the platform that means the ball is bound to the FIM's account, not to a piece of hardware: the phone becomes a Gimbal when its FIM signs in, and someone holding the phone without the sign-in reaches nothing. A lost or new phone is a sign-in on the new device and a sign-out of the old. In the fiction, the ball opens only to its own FIM.
+
+> **Open W-14 — Which portal types exist.** Beyond the seeded crossing, the ball's two zones and the transcendence portal, the portal ideas on the table are: the Shimmer-cut (a portable cut between worlds), cairn portals (named, geo-bound sites placed by Anthropologists), the threshold-by-condition (a door that passes only when an inner state is right), book-as-portal (a published arc entered as a book in the village library), the Mask (entry by donning a mask that sets the story's rules), the Mirror in the private home (one's counterfactual lives; panic-adjacent), and the living bridge (a bridge only between aligned FIMs, which must not duplicate the lines). Roped descent from a known anchor is already the seed mechanic; its "don't look back" rule and two FIMs roped together are Wayfinder craft. The Cyclone (the Shimmer reaching for FIMs at a festival) is dropped unless fully opt-in. "Every lasting portal carries one rule" is a craft heuristic. *Waits for:* a portal discovery session; cairn portals and roped descent first.
+
+> **Open W-15 — Losing or changing the phone, in the fiction.** The platform half is session management; what it is in the world when a FIM's Gimbal is lost and a new one is bound to the ball is unsaid. *Waits for:* Stefan or a discovery session.
+
+### 2.10 The village, the Tree, the drips and the ball
+
+**The village** is the commons on Nalome's far side: a bursting little sea-village where FIMs relax, contemplate, socialise and simply are. It is one place within the world, possibly an island; the world holds much more. It is FIM-only, because a Mist has no ball and so no way there. "The village" is a working name.
+
+**The Tree** stands in the village. There is one Tree, never many. It has roots, one or more trunks, and a crown of branches and limbs; on the small limbs hang the drips, one per FIM, as a leaf hangs on an ordinary tree, each by a small stalk. Which limb a drip hangs from carries no meaning. The Tree's roots light the soil and the rest of the universe: at each birth a new drip appears on a limb and the roots bring more dead ground to life. The Tree is the passage between the commons and every private place.
+
+**The drip** is what hangs in the Tree for each FIM, born at the birth. Its lower part forms **the ball**, which is released into the Ordinary World and attached to the FIM's Gimbal: one ball in two places, in the Tree as the bottom of the drip and with its FIM. The drip stays in the Tree. The ball is what crosses: it opens portals, it buds seeds, and it is the root anchor of every venture.
+
+The ball is also the gateway. It has an inside and a rim. Press the inside and the FIM is in their private home; press the rim and they are in the village. Centre is inward and private, edge is outward and social, and the ball is always one step away beside the FIM in the Ordinary World. Its picture needs no sensors, so it appears on the Hub as well as on the Gimbal. Each FIM's own ball is the one inviolable thing in Nalome; it opens only to its FIM. Every ball glows equal, and the variable signals of a life live on the cord and the lines, never on the ball. A physical glass ball, linked to the account, and a Gimbal shell that gives the phone the look of the ancient instrument are optional keepsakes: a talisman, never a key, and someone who picks up another FIM's physical ball gains nothing.
+
+Following your own lines is how you find your friends among the drips; a stranger's home stays invitation-gated.
+
+> **Open W-16 — The village's name.** Whether "the village" stays, whether it gets a name of its own, and whether it keeps the island identity the name FringeIsland came from. *Waits for:* Stefan, at a naming session.
+
+> **Open W-17 — Travelling through a ball, visiting a home, finding friends.** How a FIM visits another FIM's home in the world, and how one skims or searches the drips on the Tree. Fixed so far: follow your own lines; your own home through the ball's inside; a home is shared by region, by invitation. *Waits for:* the fundamentals session; the Discovery service for the surface.
+
+> **Open W-18 — Does the ball mature?** From clunky to fine, as capability only, never as brightness and never as a visible rank. *Waits for:* Stefan.
+
+### 2.11 The private home
+
+Each FIM has a private home: a self-chosen representation of where they feel safest. A field of flowers and grass with small pathways; a den up in an attic somewhere unknown; a house on a trunk above the clouds. A place to be creative and feel free. It is reached through the inside of the ball. It is the most private place in the universe: default-locked, the FIM holds the only key. A FIM can invite other FIMs into the whole home or parts of it, one room open to a friend and the rest locked, granted and revocable, region by region.
+
+The home is furnished with the personal-scope slice of World Studio, which is open to every FIM; authoring the shared world is Dreamineer-gated. The home evolves as the FIM grows and the Whisp fills. The commons and the home stay distinct: the village is collective, the home is private. A home before the far side is one of the structural floors of the universe: no one enters the panic zone before they have a home to return to. Whether a story's home base is ever the same object as the private home is the story chapter's open question.
+
+### 2.12 The lines
+
+The bond between FIMs is a line: a straight glowing line between their drips, brighter with a stronger bond. It is grown over time, and it never kills a Whisp; losing a line thins the world there, nothing more. A drifted line fades and waits, and glows again when the bond is tended.
+
+Lines are the channel for what is intimate. Along a shared line a friend sees your cord's health and can steady it; along a shared line another FIM's Shadow can manifest to you, as form and force, never content, and a friend can stand with you against yours. Strangers see none of this. The brightness of a line is seen only by the FIMs who share it; everyone else sees the Tree's lines as ambient glow, never who is bound to whom or how strongly. No rankings, no counts.
+
+A bond is not only between two. A FIM can be bound to many at once, and one relationship can hold several FIMs together: a circle, a crew, a group on a journey. A bond of more than two is one bond shared by all its members, its brightness seen by them alone; a pair inside a larger circle keep their pair line as well, each glowing on its own. A FIM who leaves a circle takes their share of the glow with them, and the bond among the others stays. The lines are not the crown: the crown is the Tree's own top, and the lines are drawn between the drips in it. The word "line" is reserved for this bond and its drawing in the Tree.
+
+> **Open W-19 — How a bond of more than two is drawn.** Straight lines between every pair of its members, a web; or one shape that holds them all, a ring of light around their drips. *Waits for:* Stefan and World Studio.
+
+### 2.13 How the world grows: gardening, not guarding
+
+Nalome is not pre-built and then defended. It is grown. Drips rise from the black nothingness ground; the bonds between FIMs weave between them; the Tree's roots light the ground, and the ground, glowing, spreads and becomes the village, then the world. The order of causes is what holds: FIMs and their bonds first, everything else precipitating from them, the Void primordial, the warm world its revival. Up or down is an aesthetic choice, held loosely.
+
+The world is inherited. A newcomer arrives into what earlier FIMs grew and adds their own drip and their own lines. Its objects and artefacts are continuously made by contributing FIMs in their Dreamineer modes; nothing about it is static.
+
+Only each FIM's own ball is inviolable. Everything else in Nalome, the commons, the village, the ground, can be tended and, untended, recedes toward the Void and Marath. The governing rule, the most load-bearing in the cosmology, is **gardening, not guarding**: tending must feel like a beloved garden, gentle, forgiving, approached out of delight, never like defending a fort. Nothing is permanently destroyed. The worst case is "not yet grown" or "receded", recoverable the moment care resumes. A FIM who steps away returns to a world overgrown and waiting, not shrunken and punished. Rest costs nothing permanent; what lasting absence does cost, to the cord and to stories that move on, is chapter 4's.
+
+### 2.14 Who can be where
+
+| | Own Whisp and cord | Near side (both worlds) | The village and the private home | Marath's depths | The beyond |
+|---|---|---|---|---|---|
+| **Mist** | Yes; the cord unpaid-out | Sees only | No: no ball | No: no seeds | No |
+| **FIM not yet born** | Yes; the cord unpaid-out | Sees only | No: no drip yet, no portals | No | No |
+| **FIM** | Yes | Sees and acts; travels the map | Yes, through the ball | Yes, through portals, with seeds at chosen risk | Unsolved; optional |
+
+A Mist's limits are three: reach (the near side only, and only to see; through no portal but the birth's), accretion (interaction with the Whisp grows as the static clears), and memory (nothing remembered once the Mist is erased). Between consent and the birth a FIM not yet born is remembered by the world, with the Gimbal still clearing. The birth grants the drip, the ball, the portals and the village at once. NPCs act in both worlds alongside FIMs, and Marath has creatures of its own.
 
 ## 3. The beings
 
