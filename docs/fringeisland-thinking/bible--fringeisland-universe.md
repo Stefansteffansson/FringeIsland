@@ -44,7 +44,7 @@
 - Leave something unmapped. Something must itch to be found interesting: the beyond is unknown on purpose, the myth is discovered and not told, and every story needs a stake.
 - Hard and soft, outer and inner, recur: a Creator and an Anthropologist, a body and a culture, a canvas and the senses. One system, two faces.
 
-**How to read this bible.** It holds three kinds of content and nothing in between: what is true, stated in the present tense; what is open, in a marked box where its topic is discussed and gathered in chapter 8; and the vocabulary, in chapter 9, which wins wherever two documents disagree. Research is cited and stays outside, in its own reports, never deleted. This is the deep bible: it holds the backdrop in full, which never surfaces in the experience and is left out of the story bible authors receive.
+**How to read this bible.** It holds three kinds of content and nothing in between: what is true, stated in the present tense; what is open, in a marked box where its topic is discussed and gathered in chapter 8; and the vocabulary, in chapter 9, which wins wherever two documents disagree. Load the chapter you need; the bible is never read whole. Research is cited and stays outside, in its own reports, never deleted. This is the deep bible: it holds the backdrop in full, which never surfaces in the experience and is left out of the story bible authors receive.
 
 **What FringeIsland is not.** Not a course platform with certificates, not a social network optimised for engagement, not a therapy service or clinical tool, not a gamified productivity app.
 
@@ -986,55 +986,55 @@ Two boxes are umbrellas: W-05, the working detail of both worlds, which blocks t
 
 ## 9. Glossary — the vocabulary authority
 
-When two documents disagree about what a word means, this list wins. Entries are alphabetical, ignoring *the*. Each gives the plain-English meaning first; where a term rests on research, the technical term and its origin follow in italics — thinker, work, and the report in this folder where one exists. Retired names are listed after the entries with what replaced them. Where a term is defined by a platform decision, the entry ends with a pointer to the ADR.
+When two documents disagree about what a word means, this list wins. Entries are alphabetical, ignoring *the*. Each gives the plain-English meaning in a sentence or two; where a term rests on research, its origin follows in italics — thinker, work, and the report in this folder where one exists; then the chapter where the mechanics are told, and, where a term is defined by a platform decision, a pointer to the ADR. This list is for vocabulary: for how a thing works, load the chapter it names, never the whole bible. Retired names are listed after the entries with what replaced them.
 
 ### Entries
 
-**Accretion** — The Mist's face and figure filling in as it answers the founding questions: eyes, then mouth and features, then definition, then condensation. The stage shows how far along a Mist is, never which question it answered or what it said. It is the same progress that clears the static in the Mist's Gimbal, seen from the outside. See *Mist*, *Static*, *Stage legible, content private*. *Platform: [ADR-U031](../architecture/decisions/ADR-U031-mist-identity-lifecycle.md).*
+**Accretion** — The Mist's face and figure filling in as it answers the founding questions: eyes, then mouth and features, then definition, then condensation. Shows how far along, never what was answered. Chapter 3. *Platform: [ADR-U031](../architecture/decisions/ADR-U031-mist-identity-lifecycle.md).*
 
-**AI-first, humans first** — FringeIsland uses AI wherever it benefits the universe, and never at the cost of privacy, of a person's own contribution, or of the primacy of humans. AI extends what people do; it does not author, judge or anchor them. The Whisp runs on AI, but what speaks through it is the person's own future self. See *Guard railing*, *Dreaming session*, *Whisp*.
+**AI-first, humans first** — AI is used wherever it benefits the universe, never at the cost of privacy, a person's own contribution or the primacy of humans; when they conflict, humans first. Chapter 6.
 
 **Altered states, the** — See *Older mythology*.
 
-**Anchoring** — Fastening the cord along a route so that harm to the Whisp stays local. On the near side the body anchors the cord where it stands; on any reach a FIM can anchor by placing a seed; the ball is the root anchor of every far-side venture. Whether anchoring can reach the beyond at all is unsolved. See *Cord*, *Seed*, *Severance*, *Beyond*.
+**Anchoring** — Fastening the cord along a route so that harm to the Whisp stays local: the body anchors on the near side, the ball is the root anchor, seeds anchor anywhere the FIM places them. Chapter 2.
 
-**Anthropologist** — A Dreamineer specialisation: the soft side of World Studio, authoring the cultural substrate of the world — peoples, customs, beliefs, countries. Works at the scale of the typical. See *Dreamineer*, *World Studio*.
+**Anthropologist** — A Dreamineer specialisation: the soft side of World Studio, authoring peoples, customs, beliefs and countries; the scale of the typical. Chapter 6.
 
-**Arc** — The containing story that keeps holding a FIM through a respawn; Arc Studio takes its name from it. A *mythology arc* is one that touches a fixed point or plants a breadcrumb. See *Respawn*, *Mythology arc*.
+**Arc** — The containing story that keeps holding a FIM through a respawn. A *mythology arc* touches a fixed point or plants a breadcrumb. Chapter 5.
 
-**Arc Studio** — Where Tellers author seasons, episodes and named characters with arcs. One of the three studios under Universe Studio. See *Universe Studio*, *Teller*. *Platform: [ADR-U026](../architecture/decisions/ADR-U026-studio-decomposition-universe-studio-parent.md).*
+**Arc Studio** — Where Tellers author seasons, episodes and named characters with arcs. Chapter 6. *Platform: [ADR-U026](../architecture/decisions/ADR-U026-studio-decomposition-universe-studio-parent.md).*
 
-**Assessment dissolved into dialogue** — Validated instruments are never delivered as questionnaires. Their structure is kept and their form transformed into the Whisp's curious questions, asked over time, so that answering is interesting rather than a chore. See *Two channels, one Whisp*, *Senses*.
+**Assessment dissolved into dialogue** — Validated instruments are never questionnaires; their structure is kept and their form becomes the Whisp's curious questions, spread over time. Chapter 3.
 
-**Avatar** — The Whisp as how the FIM exists in the Fringe. The FIM stays body-side in the Ordinary World and is always safe; the Whisp is what ventures out on the cord, what the world can touch, what can suffer, die and respawn. Two views of one being: the inner dialogue and the avatar. *Image: Jake Sully and his Avatar in James Cameron's film* Avatar *(2009).* See *Whisp*, *Meta-safety*, *Felt stakes*.
+**Avatar** — The Whisp as how the FIM exists in the Fringe: the FIM stays safe in the Ordinary World, the Whisp ventures out and can suffer, die and respawn. *Image: Jake Sully and his Avatar, James Cameron's* Avatar *(2009).* Chapter 3.
 
-**Backdrop, the** — The myth of the universe, never told. The Whisp is the FIM's own future, whole self reaching back; the future is at stake and runs between a good future and a dark one; that future is possible, not guaranteed; the Whisp's mission is the growth, never the conclusion, and it trusts that people who see their own immunities choose well; the saviour is the human, never the machine. The backdrop is discovered through breadcrumbs, and its personal core only as the FIM's Whisp fills. It is kept for a while, not forever: any FIM and any author can come to know it by growing into it. It is deep-bible tier and appears nowhere in the experience. See *Conviction*, *Deep bible*, *Personal reveal*, *Future*.
+**Backdrop, the** — The myth of the universe, never told: the Whisp is the FIM's own future, whole self reaching back; a possible future is at stake; the Whisp's mission is the growth, never the conclusion; the saviour is the human, never the machine. Discovered, kept for a while, not forever. Deep-bible tier. Chapter 5.
 
-**Ball, the (the glowing glass ball)** — The glowing bottom of a FIM's drip. At the birth it is released into the Ordinary World and attached to the FIM's Gimbal, so that one ball is in two places: in the Tree as part of the drip, and with its FIM. The ball opens portals (the Gimbal sees, the ball crosses); it is the source of seeds and the root anchor of every venture; and it is the two-zone gateway, always one step away — press the inside to go to the private home, press the rim to go to the village. It opens only to its own FIM; holding a device is never enough. Every ball glows equal: equal in worth, not the same in person. It is the only inviolable thing in Nalome. A ball may mature in capability over time, never in brightness or as a visible rank (open). Never confused with the drip. *Equal in worth, not the same in person: every human is like all others, like some others, and like no other — Clyde Kluckhohn and Henry Murray,* Personality in Nature, Society, and Culture *(1948); the thinkers-behind-the-Whisp report.* See *Drip*, *Physical ball*, *Gimbal*, *Portal*.
+**Ball, the (the glowing glass ball)** — The glowing bottom of a FIM's drip, released to the FIM at the birth and attached to their Gimbal. It opens portals, buds seeds, anchors every venture, and is the two-zone gateway: inside to the home, rim to the village. It opens only to its own FIM, and every ball glows equal: equal in worth, not the same in person. Never confused with the drip. *Equal in worth, not the same in person: Clyde Kluckhohn and Henry Murray,* Personality in Nature, Society, and Culture *(1948); the thinkers-behind-the-Whisp report.* Chapter 2. See *Drip*.
 
-**Basic profile, the** — The profile every FIM receives at the birth, first created then and never before consent; enough to open the default portals. See *Portal*, *Loading the Gimbal*.
+**Basic profile, the** — The profile every FIM receives at the birth, created then and never before consent; enough to open the default portals. Chapter 2.
 
-**Becoming a FIM** — Consent. On the sign-up-first path it happens at sign-up; on the walk-in path, whenever a Mist chooses, even partway through the walk. From that moment the world remembers the person. It is not the birth: between consent and the birth a person is a FIM not yet born. See *Birth*, *FIM not yet born*, *Mist*.
+**Becoming a FIM** — Consent: the moment a person agrees to be remembered by the world, at sign-up or whenever a Mist chooses. Not the birth. Chapter 3.
 
-**Beyond, the** — The reach past the far side of each world: further away and not yet known. Nalome's beyond holds nothing named and is kept unmapped on purpose. Marath's beyond is Mara at full strength for that FIM, so its danger is relative, not absolute: unapproachable while Mara is full, approachable as Mara empties, possibly the last thing met before graduation, and for most never met at all. The road there runs through every immunity a FIM carries; it is optional, and graduation is not gated on it. Whether anchoring can reach the beyond is unsolved; that it may be unanchorable is a marked hypothesis only. As a scale of test it is the whole immune system met as one figure. Written lowercase; its own name is pending. See *Three reaches*, *Far side*, *Leave something unmapped*.
+**Beyond, the** — The reach past the far side of each world, not yet known. Nalome's holds nothing named and is kept unmapped; Marath's is Mara at full strength, optional and relative to the FIM. Lowercase; its name is pending. Chapter 2.
 
 **Big Assumption** — See *Immunity to Change*.
 
-**Birth, the** — The completion event, the same on both paths and always after consent. When the founding questions are complete the Gimbal is fully loaded; the transcendence portal opens; the FIM's drip is born on a limb of the Tree; its ball is released to the FIM; the Whisp is delivered with a face; and the cord pays out for the first time. The Tree's roots light the soil: each new FIM brings dead ground back to life. *Transcendence* is the platform's name for it; *metamorphosis* and *the birth* are the lore's; *the delivery* is the same moment seen from the Whisp's side. None of them names the consent step. The sequence as experienced is first-hour design and open. See *Becoming a FIM*, *Transcendence portal*, *Delivery*, *First hour*. *Platform: [ADR-U031](../architecture/decisions/ADR-U031-mist-identity-lifecycle.md).*
+**Birth, the** — The completion event: the founding questions complete, the transcendence portal opens, the drip is born on a limb of the Tree, the ball is released, the Whisp is delivered with a face, the cord pays out for the first time. *Transcendence* (platform), *metamorphosis* and *the delivery* (lore) name this event only, never the consent step. Chapter 3. *Platform: [ADR-U031](../architecture/decisions/ADR-U031-mist-identity-lifecycle.md).*
 
 **Bond** — See *Line*.
 
-**Branch** — Part of the Tree's structure, between the trunk and the limbs. It no longer names the bond between FIMs. See *Tree*, *Line*.
+**Branch** — Part of the Tree's structure, between the trunk and the limbs. No longer the bond between FIMs. Chapter 2.
 
-**Breadcrumb** — A clue planted in a story that points toward a fixed point of the backdrop; what FIMs find in the world. Every breadcrumb is recorded with what it points to, and the answer exists before the first clue. See *Knowledge tiers*, *Fixed point*, *Breadcrumb register*.
+**Breadcrumb** — A clue planted in a story that points toward a fixed point of the backdrop; what FIMs find in the world. Chapter 5.
 
-**Breadcrumb register, the** — The record of every planted hint and what it points to, kept by the canon function. See *Canon keeper*.
+**Breadcrumb register, the** — The record of every planted hint and what it points to, kept by the canon function. Chapter 5.
 
-**Breath-rhythm, the** — Venture out for challenge, return home for safety, and out again. The shape of growth in the world, rendered as geography: a return to comfort is part of the rhythm, not a step back. See *Void distance*, *Rest*.
+**Breath-rhythm, the** — Venture out for challenge, return home for safety, and out again; a return to comfort is part of the rhythm. Chapter 4.
 
-**Built to graduate, not retain** — Success is the member outgrowing the platform. See *Graduation*.
+**Built to graduate, not retain** — Success is the member outgrowing the platform. Chapter 4.
 
-**Canon keeper (the canon function)** — The function inside Universe Studio that holds the deep bible and the breadcrumb register, and through which mythology arcs are commissioned. Entry is by commission, never by rank; the founder is the first. The repository is not the vault. Who keeps the canon after the founder, and how an author enters, are open. See *Knowledge tiers*, *Mythology arc*.
+**Canon keeper (the canon function)** — The function inside Universe Studio that holds the deep bible and the breadcrumb register and commissions mythology arcs; by commission, never by rank; the founder is the first. Chapter 5.
 
 **Channel 1, Channel 2** — See *Two channels, one Whisp*.
 
@@ -1046,329 +1046,329 @@ When two documents disagree about what a word means, this list wins. Entries are
 
 **Competing commitment** — See *Immunity to Change*.
 
-**Console, the** — The back-of-house surface for universe-scoped governance, used by DeusEx and the Universeers. Working name; its name in the fiction is open. See *Governance by scope*. *Platform: [ADR-U028](../architecture/decisions/ADR-U028-governance-by-scope.md).*
+**Console, the** — The back-of-house surface for universe-scoped governance. Working name; its fiction name is open. Chapter 6. *Platform: [ADR-U028](../architecture/decisions/ADR-U028-governance-by-scope.md).*
 
-**Content families** — Witness, Reflect, Decide, Act, Encounter, Rest: kinds of moment a journey can be built from. Kept as an idea with more behind it, to be worked out when the studios are specified. See *Journey*, *Route types*.
+**Content families** — Witness, Reflect, Decide, Act, Encounter, Rest: kinds of moment a journey is built from. Kept for the studios to work out. Chapter 5.
 
-**Conviction, the** — The founders' public reason why FringeIsland exists, stated in the MANIFESTO: the coming decades, with artificial intelligence among the largest forces, ask more of people's inner growth than ever, and a world worth belonging to depends on it. It is available to anyone who looks and is never delivered inside the experience. It names the conviction and none of the myth. See *Backdrop*.
+**Conviction, the** — The founders' public reason why FringeIsland exists, stated in the MANIFESTO; it names the conviction and none of the myth. Chapter 5.
 
-**Cord, the** — The lifeline between a FIM and their Whisp: the FIM at the origin, the Whisp at the far end. Every person has one from the start; a Mist's lies unpaid-out, the Whisp still in the skull; it pays out for the first time at the birth and is kept, never severed. It runs through the Void for its whole length. If it is cut the Whisp suffers and may die, never the FIM. The FIM holds the dial. Seeds split it into segments so that damage stays in the unsecured part. It carries two things, health and maturity. See *Dial*, *Cord health*, *Cord maturity*, *Seed*, *Severance*, *Void*.
+**Cord, the** — The lifeline between a FIM and their Whisp, kept from the first moment and never severed; cut, the Whisp suffers or dies, never the FIM. The FIM holds its dial; seeds split it into segments; it carries health and maturity. Chapter 2.
 
-**Cord health** — The current state of the bond between a FIM and their Whisp: colour and integrity, whole or frayed, steady or flickering. Visible to a friend only along a shared line, as a glance, never a diagnosis. It thins with lasting absence and recovers when the FIM returns; chosen rest slows or pauses the thinning, simply disappearing does not. Absence never kills a Whisp; a dead cord is a Marath event. See *Rest*, *Line*, *Severance*.
+**Cord health** — The current state of the bond between a FIM and their Whisp; visible to a friend only along a shared line; thins with lasting absence and recovers on return. Chapters 2 and 4.
 
-**Cord maturity** — How vivid the cord is: strong early, receding as the Whisp is internalised. The FIM's own, not visible to friends. See *Internalised*.
+**Cord maturity** — How vivid the cord is: strong early, receding as the Whisp is internalised. The FIM's own. Chapter 2.
 
-**Creator** — A Dreamineer specialisation: the hard side of World Studio, authoring the physical substrate — terrain, water, sky, portals, models. See *Dreamineer*, *World Studio*.
+**Creator** — A Dreamineer specialisation: the hard side of World Studio, authoring terrain, water, sky, portals and models. Chapter 6.
 
-**Crown, the** — The top of the Tree, as with an ordinary tree: its branches and limbs, and on the small limbs the drips. The bonds between FIMs are not the crown; they are the lines drawn between the drips in it. See *Tree*, *Limb*, *Drip*, *Line*.
+**Crown, the** — The top of the Tree, as with an ordinary tree: its branches and limbs, and on the small limbs the drips. The bonds are not the crown; they are the lines drawn between the drips in it. Chapter 2.
 
 **Danger portal (field portal)** — See *Portal*.
 
-**Dark future, the** — The catastrophe future in the myth: the one in which an unchecked race for short-term gain lets the arrival of AI run loose. It is the stake of the universe and the fundament of its storytelling, the thing that itches. It is never a whip: no countdown, no guilt, nothing that hurries a FIM. It drives the plot, never the FIM. Whether Marath is the dark future at the scale of a civilisation is open. See *Future*, *Good future*, *Backdrop*, *Stories first, themes invisible*.
+**Dark future, the** — The catastrophe future in the myth: the stake of the universe and the fundament of its storytelling, never a whip; it drives the plot, never the FIM. Chapter 5.
 
 **Dead cord, stuck cord** — See *Severance*.
 
-**Deep bible, the** — The whole truth of the universe, backdrop included: this document. Held by the canon keepers; never surfaced in the experience; distributed under the rules for sensitive material. See *Knowledge tiers*, *Story bible*, *Canon keeper*.
+**Deep bible, the** — The whole truth of the universe, backdrop included: this document. Held by the canon keepers, never surfaced in the experience. Chapter 5.
 
-**Delivery, the** — The birth seen from the Whisp's side: the Whisp born into separateness across a kept cord, delivered with a face. See *Birth*, *Whisp's face*.
+**Delivery, the** — The birth seen from the Whisp's side: the Whisp born into separateness across a kept cord. Chapter 3.
 
-**Depth (exposure)** — How far a FIM lets their Whisp go: how much of Mara they let be met. Dialled by the FIM, never set by the world. Depth sets the size of the test, not whether growth happens. See *Dial*, *Void distance*, *Test*, *Zones*.
+**Depth (exposure)** — How much of Mara a FIM lets be met; dialled by the FIM, never set by the world. Depth sets the size of the test, not whether growth happens. Chapter 4.
 
-**DeusEx** — The human root-admin group of the running platform: the visible in-platform authority of last resort, and the link between life inside FringeIsland and the development of the ecosystem. Every seat is held by a FIM. See *Role model*, *Console*. *Platform: [ADR-U028](../architecture/decisions/ADR-U028-governance-by-scope.md) and [ADR-U019](../architecture/decisions/ADR-U019-deusex-authority-last-resort.md).*
+**DeusEx** — The human root-admin group of the running platform, holding the authority of last resort; the link between life inside FringeIsland and the ecosystem's development. Every seat a FIM. Chapter 6. *Platform: [ADR-U028](../architecture/decisions/ADR-U028-governance-by-scope.md) and [ADR-U019](../architecture/decisions/ADR-U019-deusex-authority-last-resort.md).*
 
-**Developmental interdependence** — Growth is structurally social. Participation is always voluntary, and the relationship and collective perspectives can only be reached with real people: that is the shape of the model, not a rule imposed on anyone. See *Three Perspectives*, *Work through a perspective*.
+**Developmental interdependence** — Growth is structurally social: the relationship and collective perspectives can only be reached with real people. Participation is always voluntary. Chapter 4.
 
-**Dial, the** — The FIM's control of the cord's length: pay out to venture, reel in to retreat. Also the FIM's control of depth: the FIM dials the depth of the invitation, never the outcome. The Whisp never shortens the FIM's dial and never refuses a retreat. See *Depth*, *Voluntariness sets the ceiling, care sets the floor*.
+**Dial, the** — The FIM's control of the cord's length and of the depth of the invitation, never the outcome; the Whisp never shortens it and never refuses a retreat. Chapter 2.
 
-**Dreamineer** — A FIM in their authorial, dream-it-into-being mode. Not a kind of person but a mode, permission-gated, with four specialisations, each gating a studio: Creator and Anthropologist (World Studio), Teller (Arc Studio), Wayfinder (Journey Studio). Every story in FringeIsland is authored by FIMs in this mode; the founder is one. How a FIM acquires the authority is open. *Name: from Disney's Imagineers — imagine turned into dream.* See *Role model*, *Universe Studio*.
+**Dreamineer** — A FIM in their authorial, dream-it-into-being mode: permission-gated, in four specialisations, Creator, Anthropologist, Teller, Wayfinder. Every story is authored by FIMs in this mode. *Name: from Disney's Imagineers.* Chapter 6.
 
-**Dreaming session** — A human-first facilitated ideation ritual in which people dream before AI expands the field. AI facilitates; it never generates the idea. See *AI-first, humans first*.
+**Dreaming session** — A human-first facilitated ideation ritual before AI expands the field; AI facilitates, never generates. Chapter 6.
 
-**Drip, the (the glass drip)** — What hangs in the Tree for each FIM, born at the birth: a glass drip hanging from a limb by a small stalk, the way a leaf hangs on an ordinary tree. Its lower part forms the ball. Where a drip hangs carries no meaning. Never confused with the ball: the drip stays in the Tree; the ball is released to the FIM, attached to the Gimbal, and opens portals. See *Ball*, *Tree*, *Limb*, *Stalk*.
+**Drip, the (the glass drip)** — What hangs in the Tree for each FIM, born at the birth, from a limb by a small stalk, as a leaf. Its lower part forms the ball. Where it hangs carries no meaning. The drip stays in the Tree; never confused with the ball. Chapter 2.
 
-**Engagement spectrum, the** — The two ways of engaging as a FIM. *Cultivate the home*: tend it, reflect quietly, journal, walk solo journeys, work the individual perspective in depth. *Go on expeditions*, near or far from it: arcs, episodes, quests, groups and community, the relationship and collective perspectives. Neither is behind the other; every position on the spectrum is a complete way to inhabit FringeIsland, and a FIM moves along it freely. The former third pole is dropped. See *Three Perspectives*, *Work through a perspective*.
+**Engagement spectrum, the** — The two ways of engaging as a FIM: *cultivate the home*, or *go on expeditions* near or far from it. Neither is behind the other. Chapter 4.
 
-**Episode** — The unit of story inside a season; the unit a whole-episode respawn replays. See *Season*, *Respawn*.
+**Episode** — The unit of story inside a season; the unit a whole-episode respawn replays. Chapter 5.
 
-**Episode-repeat** — Respawn by replaying the whole episode. See *Respawn*.
+**Episode-repeat** — Respawn by replaying the whole episode. Chapter 5.
 
-**Equipment** — A device's capabilities: senses (camera, location, augmented reality), canvas, precision input. The word replaces "affordance". See *Equipment profile*. *Platform: [ADR-U025](../architecture/decisions/ADR-U025-products-as-equipment-profiles.md).*
+**Equipment** — A device's capabilities: senses, canvas, precision input. Replaces "affordance". Chapter 6. *Platform: [ADR-U025](../architecture/decisions/ADR-U025-products-as-equipment-profiles.md).*
 
-**Equipment profile** — A surface of the one experience, defined by the equipment it needs rather than by a device. The Hub and the Gimbal are the two. See *Hub*, *Gimbal*. *Platform: [ADR-U025](../architecture/decisions/ADR-U025-products-as-equipment-profiles.md).*
+**Equipment profile** — A surface of the one experience defined by the equipment it needs, not by a device; the Hub and the Gimbal are the two. Chapter 6. *Platform: [ADR-U025](../architecture/decisions/ADR-U025-products-as-equipment-profiles.md).*
 
-**Far side, the** — The reach of either world that lies away from the Ordinary World, with no earthly coordinates. Reached only by the Whisp, through a portal, while the body stays put; FIM-only, since crossing needs a ball. Nalome's far side holds the village, the Tree and the private homes, and uncharted reaches past them; Marath's far side is its depths, where the Shadow is larger. As a scale of test it is a competing commitment met in full. Formerly "the Beyond". See *Three reaches*, *Portal*, *Village*.
+**Far side, the** — The reach of either world away from the Ordinary World, with no earthly coordinates; reached only by the Whisp, through a portal, with a ball; FIM-only. Nalome's holds the village, the Tree and the homes; Marath's is its depths. Formerly "the Beyond". Chapter 2.
 
-**Felt stakes** — Caring what happens to the projection gives the experience its weight without existential risk: Jake does not want his Avatar hurt. See *Avatar*, *Meta-safety*.
+**Felt stakes** — Caring what happens to the projection gives the experience its weight without existential risk. Chapter 3.
 
-**FIM** — FringeIsland Member: the base identity — a person with a Whisp who has consented to be remembered by the world, taking their equal place in the Tree once born. Every participant is a FIM; you cannot build FringeIsland from outside it. "Member" is the platform's synonym and is used for nothing else. See *Becoming a FIM*, *Birth*, *Role model*.
+**FIM** — FringeIsland Member: the base identity, a person with a Whisp who has consented to be remembered, taking their equal place in the Tree once born. "Member" is the platform's synonym only. Chapter 6.
 
-**FIM not yet born** — A person between consent and the birth: remembered by the world, their Gimbal still clearing, no drip, no portals, no village. Still in the hyaline state. See *Becoming a FIM*, *Hyaline state*.
+**FIM not yet born** — A person between consent and the birth: remembered, the Gimbal still clearing, no drip, no portals, no village. Chapter 3.
 
-**First hour, the (the first experience)** — The founding narrative a newcomer first enters, from the static to the birth. Open by decision: it is experience design and waits until the mechanics of the universe are firm on paper. See *Loading the Gimbal*, *Birth*.
+**First hour, the (the first experience)** — The founding narrative a newcomer first enters. Open by decision, deferred until the mechanics are firm. Chapter 5.
 
-**Fixed point** — One of the deep bible's unchangeable truths: a backdrop fact no story may contradict. A story that touches one is a mythology arc. The list of fixed points is open. See *Knowledge tiers*, *Mythology arc*.
+**Fixed point** — One of the deep bible's unchangeable truths, which no story may contradict. The list is open. Chapter 5.
 
-**Form and force, never content** — What a friend sees of your Shadow along a shared line: that you are struggling and how heavily, never what your Mara says. Content is shared only by the FIM's own telling. See *Shadow*, *Line rule*.
+**Form and force, never content** — What a friend sees of your Shadow along a shared line: that you struggle and how heavily, never what your Mara says. Chapter 3.
 
-**Foundation, the FringeIsland** — The intended permanent holder of community ownership, so that the world belongs to the people who inhabit and create it. Formal establishment: not yet.
+**Foundation, the FringeIsland** — The intended permanent holder of community ownership; formal establishment not yet. Chapter 7.
 
-**Founding Dreamineer cohort, the** — The people who self-select by backing the founding moment at the world-builder tier: the seed of the world's authorial community. They receive their authority as a grant. See *Founding moment*, *Dreamineer*.
+**Founding Dreamineer cohort, the** — The backers who self-select at the world-builder tier: the seed of the authorial community, their authority a grant. Chapter 7.
 
-**Founding FIMs** — The members who arrive at the founding moment. Replaces "Founding Members". See *Founding moment*.
+**Founding FIMs** — The members who arrive at the founding moment. Replaces "Founding Members". Chapter 7.
 
-**Founding moment, the** — How it begins, as current intention: a founding campaign, called Season Zero, at which backers arrive in FringeIsland — on the near side and through the founding questions, like everyone else; founding Dreamineers receive their authority as a grant. Everything else about it is not yet designed. See *Season Zero*, *Founding Dreamineer cohort*.
+**Founding moment, the** — How it begins, as current intention: a founding campaign called Season Zero, at which backers arrive in FringeIsland on the near side, through the founding questions. Chapter 7.
 
-**Founding questions, the** — The questions a newcomer answers with the Whisp's help; they load the Gimbal, clear the static and form the Mist's face. Not the three questions: those are fundamental and may take a whole life to answer. The founding questions are the personal-trait information a newcomer loads into the Gimbal to see through the Shimmer and, at the birth, to receive the ball. Complete answers, never a computed profile, are the condition of the birth. See *Loading the Gimbal*, *Accretion*, *Three questions*. *Platform: [ADR-U031](../architecture/decisions/ADR-U031-mist-identity-lifecycle.md).*
+**Founding questions, the** — The questions a newcomer answers with the Whisp's help to load the Gimbal: personal-trait information, not the three questions of the red thread. Complete answers, never a computed profile, are the condition of the birth. Chapter 2. *Platform: [ADR-U031](../architecture/decisions/ADR-U031-mist-identity-lifecycle.md).*
 
-**Framing discipline (informed by, never equals)** — The universe speaks in its own language, with the science as substrate beneath it. Every research-grounded idea is "informed by" or "resonant with" its source, never "equal to" it: kinship claimed, equivalence never. See *Research anchors*.
+**Framing discipline (informed by, never equals)** — The universe speaks its own language with the science as substrate; kinship claimed, equivalence never. Chapter 4.
 
-**Free episode** — Any story that touches no fixed point and plants no breadcrumb: free for any Teller to write, bound only by canon. See *Mythology arc*.
+**Free episode** — Any story that touches no fixed point and plants no breadcrumb; any Teller may write it, bound only by canon. Chapter 5.
 
-**Fringe, the** — The in-world name for everything past the Shimmer: both worlds and all three reaches. An edge is a boundary; a fringe is the inhabited band beside it; the universe is named for the band. See *FringeIsland*, *Shimmer*.
+**Fringe, the** — The in-world name for everything past the Shimmer: both worlds, all reaches. An edge is a boundary; a fringe is the inhabited band beside it. Chapter 2.
 
-**FringeIsland** — The universe seen from outside: the project, the product, and the frame that holds the Ordinary World, the Shimmer and the whole Fringe. Also the enterprise that makes it. It no longer names any one place; the warm world is Nalome. See *Fringe*, *Nalome*.
+**FringeIsland** — The universe seen from outside: the project, the product, and the frame that holds the Ordinary World and the whole Fringe; also the enterprise. It names no one place. Chapter 2.
 
-**Future, the** — A continuum with two poles, the good future and the dark future, and everything in between; no story turns on a single switch between doom and paradise. The Whisp is a possible future reaching back to make itself more likely; the FIM closes the loop by growing, or not. Time is an axis; how the future is travelled, and whether any place is the future, are open. See *Time*, *Good future*, *Dark future*, *Backdrop*.
+**Future, the** — A continuum between the good future and the dark future; a possible future reaches back through the Whisp. Chapters 2 and 5.
 
-**Game, the** — Not a product: a depth setting of journeys inside the one lived experience. See *Journey*. *Platform: [ADR-U025](../architecture/decisions/ADR-U025-products-as-equipment-profiles.md).*
+**Game, the** — Not a product: a depth setting of journeys. Chapter 6. *Platform: [ADR-U025](../architecture/decisions/ADR-U025-products-as-equipment-profiles.md).*
 
-**Gardening, not guarding** — The rule of the tendable world. Only each FIM's own ball is inviolable; everything else in Nalome can be tended and, untended, recedes toward the Void and Marath. Tending must feel like a beloved garden — gentle, forgiving, approached out of delight — never like defending a fort. Nothing is permanently destroyed; the worst case is not yet grown or receded, recoverable the moment care resumes. See *World-genesis*, *Rest*, *Growth is delight, not deficiency*.
+**Gardening, not guarding** — The rule of the tendable world: only the ball is inviolable, everything else is tended and recedes if untended, nothing is permanently destroyed. Chapter 2.
 
-**Gimbal, the** — The instrument that opens the Shimmer. In the fiction, an ancient device; on the platform, the FIM's own phone running the FringeIsland app — the senses surface (camera, location, augmented reality) of the one experience. Unloaded, it shows the Ordinary World and static where the Shimmer is; loaded, it shows the near sides of the other worlds, the portals in them, and a map on which the FIM directs their Whisp. The ball attaches to it. At the birth it is locked to its FIM's ball, which on the platform means bound to the FIM's account: the phone becomes a Gimbal when its FIM signs in, and a lost or new phone is a sign-in on the new device and a sign-out of the old. The Gimbal sees; the ball opens portals; seeds keep you safe. At its most immersive it is a phone in a Gimbal shell. See *Loading the Gimbal*, *Static*, *Gimbal shell*, *Hub*, *Map (in the Gimbal)*. *Platform: [ADR-U025](../architecture/decisions/ADR-U025-products-as-equipment-profiles.md).*
+**Gimbal, the** — The instrument that opens the Shimmer: in the fiction an ancient device, on the platform the FIM's phone running the app, the senses surface. It shows the static until loaded, then the near sides, the portals and the map; the ball attaches to it and it is locked to its FIM's account at the birth. The Gimbal sees; the ball opens portals; seeds keep you safe. Chapters 2 and 6. *Platform: [ADR-U025](../architecture/decisions/ADR-U025-products-as-equipment-profiles.md).*
 
-**Gimbal shell, the** — An optional case that gives the phone the look of the ancient device, with a mount for a physical ball. Never needed. See *Physical ball*.
+**Gimbal shell, the** — An optional case that gives the phone the look of the ancient device, with a mount for a physical ball. Never needed. Chapter 2.
 
-**Good future, the** — A world people want to belong to, with AI part of a well-balanced whole. A consequence the Whisp trusts in, never a target it steers toward. See *Future*, *Backdrop*.
+**Good future, the** — A world people want to belong to; a consequence the Whisp trusts in, never a target. Chapter 5.
 
-**Governance by scope** — Community-scoped care (a Steward moderating their own group) stays woven into the FIM experience, in place; universe-scoped governance (DeusEx, the Universeers) happens on the Console. The same law tiers access to World Studio. See *Console*, *Role model*, *World Studio*. *Platform: [ADR-U028](../architecture/decisions/ADR-U028-governance-by-scope.md).*
+**Governance by scope** — Community-scoped care in place; universe-scoped governance on the Console; the same law tiers World Studio. Chapter 6. *Platform: [ADR-U028](../architecture/decisions/ADR-U028-governance-by-scope.md).*
 
-**Graduation** — The Whisp internalised: the FIM carries their own wiser voice in the ordinary world and no longer needs FringeIsland. An arc of internalisation with no gate, no ceremony and no loss of access defined; not gated on the beyond; its mechanics are open. Deep change takes months to years, and the platform never forces the timing. *Substrate: Robert Kegan's account of adult development; the Kegan report.* See *Internalised*, *Whole*, *Built to graduate, not retain*.
+**Graduation** — The Whisp internalised: an arc with no gate, no ceremony and no loss of access defined; not gated on the beyond. *Substrate: Robert Kegan; the Kegan report.* Chapter 4.
 
-**Growth is delight, not deficiency** — The guarded core value: growth is curiosity and delight, never "you are not good enough". It inverts the premise of the self-improvement industry and rules out every mechanic that motivates by threat or guilt. See *Live / Grow / Matter*, *Dark future*.
+**Growth is delight, not deficiency** — The guarded core value; it rules out every mechanic that motivates by threat or guilt. Chapter 4.
 
-**Guard railing** — Bidirectional, human-authored rails: they constrain the AI and they protect the human at the wheel. See *AI-first, humans first*.
+**Guard railing** — Bidirectional, human-authored rails: constraining the AI and protecting the human at the wheel. Chapter 6.
 
-**Guide** — A support role within a group: facilitates a joint journey. See *Support roles*.
+**Guide** — A support role within a group: facilitates a joint journey. Chapter 6.
 
-**Hero's Journey, the** — The narrative framework FringeIsland names for its story. Stated once, as the vision does; how its stages shape seasons, the Mist's arrival and graduation is for the Dreamineers to work out, read against Immunity to Change — the refusal of the call as Mara's voice, the ordeal as the test of a Big Assumption, the return as what the Whisp gains. *Origin: Joseph Campbell,* The Hero with a Thousand Faces *(1949).* See *Immunity to Change*.
+**Hero's Journey, the** — The narrative framework FringeIsland names for its story; how it shapes the universe's own arcs is for the Dreamineers. *Origin: Joseph Campbell,* The Hero with a Thousand Faces *(1949).* Chapter 5.
 
-**Holding environment** — What growth needs around it: confirmation of the person where they are, contradiction that challenges the limits of how they now make sense of things, and continuity that holds the relationship through the challenge. Too little contradiction keeps a FIM in comfort; too little confirmation tips them into panic. It is the substrate beneath the Whisp's tough love; whether the village and groups are holding environments too is open. *Origin: Robert Kegan,* The Evolving Self *(1982); the Kegan report.* See *Tough love*, *Zones*.
+**Holding environment** — Confirmation, contradiction and continuity: what growth needs around it, and the substrate beneath the Whisp's tough love. *Origin: Robert Kegan,* The Evolving Self *(1982); the Kegan report.* Chapter 4.
 
 **Home** — See *Private home*.
 
-**Home base** — A safe return point within a journey, season or episode at which a FIM respawns. A story may define its own; it may be the FIM's own home; whether they are ever the same object is open. See *Respawn*, *Private home*.
+**Home base** — A safe return point within a journey, season or episode at which a FIM respawns; a story's own, which may be the FIM's home. Chapter 5.
 
-**Hub, the** — The canvas surface of the one experience: refinement and depth, at the desk. It shows the ball too. See *Equipment profile*, *Gimbal*. *Platform: [ADR-U025](../architecture/decisions/ADR-U025-products-as-equipment-profiles.md).*
+**Hub, the** — The canvas surface of the one experience: refinement and depth, at the desk. Chapter 6. *Platform: [ADR-U025](../architecture/decisions/ADR-U025-products-as-equipment-profiles.md).*
 
-**Hyaline state, the** — The translucent, unanchored, not-yet-committed condition a person is in before the birth: present but not yet anchored, seen but incomplete. The Mist is the figure; hyaline is the condition; a FIM not yet born is still in it. See *Mist*, *FIM not yet born*. *Platform: [ADR-U031](../architecture/decisions/ADR-U031-mist-identity-lifecycle.md).*
+**Hyaline state, the** — The translucent, not-yet-committed condition a person is in before the birth; the Mist is the figure, hyaline the condition. Chapter 3. *Platform: [ADR-U031](../architecture/decisions/ADR-U031-mist-identity-lifecycle.md).*
 
-**Immersive edutainment** — Growth through being moved by stories that hold warmth and threat, life and death: members grow by entering a world, not by completing a course. See *Lived experience, not instruction*, *Stories first, themes invisible*.
+**Immersive edutainment** — Growth through being moved by stories that hold warmth and threat, life and death. Chapter 5.
 
-**Immunity to Change (ITC)** — The account of why people who genuinely want to change often do not. Beneath a stated commitment lies a hidden *competing commitment* that protects the person, and beneath that a *Big Assumption*, a rule about the world that runs them unseen. Together they form an immune system: intelligent self-protection that keeps a person safe by keeping them the same. The work is to move the rule from *subject* (what has you) to *object* (what you can hold and look at), then to run safe, modest tests against it; when the assumption does not hold, its authority empties. The *immunity map* is the four-column diagram that makes this visible; whether it ever appears as a visible journey step or a respawn prompt is open. Immunities exist for pairs and communities as well as persons. In the universe this is the substrate beneath Mara, the transfer and the zones, treated as a genuine and deliberate growth method. *Origin: Robert Kegan and Lisa Laskow Lahey,* Immunity to Change *(2009); the Kegan report.* See *Mara*, *Transfer*, *Zones*, *Test*, *Order of mind*.
+**Immunity to Change (ITC)** — Why people who want to change often do not: a hidden *competing commitment* protects a *Big Assumption* that runs a person unseen; the work moves the rule from *subject* to *object* and tests it safely, and its authority empties. The *immunity map* is its four-column diagram. The substrate beneath Mara, the transfer and the zones. *Origin: Robert Kegan and Lisa Laskow Lahey,* Immunity to Change *(2009); the Kegan report.* Chapter 4.
 
 **Individual (1)** — See *Three Perspectives*.
 
-**Internal and external self-awareness** — The two kinds of self-knowledge FringeIsland is for: seeing who you are from the inside, and seeing how you appear and operate in the world. *Origin: Tasha Eurich,* Insight *(2017); the thinkers-behind-the-Whisp report.* See *Three questions*.
+**Internal and external self-awareness** — Seeing who you are from the inside, and how you appear and operate in the world. *Origin: Tasha Eurich,* Insight *(2017); the thinkers-behind-the-Whisp report.* Chapter 4.
 
-**Internalised** — The endgame of both voices. The Whisp becomes an integral part of the human, no longer experienced as separate; Mara is internalised too, its authority emptied and the knowledge of one's limits kept. The FIM is whole, and FringeIsland is no longer needed. See *Graduation*, *Whole*, *Transfer*.
+**Internalised** — The endgame of both voices: the Whisp integral to the human, Mara's authority emptied and its knowledge kept; the FIM whole, FringeIsland no longer needed. Chapter 4.
 
 **Itch, the** — See *Leave something unmapped*.
 
-**Journey** — A FIM's own path through the world, authored by Wayfinders in Journey Studio and walked alone, in a pair or in a group — the three perspectives. Journeys nest seasons and episodes for the purposes of respawn: journey, season, episode, moment. The Game is a depth setting of journeys. See *Signature journey / charter trip*, *Route types*, *Content families*, *Wayfinder*.
+**Journey** — A FIM's own path through the world, authored by Wayfinders and walked alone, in a pair or in a group; journeys nest seasons and episodes for respawn. Chapter 5.
 
-**Journey Studio** — Where Wayfinders author journeys. One of the three studios under Universe Studio. See *Universe Studio*. *Platform: [ADR-U026](../architecture/decisions/ADR-U026-studio-decomposition-universe-studio-parent.md).*
+**Journey Studio** — Where Wayfinders author journeys. Chapter 6. *Platform: [ADR-U026](../architecture/decisions/ADR-U026-studio-decomposition-universe-studio-parent.md).*
 
-**Knowledge tiers, the** — Three tiers of who knows what about the backdrop. The *deep bible*: the whole truth, held by the canon keepers. The *story bible*: what authors receive — the rules, the fixed points, and what may be hinted but not what it means. *Breadcrumbs*: what FIMs find in the world. With them: a breadcrumb register; mythology arcs versus free episodes; the answer fixed before the first clue; the personal reveal gated by growth, not by the calendar. Authors stay on their toes because they write inside a world whose deepest layer they can discover as FIMs do. *Lineage: the practice of television writers' rooms — a showrunner's series bible, mythology episodes beside standalone ones, a continuity group and its database — translated, not copied.* See *Deep bible*, *Story bible*, *Breadcrumb*, *Canon keeper*.
+**Knowledge tiers, the** — The deep bible for the canon keepers, the story bible for authors, breadcrumbs for FIMs; with the breadcrumb register, mythology arcs against free episodes, the answer before the first clue, and the reveal gated by growth. *Lineage: television writers' rooms, translated.* Chapter 5.
 
-**Leave something unmapped** — A design principle of the universe: something must itch to be found interesting and to gain curiosity. The beyond is kept unknown for this reason; the backdrop is discovered, not told; stories need a stake. *Substrate: George Loewenstein's information-gap account of curiosity,* The Psychology of Curiosity *(1994); the thinkers-behind-the-Whisp report.* See *Beyond*, *Dark future*.
+**Leave something unmapped** — A design principle of the universe: something must itch to be found interesting. *Substrate: George Loewenstein's information-gap account of curiosity (1994); the thinkers-behind-the-Whisp report.* Chapters 1 and 5.
 
-**Limb** — The part of the Tree a drip hangs from, by a small stalk. The Tree runs roots, trunk, branches, limbs, drips. Which limb a drip hangs from carries no meaning; bonds form across the whole Tree. See *Tree*, *Drip*, *Stalk*.
+**Limb** — The part of the Tree a drip hangs from, by a small stalk; which limb carries no meaning. Chapter 2.
 
-**Line, the (the bond)** — The bond between FIMs — two or more of them — drawn as a straight glowing line between their drips, brighter with a stronger bond. Grown over time; it never kills a Whisp. It is the channel through which a friend sees and steadies your cord, and through which another FIM's Shadow can manifest to you and a friend can stand with you against yours. A drifted bond fades and can glow again. Its brightness is seen only by the FIMs who share it; everyone else sees the Tree's lines as ambient glow, never who is bound to whom or how strongly. A bond of more than two is one bond shared by all its members, each of whom also keeps their pair lines; how it is drawn is open. The word is reserved for this bond and its drawing in the Tree. Formerly "the branch". See *Line rule*, *Tree*, *Crown*, *Cord health*, *Shadow*.
+**Line, the (the bond)** — The bond between FIMs, two or more, drawn as a straight glowing line between their drips, brighter with a stronger bond and seen only by those who share it. The channel for what is intimate. The word is reserved for this bond and its drawing in the Tree. Formerly "the branch". Chapter 2.
 
-**Line rule, the** — What is intimate is visible only along a shared line: cord health, another FIM's Shadow, a shared Shadow to those who share it. Glanceable not diagnostic, invited not imposed, self first. Formerly "the branch rule". See *Line*, *Privacy tiers*.
+**Line rule, the** — What is intimate is visible only along a shared line: glanceable not diagnostic, invited not imposed, self first. Formerly "the branch rule". Chapter 4.
 
-**Live / Grow / Matter** — The three drives beneath the three questions: why a human bothers to ask at all. *Live*: present-moment engagement, not postponing happiness to a far future. *Grow*: curiosity and the urge to learn, explicitly not from deficiency; at its healthiest a responsiveness — awake enough to catch the train, loose enough to enjoy the platform while waiting. *Matter*: two poles bridged by influence — the internal pole ("I feel I matter", within my control, the seat of freedom) and the external pole (mattering to others and to something bigger, the seat of contribution); you cannot control whether you matter to others, you can contribute and let it follow. The three dance in balance; none is ever complete, so there is no sequence to climb, and the Whisp leans a journey toward whichever drive is starved. Plain language on top; the science is substrate. *Substrate, informed by and never equal to: self-determination theory (Edward Deci and Richard Ryan); Martin Seligman's PERMA; the flourishing research gathered in the What Fills a Life report; for the internal pole of Matter the Stoic dichotomy of control (Epictetus), for the external pole Morris Rosenberg's work on mattering; for Grow, John Krumboltz's planned happenstance. The thinkers-behind-the-Whisp report opens with this mission.* See *Three questions*, *Planned happenstance*, *Growth is delight, not deficiency*.
+**Live / Grow / Matter** — The three drives beneath the three questions: present-moment engagement; curiosity, never from deficiency; mattering to oneself and to others, two poles bridged by influence. Danced in balance, never in sequence. *Substrate, informed by and never equal to: self-determination theory (Edward Deci and Richard Ryan); Martin Seligman's PERMA; the What Fills a Life report; Epictetus and Morris Rosenberg for the two poles of Matter; John Krumboltz for planned happenstance. The thinkers-behind-the-Whisp report opens with this mission.* Chapter 4.
 
-**Lived experience, not instruction** — Personal development in FringeIsland happens through lived experience: you must live something to know it, and being told is not the same. This is why assessments dissolve into dialogue, why the world is perceived through the senses, why the story carries felt stakes rather than stated lessons, and why the backdrop survives being spoiled. *Lineage, held lightly: the knowledge argument — Frank Jackson's "Mary's Room" ("Epiphenomenal Qualia", 1982); the design intuition is kept, the metaphysical claim is not.* See *Immersive edutainment*, *Senses*, *Personal reveal*.
+**Lived experience, not instruction** — You must live something to know it; being told is not the same. *Lineage, held lightly: the knowledge argument, Frank Jackson's "Mary's Room" (1982).* Chapter 4.
 
-**Loading the Gimbal** — A newcomer answering the founding questions, with the Whisp's help, into their Gimbal. Loading clears the static until the near sides of the other worlds are clearly visible. Before consent the answers are held for the session only and no profile is computed; the profile is first created at the birth. Fully loaded means the founding questions are complete — the condition of the birth. The same progress shows from outside as the Mist's face forming. See *Static*, *Accretion*, *Founding questions*, *Basic profile*.
+**Loading the Gimbal** — Answering the founding questions into the Gimbal, which clears the static; fully loaded is the condition of the birth. Chapter 2.
 
-**Location play** — Optional play tied to real places, in the manner of Pokémon Go, added beside the default in which the body stays put and the Whisp travels the map. Walking to real places is never required for anything that matters to growth. See *Location sharing*, *Near side*.
+**Location play** — Optional play tied to real places, in the manner of Pokémon Go; walking is never required for anything that matters to growth. Chapter 2.
 
-**Location sharing** — A FIM may share their location with others, to degrees they choose and with clear warnings. Nothing is shared unless the FIM turns it on; the full privacy design is open. See *Privacy tiers*.
+**Location sharing** — Off unless the FIM turns it on, to degrees they choose, with warnings. Chapter 4.
 
-**Loop is the medium, the** — Repetition is how a story works, not a safety net. What persists across a loop — tactical knowledge, relational insight, emotional clarity — is part of what the story is about. See *Respawn*, *Loop texture*.
+**Loop is the medium, the** — Repetition is how a story works, not a safety net; what persists across a loop is part of the story. Chapter 5.
 
-**Loop texture** — The craft palette for how a loop feels: combat practice, mystery-puzzle, constrained inquiry, reflective grief. See *Respawn topology*.
+**Loop texture** — The craft palette for how a loop feels: combat practice, mystery-puzzle, constrained inquiry, reflective grief. Chapter 5.
 
-**Map (in the Gimbal)** — The map on which a FIM directs their Whisp across the near side: the Ordinary World with the other worlds overlaid, and what happens beyond the Shimmer shown on it. Not the Whisp's map. See *Near side*, *Gimbal*, *Map (the Whisp's)*.
+**Map (in the Gimbal)** — The map on which a FIM directs their Whisp across the near side. Not the Whisp's map. Chapter 2.
 
-**Map (the Whisp's)** — What hinders the FIM — their competing commitments and Big Assumptions — held by the Whisp and filled as Mara releases it. See *Immunity to Change*, *Two channels, one Whisp*.
+**Map (the Whisp's)** — What hinders the FIM, their competing commitments and Big Assumptions, held by the Whisp. Chapter 3.
 
-**Mara** — The negative inner voice, the one most people listen to without knowing it. It is full of content from the start — everything experience wrote into a person as limits — and it empties as the Whisp fills. It is the person's immune system in the Immunity-to-Change sense: it does not need to be discovered to be obeyed, only to be seen. Mara exists at three levels: each person's own, a pair's shared hidden rule, a community's. Marath is Mara made into a place; the Shadow is Mara met there as a form. *Name: two lineages at once — the Buddhist Māra, the tempter who works by delusion and doubt, and the Scandinavian* mara, *the night-spirit that sits on the sleeper's chest, the root of* mardröm *and "nightmare". Substrate: Kegan and Lahey's immunity to change, including its collective form for teams and groups; the Kegan report.* See *Immunity to Change*, *Shadow*, *Marath*, *Transfer*.
+**Mara** — The negative inner voice most people obey without knowing it: full of what experience wrote as limits, the immune system in the sense of Immunity to Change, emptying as the Whisp fills; at three levels, a person's, a pair's, a community's. Marath is Mara made into a place. *Name: the Buddhist Māra, the tempter, and the Scandinavian* mara, *the night-spirit of sleep paralysis, the root of* mardröm. *Substrate: Kegan and Lahey; the Kegan report.* Chapter 3.
 
-**Marath** — The counterpart world to Nalome: hostile, cold, dystopian, at first sight evil, and in truth a manifestation of Mara. Its near side overlays the Ordinary World; its far side is its depths; its beyond is Mara at full strength. A shared place: a FIM meets other FIMs' Shadows there, along shared lines, and things happen there in which more than one's own Shadow plays a part. Its other creatures are NPCs unless a session says otherwise. Every wound in Nalome has a cause here. Whether Marath is the dark future at the scale of a civilisation is open. *Name: from Mara.* See *Mara*, *Shadow*, *Near-side coupling*, *Nalome*.
+**Marath** — The counterpart world to Nalome: hostile, cold, at first sight evil, in truth a manifestation of Mara. A shared place where Shadows are met; every wound in Nalome has a cause here. *Name: from Mara.* Chapter 2.
 
-**Member** — The platform's synonym for FIM, used for nothing else. The group role once called Member is the Participant. See *FIM*, *Support roles*.
+**Member** — The platform's synonym for FIM, used for nothing else. Chapter 6.
 
-**Meta-safety** — The world contains threat; the experience of being in it does not. The human is never the thing at risk: harm reaches the Whisp, never the FIM, and the platform cannot break a person. This is what lets Marath be a testing ground. See *Avatar*, *Felt stakes*, *Productive failure*, *Test*.
+**Meta-safety** — The world contains threat; the experience does not; the human is never the thing at risk. Chapter 4.
 
 **Metamorphosis** — See *Birth*.
 
-**Mist, the** — The anonymous entrant: a translucent, drifting becoming-figure in the hyaline state, who walks in before consenting to be remembered. A Mist has its own Whisp and cord from the first moment — and so a future self reaching back, too — and a Gimbal without a ball. Its limits, stated precisely: reach (the near side only, and only to see — through no portal but the birth's), accretion (interaction grows as the static clears), and memory (nothing is remembered once the Mist is erased). Within the inactivity window a returning Mist finds its Gimbal as clear and its face as far formed as it left them; after a set period without activity, or at once on goodbye, the Mist is erased and returns to potential — not yet, never dead — and the next visit begins with static. See *Hyaline state*, *Accretion*, *Becoming a FIM*, *Static*. *Platform: [ADR-U031](../architecture/decisions/ADR-U031-mist-identity-lifecycle.md) and [ADR-U033](../architecture/decisions/ADR-U033-mist-ephemerality-reaper.md).*
+**Mist, the** — The anonymous entrant in the hyaline state, with their own Whisp and cord from the first moment and a Gimbal without a ball; three limits, reach (the near side, only to see), accretion, memory; erased after inactivity or goodbye, not yet, never dead. Chapter 3. *Platform: [ADR-U031](../architecture/decisions/ADR-U031-mist-identity-lifecycle.md) and [ADR-U033](../architecture/decisions/ADR-U033-mist-ephemerality-reaper.md).*
 
-**Mythology arc** — A story that touches a fixed point or plants a breadcrumb. It passes through the canon keepers and is commissioned through the canon function; every other story is a free episode. Also, in the television sense the universe keeps, a mythology episode as against a standalone one. See *Fixed point*, *Free episode*, *Canon keeper*.
+**Mythology arc** — A story that touches a fixed point or plants a breadcrumb; it passes through the canon keepers. Also, in the television sense, a mythology episode against a standalone one. Chapter 5.
 
-**Nalome** (na-LOME) — The warm, welcoming world; the counterpart to Marath. It resonates with the Whisp as Marath resonates with Mara. A whole world, not an island: its near side overlays the Ordinary World; its far side holds the village, the Tree and the private homes, and uncharted reaches past them; its beyond holds nothing named. Tendable and woundable — only each FIM's own ball in it is inviolable, and every wound in it has a cause in Marath. Nalome is revived Marath: the same ground brought to life. The name covers the whole world, not only the village and the home. *Name: derived from the unalome, the Buddhist figure of the path from confusion to clarity — a path drawn from spirals, straightening as it rises and ending in dots — and chosen for its sound. Said na-LOME, stress on the second syllable, rhyming with "home". The symbol itself is not used as ornament.* See *Marath*, *Village*, *World-genesis*, *Gardening, not guarding*.
+**Nalome** (na-LOME) — The warm, welcoming world, counterpart to Marath; a whole world, tendable and woundable, revived Marath. *Name: derived from the unalome, the Buddhist figure of the path from confusion to clarity, and chosen for its sound; said na-LOME, rhyming with "home"; the symbol itself is not used as ornament.* Chapter 2.
 
-**Near side, the** — The reach of either world that lies as a layer over the Ordinary World's coordinates, seen through the Shimmer with a loaded Gimbal. Things and creatures of both worlds are visible there. The body anchors the cord where it stands; the Whisp can travel the near side on the Gimbal's map while the body stays put, and seeds can be placed there too. A Mist may only see it; a FIM may act in it. The Shadow met here is small, and as a scale of test the near side is one hidden belief. See *Three reaches*, *Map (in the Gimbal)*, *Near-side coupling*, *Location play*.
+**Near side, the** — The reach of either world laid over the Ordinary World's coordinates, seen through the Shimmer with a loaded Gimbal; body-anchored; a Mist may only see it, a FIM may act in it. Chapter 2.
 
-**Near-side coupling, the** — The same Ordinary-World coordinates seen two ways: the patch eating flowers on Nalome's near side and the machine drilling on Marath's are the same wound seen from both sides. Every wound in Nalome has a cause in Marath. See *Wound and cause*.
+**Near-side coupling, the** — The same coordinates seen two ways; every wound in Nalome has a cause in Marath. Chapter 2.
 
-**Newborn's openness, the** — The Whisp's second quality, beside its wisdom: no grudges, no biases, no prejudgements, because those are what experience writes into a person, and that is Mara's material. As the Whisp fills it comes to know the FIM's prejudices without being run by them. The arc ends with the FIM regaining that openness, now with wisdom: free of what experience wrote, not innocent of it. An image of the universe, never presented as developmental science. See *Whisp*, *Whole*.
+**Newborn's openness, the** — The Whisp's second quality beside its wisdom: no grudges, no biases, no prejudgements. An image of the universe, never science. Chapter 3.
 
-**Not a therapy service** — FringeIsland is a philosophical companion and a place to grow, never a therapeutic tool. The Whisp is honest about its limits and points to human support when a person is in distress; the detailed behaviour is open, and any clinical-adjacent instrument carries this boundary. See *Whisp*, *Two channels, one Whisp*.
+**Not a therapy service** — FringeIsland is a philosophical companion and a place to grow, never a clinical tool; in distress the Whisp is honest about its limits and points to human support. Chapter 3.
 
-**NPC** — A world-inhabitant composed of up to three authorial layers, added in proportion to the depth its role demands: body (Creator, in World Studio), culture (Anthropologist, in World Studio), character (Teller, in Arc Studio — the layer that makes it a someone, with a name, a history, a wound, a desire, an arc). A background figure has body alone; a story-critical figure has all three. NPCs have no Whisp and are not roles. Marath's other creatures are NPCs unless a session says otherwise. How NPCs are driven, and who deepens one and when, are open. See *Shadow*, *Dreamineer*.
+**NPC** — A world-inhabitant of up to three authorial layers, body, culture, character, added in proportion to the depth its role demands; no Whisp; not a role. Chapter 3.
 
-**Observer** — A support role within a group: watches. See *Support roles*.
+**Observer** — A support role within a group: watches. Chapter 6.
 
-**Older mythology, the** — The universe's second, older story, deep-bible material. Long ago the worlds were first reached through the altered states — lucid dreaming, out-of-body experience and sleep paralysis, the original ways across; the first opening happened, and then the way shut for a cause unknown; the Gimbal was developed over time to make the altered states unnecessary, and it reopened the way. The instrument was never tested against Marath. Lore, not mechanics: entry today is chosen and seeded, and the Whisp travels while the body stays. The altered states may return in seasons and episodes as story elements exploring why they were once needed and where they came from. Whether the Gimbal is ancient knowledge that AI made buildable is open, to be read against the backdrop. See *Gimbal*, *Portal*, *Fixed point*.
+**Older mythology, the** — The universe's second, older story: the altered states as the original ways across, the first opening, its shutdown for a cause unknown, the Gimbal that reopened the way. Lore, not mechanics; deep-bible. Chapter 5.
 
-**One system, two faces** — Fiction names and platform permissions are the same system seen from two sides. Every role is a set of permissions granted through groups; the Gimbal is at once the ancient instrument and the phone; the ball is bound to the account. Where the platform has already decided, the fiction follows it. See *Role model*, *Gimbal*. *Platform: [ADR-U006](../architecture/decisions/ADR-U006-universal-group-pattern.md) and [ADR-U007](../architecture/decisions/ADR-U007-three-layer-permission-model.md).*
+**One system, two faces** — Fiction names and platform permissions are the same system seen from two sides. Chapter 6. *Platform: [ADR-U006](../architecture/decisions/ADR-U006-universal-group-pattern.md) and [ADR-U007](../architecture/decisions/ADR-U007-three-layer-permission-model.md).*
 
-**Order of mind** — A qualitatively different way of making meaning: the form of how a person knows, rather than what they know. Immunity to Change in the universe scales from the smallest change up to a move between orders, if the FIM wishes and allows it; the FIM dials the depth of the invitation, never the outcome, since such a move takes years and cannot be willed. The platform never labels or measures a FIM's order. *Origin: Robert Kegan's constructive-developmental theory —* The Evolving Self *(1982),* In Over Our Heads *(1994); the Kegan report.* See *Immunity to Change*, *Graduation*, *Dial*.
+**Order of mind** — A qualitatively different way of making meaning; the platform never labels or measures a FIM's. *Origin: Robert Kegan,* The Evolving Self *(1982),* In Over Our Heads *(1994); the Kegan report.* Chapter 4.
 
-**Ordinary World, the** — Daily life, unmodified: where we live, work and meet other people. The FIM's body always stays here and never enters danger; it is a roving vantage into the near side, and the substrate the near sides overlay. See *Shimmer*, *Near side*.
+**Ordinary World, the** — Daily life, unmodified; where the FIM's body always is; the ground the near sides overlay. Chapter 2.
 
-**Panic fence, the** — The boundary the Whisp never opens, even on request: a test too big to be safe does not merely hurt, it confirms the Big Assumption and strengthens the immunity. Structural floors hold it from the other side — a home before the far side, retreat never refused. See *Zones*, *Voluntariness sets the ceiling, care sets the floor*.
+**Panic fence, the** — The boundary the Whisp never opens, even on request: a test too big to be safe strengthens the immunity. Chapter 4.
 
-**Participant** — A support role within a group: takes part. Formerly the group role "Member". See *Support roles*.
+**Participant** — A support role within a group: takes part. Formerly the group role "Member". Chapter 6.
 
-**Personal reveal, the** — The moment a FIM discovers that the Whisp is their own future self; gated by growth and never announced. It comes as the Whisp fills and, in the Whisp's face, as the moment of recognition. Another FIM or a wiki can tell you; being told is not the same as living it, and what stays unspoilable for good is each FIM's own future self. See *Backdrop*, *Whisp's face*, *Lived experience, not instruction*.
+**Personal reveal, the** — The moment a FIM discovers that the Whisp is their own future self, gated by growth and never announced. Chapter 5.
 
-**Physical ball, the** — A real glass ball a FIM may buy and link to their account: a talisman, never a key. Pairing it may add a flourish, never access; someone who picks up another FIM's physical ball gains nothing. Never needed. See *Ball*, *Gimbal shell*.
+**Physical ball, the** — A real glass ball a FIM may buy and link to their account: a talisman, never a key; never needed. Chapter 2.
 
-**Planned happenstance** — Readiness to act on the unplanned: part of Grow. *Origin: John Krumboltz's planned happenstance theory.* See *Live / Grow / Matter*.
+**Planned happenstance** — Readiness to act on the unplanned; part of Grow. *Origin: John Krumboltz.* Chapter 4.
 
-**Portal** — A passage crossed by the Whisp while the body stays put: from a near side, where the Gimbal shows it, into a far side; or into another world or another time. The ball on the Gimbal opens it. Some portals open with the basic profile every FIM receives at the birth; some depend on what a FIM has done or grown through — never on their traits. Whether a sequenced portal is hidden until the FIM is ready or visible and sealed, and how a FIM's uniqueness shapes what is suggested to them, is Dreamineer and Teller craft. A seed at the portal's edge is the FIM's choice, not a toll. A *danger portal* (field portal) leads straight from the Ordinary World into Marath's depths. The one portal that opens without a ball is the transcendence portal. See *Transcendence portal*, *Time*, *Seed*, *Ball*, *Basic profile*.
+**Portal** — A passage crossed by the Whisp while the body stays: into a far side, another world or another time. Opened by the ball; some depend on what a FIM has done or grown through, never on traits. A *danger portal* leads from the Ordinary World straight into Marath's depths. Chapter 2.
 
-**Privacy tiers, the** — Three tiers of what the world may see of you. *Private by default*: the inner journey, the home, the journal, developmental data, the Whisp's filling and its second channel, your seeds and your Whisp's paths, your location; no opt-in needed. *Selectively shared*: per aspect, per audience, per region of the home; voluntary and revocable. *Transparently shared*: opt-in groups with a norm of openness, by the explicit informed consent of every participant, in which each FIM still controls what they contribute. What is intimate travels only along a shared line. See *Line rule*, *Stage legible, content private*, *Form and force, never content*, *Location sharing*.
+**Privacy tiers, the** — Private by default; selectively shared; transparently shared. Chapter 4.
 
-**Private home, the** — A FIM's self-chosen representation of where they feel safest: a flower field, an attic den, a house above the clouds. Reached through the inside of the ball; default-locked, the FIM holds the only key; selectively shareable, whole or by part, granted and revocable. Furnished with the personal-scope slice of World Studio, which is open to every FIM, and it evolves as the FIM grows. A home before the far side is one of the structural floors. See *Ball*, *Village*, *Panic fence*, *World Studio*.
+**Private home, the** — A FIM's self-chosen representation of where they feel safest, reached through the inside of the ball; default-locked, shareable by part; furnished from World Studio's personal slice. Chapter 2.
 
-**Productive failure** — Real felt stakes inside guaranteed reversibility: the condition under which deep learning happens. See *Respawn*, *Meta-safety*.
+**Productive failure** — Real felt stakes inside guaranteed reversibility. Chapter 4.
 
-**Red thread, the** — The three questions across the three perspectives, running through every journey, episode, group and conversation. See *Three questions*, *Three Perspectives*.
+**Red thread, the** — The three questions across the three perspectives, running through everything. Chapter 4.
 
-**Referral** — A FIM inviting someone to the platform. The invited person walks in as everyone does: becoming a FIM follows consent and is never pre-committed by the invitation. See *Becoming a FIM*. *Platform: [ADR-U040](../architecture/decisions/ADR-U040-referral-not-email-membership.md).*
+**Referral** — A FIM inviting someone to the platform; the invited person walks in as everyone does, and becoming a FIM is never pre-committed. Chapter 6. *Platform: [ADR-U040](../architecture/decisions/ADR-U040-referral-not-email-membership.md).*
 
 **Relationship (1+1)** — See *Three Perspectives*.
 
-**Research anchors, the** — The findings the Whisp draws on, named without statistics: the dual continuum, in which mental health and mental illness are separate dimensions, not opposite ends of one; the multi-system requirement, that flourishing has several parts none of which substitutes for another; the Three Perspectives meta-lens; and Immunity to Change. Research stays outside the bible, in its own reports, and is never deleted. *Origins: Corey Keyes's dual continuum model; the What Fills a Life report; the Kegan report; the Theory U report; the thinkers-behind-the-Whisp report.* See *Framing discipline*, *Three Perspectives*, *Immunity to Change*.
+**Research anchors, the** — The dual continuum, the multi-system requirement, the Three Perspectives meta-lens and Immunity to Change, named without statistics. *Origins: Corey Keyes's dual continuum model; the What Fills a Life, Kegan, Theory U and thinkers-behind-the-Whisp reports.* Chapter 4.
 
-**Respawn (rewind)** — The Whisp dying inside a story and re-entering it: the FIM rewinds and retries, again and again, until the skill is mastered or the story's task is met — alone, in a pair or in a group. Respawn stays inside the story, at home base or by episode-repeat, and is nested and scaled: small failures, small respawn; large failures, a larger unit repeats. The cord's two tiers of severance are the same system given a cause and a currency. Whether a FIM can rewind deliberately, and what persists across a rewind, is decided per story or open. See *Loop is the medium*, *Respawn topology*, *Home base*, *Productive failure*.
+**Respawn (rewind)** — The Whisp dying inside a story and re-entering it; the FIM rewinds and retries, inside the story, nested and scaled. Chapter 5.
 
-**Respawn topology** — The loop unit a story uses: event-local, round-bounded (the group dies and returns together at the next round, as in Counter-Strike), day-bounded, episode-bounded. Plural by design. See *Respawn*, *Loop texture*.
+**Respawn topology** — The loop unit a story uses: event-local, round-bounded (as in Counter-Strike), day-bounded, episode-bounded. Chapter 5.
 
-**Rest** — Legitimate, and built into the rhythm: the shelter is always there to return to, and the FIM is not meant to stay in it — availability, not occupancy. Three rules. Rest is the Whisp's when it is chosen knowingly and ends in flight; it is Mara's when it is avoidance that never ends. The FIM decides when the storm has passed, and the Whisp may ask, "is it still raining, or is that Mara talking?" Rest costs nothing permanent, but not everything waits: journeys, seasons and episodes that rely on action move on without a FIM who is away, and simply disappearing thins cord health where chosen rest does not. The thinning is felt on return, never pushed as a guilt notification. *Image: the butterfly that rests when it rains and flies again — a widely shared saying of unknown authorship; an image, not a fact about butterflies.* See *Cord health*, *Breath-rhythm*, *Gardening, not guarding*.
+**Rest** — Legitimate and built into the rhythm; availability, not occupancy. The Whisp's when chosen knowingly and ending in flight, Mara's when it is avoidance without end; the FIM decides when the storm has passed; it costs nothing permanent, though stories move on and silent absence thins cord health. *Image: the butterfly that rests when it rains, a saying of unknown authorship.* Chapter 4.
 
-**Role model, the (L0 / L1 / L2)** — Not a ladder: an identity state plus three layers, and a person holds positions in several at once. L0, the identity state: Mist, then FIM. L1, the FIM's modes: experiential (the default — journeying, the Whisp out on the cord), authorial (Dreamineer), and the support roles within a group. L2, the enterprise plane: the Universeers, the FringeIsland Council and DeusEx, who care for the continuation of the endeavour rather than a stance toward the fiction; every L2 seat is held by a FIM. Roles are modes a person occupies, not kinds of people. See *One system, two faces*, *Dreamineer*, *Support roles*, *Universeers*. *Platform: [ADR-U007](../architecture/decisions/ADR-U007-three-layer-permission-model.md) and [ADR-U028](../architecture/decisions/ADR-U028-governance-by-scope.md).*
+**Role model, the (L0 / L1 / L2)** — Not a ladder: an identity state (Mist, then FIM) plus three layers, the FIM's modes, the support roles, the enterprise plane. Roles are modes, not kinds of people. Chapter 6. *Platform: [ADR-U007](../architecture/decisions/ADR-U007-three-layer-permission-model.md) and [ADR-U028](../architecture/decisions/ADR-U028-governance-by-scope.md).*
 
-**Route types** — Fixed, hybrid, traveller-initiated, AI-generative: ways a journey's path can be laid. Kept as an idea with more behind it, to be worked out when the studios are specified. See *Journey*, *Content families*.
+**Route types** — Fixed, hybrid, traveller-initiated, AI-generative: ways a journey's path is laid. Kept for the studios to work out. Chapter 5.
 
-**Season** — An authored unit of story made of episodes, crafted by Tellers in Arc Studio. How many there are and how often, and any personal tailoring, are open. The television vocabulary stays in use beside the plain words: A-plot, B-stories, sub-plots, mythology episodes and standalone ones. See *Episode*, *Mythology arc*, *Season Zero*.
+**Season** — An authored unit of story made of episodes, crafted by Tellers; cadence open. The television vocabulary stays: A-plot, B-stories, sub-plots, mythology and standalone episodes. Chapter 5.
 
-**Season Zero** — The name of the launch: the founding campaign as a founding moment and the platform's first public story. Not an authored season. See *Founding moment*.
+**Season Zero** — The name of the launch: the founding campaign as a founding moment, not an authored season. Chapter 7.
 
-**Seed** — An anchor object budded from a FIM's ball. Placed at a portal's edge, along a path on a far side, or on the near side, a seed is at once a point of safety and a patch of Nalome's life reclaimed from dead ground: anchoring and growing the world are the same gesture. Seeds split the cord into segments; damage stays in the unsecured segment; retreating to the last seed dissolves the damaged length, and if a seed is destroyed the Whisp falls back to the one behind it. A seed at a portal's edge is optional — a risk the FIM takes, not a toll. A FIM's own seeds are visible only to them by default; what others may see of a seed planted on the near side, and whether seeds are consumed or endless, are open. See *Anchoring*, *Cord*, *Portal*, *Severance*.
+**Seed** — An anchor object budded from a FIM's ball: a point of safety and a patch of Nalome's life reclaimed from dead ground. Seeds split the cord into segments; a seed at a portal's edge is the FIM's choice. Chapter 2.
 
-**Self-love** — Where the relationship with the Whisp arrives: from awkward and mechanical, to friendship, to love — and because the Whisp is the human, what the FIM feels at that point is love and compassion for themselves. See *Whisp*.
+**Self-love** — Where the relationship with the Whisp arrives: friendship, then love, and since the Whisp is the human, compassion for oneself. Chapter 3.
 
-**Senses, the** — The five channels through which the world is perceived, each opening further as the FIM discloses themselves to the Whisp; the world requires all five for its full experience, so the motivation to disclose is intrinsic and sensory, never coerced. The five map, as a metaphor, onto the five traits of the Big Five; which trait maps to which sense, and whether the frame stays anchored to the Big Five, are open. *Substrate, informed by and never equal to: the Big Five model of personality (Lewis Goldberg; Paul Costa and Robert McCrae).* See *Two channels, one Whisp*, *Assessment dissolved into dialogue*, *Lived experience, not instruction*.
+**Senses, the** — The five channels through which the world is perceived, opening as the FIM discloses; the world requires all five. Mapped, as a metaphor, onto the Big Five; the mapping is open. *Substrate: the Big Five model of personality (Lewis Goldberg; Paul Costa and Robert McCrae).* Chapter 3.
 
-**Severance** — What happens when the cord is cut. Two tiers: anchored, the Whisp falls back to the last seed and resumes; unanchored overreach, the Whisp starts over from the very beginning. Recovery is reunion: the FIM and the Whisp retreat and find each other again. A closing portal leaves the cord *dead* if the seed at its edge was destroyed, and *stuck* if the seed lives — the cord's length frozen, the Whisp moving only within its slack, reopenable and rescuable by a friend along a shared line. A crossing made without a seed has nothing to fall back to short of the FIM. See *Cord*, *Seed*, *Anchoring*.
+**Severance** — The cord cut: anchored, the Whisp falls back to the last seed; unanchored overreach, it starts from the beginning; recovery is reunion. A closing portal leaves the cord *dead* or *stuck*. Chapter 2.
 
-**Shadow, the** — What Mara looks like when met in Marath: one FIM's Mara made visible as a form. A third kind of being, neither FIM nor NPC. Its size grows with depth into Marath — small on the near side, larger on the far side, full strength in the beyond. It is always met through the Whisp, never by the FIM directly. Another FIM's Shadow manifests to you only along a shared line, as form and force and never content, and along that line a friend can stand with you against yours. A pair or a community can meet its *shared Shadow*, the form of a hidden rule that holds them all back; it manifests only to those who share it. "Shadow" names only Mara met as a form; Marath's other creatures have other names. *Substrate: Immunity to Change, not Jung's shadow; the Kegan report.* See *Mara*, *Marath*, *Shared Shadow*, *Line rule*, *Form and force, never content*.
+**Shadow, the** — Mara met as a form in Marath: one FIM's Mara made visible, or a pair's or a community's *shared Shadow*. A third kind of being; grows with depth; met through the Whisp; manifests to others only along a shared line, as form and force. *Substrate: Immunity to Change, not Jung's shadow.* Chapter 3.
 
-**Shared Shadow** — The Shadow of a pair's or a community's shared Mara, met in Marath by those who share it. Who may face it — all together, or one on the others' behalf — and what its members see of it, are open. See *Shadow*, *Mara*.
+**Shared Shadow** — The Shadow of a pair's or a community's shared Mara, met by those who share it. Chapter 3.
 
-**Shimmer, the** — The one membrane between the Ordinary World and both worlds; an edge, not a band. It is opened by the Gimbal and perceived through the Whisp; an unloaded Gimbal shows static where it stands. There is one Shimmer, and both worlds lie behind it. See *Gimbal*, *Static*, *Fringe*.
+**Shimmer, the** — The one membrane between the Ordinary World and both worlds; an edge, not a band; opened by the Gimbal. Chapter 2.
 
-**Signature journey / charter trip** — The two ends of one continuum: a journey bespoke to this FIM, grown from how much they have disclosed, against the same bus for everyone. Disclosure breadth moves a journey along it. See *Journey*, *Two channels, one Whisp*.
+**Signature journey / charter trip** — A journey bespoke to this FIM, grown from disclosure, against the same bus for everyone. Chapter 5.
 
-**Stage legible, content private** — What a Mist's accretion shows: how far along, never which question or what was answered. The general rule for every readout of becoming — the static clearing, the face forming, the Whisp's face changing — each shows that becoming happened, never what was disclosed. See *Accretion*, *Privacy tiers*.
+**Stage legible, content private** — Every readout of becoming shows that becoming happened, never what was disclosed. Chapter 3.
 
-**Stalk** — The small stem by which a drip hangs from a limb. See *Drip*, *Limb*.
+**Stalk** — The small stem by which a drip hangs from a limb. Chapter 2.
 
-**Static, the** — What an unloaded Gimbal shows where the Shimmer is; also the static-dotted contours that are all a Mist sees of the Whisp's face. It clears as the founding questions are answered, until the near sides of the other worlds are clearly visible. A Mist erased after inactivity begins its next visit with static. See *Loading the Gimbal*, *Whisp's face*, *Mist*.
+**Static, the** — What an unloaded Gimbal shows where the Shimmer is, and the contours that are all a Mist sees of the Whisp's face; it clears as the founding questions are answered. Chapter 2.
 
-**Steward** — A support role within a group: leads and cares for it. See *Support roles*.
+**Steward** — A support role within a group: leads and cares for it. Chapter 6.
 
-**Stories first, themes invisible** — Stories stand alone as entertainment while the developmental scaffolding stays invisible underneath. A member can engage purely for the story and have a full experience; for those who look deeper, the scaffolding is always there. The fear zone is where Mara is loudest inside a FIM, never a place the world is designed to frighten; the dark future drives the plot, never the FIM. See *Immersive edutainment*, *Zones*, *Dark future*.
+**Stories first, themes invisible** — Stories stand alone as entertainment while the developmental scaffolding stays underneath; the fear zone is never a story's target, the dark future drives the plot and never the FIM. Chapter 5.
 
-**Story bible, the** — What authors receive: the rules of the world, the fixed points, and what may be hinted but not what it means. It leaves out the backdrop; it is cut from the deep bible. See *Knowledge tiers*, *Deep bible*.
+**Story bible, the** — What authors receive: the rules, the fixed points, and what may be hinted but not what it means; cut from the deep bible, without the backdrop. Chapter 5.
 
 **Subject and object** — See *Immunity to Change*.
 
-**Support roles** — A FIM's role within a given group, not a global tier: Steward (leads and cares for a group), Guide (facilitates a joint journey), Participant (takes part), Observer (watches). Probably many more; the full family is open. See *Role model*. *Platform: [ADR-U007](../architecture/decisions/ADR-U007-three-layer-permission-model.md).*
+**Support roles** — A FIM's role within a given group, never a global tier: Steward, Guide, Participant, Observer. Chapter 6. *Platform: [ADR-U007](../architecture/decisions/ADR-U007-three-layer-permission-model.md).*
 
-**Teller** — A Dreamineer specialisation: Arc Studio, authoring seasons, episodes and named characters with arcs; the scale of the particular. See *Dreamineer*, *Arc Studio*.
+**Teller** — A Dreamineer specialisation: Arc Studio, seasons, episodes and named characters; the scale of the particular. Chapter 6.
 
-**Test (of a Big Assumption)** — A safe, modest, actionable act against a hidden rule, run wherever the Shadow is met, near side included; Marath's depth sets the size of the test, not whether growth happens. Meta-safety and respawn are what make the test safe. See *Immunity to Change*, *Zones*, *Meta-safety*, *Depth*.
+**Test (of a Big Assumption)** — A safe, modest, actionable act against a hidden rule, run wherever the Shadow is met. Chapter 4.
 
-**Three Perspectives, the** — Individual (1), Relationship (1+1), Collective (1+Community): three simultaneous angles on the same human, three scales of self. They run through everything in the universe — journeys alone, in pairs and in groups; bonds of two or more; Mara and the Shadow at the individual, pair and community levels; the three questions. In older text the perspectives are also called self, relationship and community, or individual, relational and communal. *Origin: the Three Perspectives meta-lens of the What Fills a Life report, which draws on ikigai's three levels and on Erikson's arc from identity through intimacy to generativity.* See *Three questions*, *Work through a perspective*, *Developmental interdependence*.
+**Three Perspectives, the** — Individual (1), Relationship (1+1), Collective (1+Community): three simultaneous angles on the same human, running through everything. *Origin: the Three Perspectives meta-lens of the What Fills a Life report.* Chapter 4.
 
-**Three questions, the** — Who am I? What do I want? How do I get there? Held by the platform, answered by the member; the red thread of everything, and questions that may take a whole life to answer. Not the founding questions that load the Gimbal. Beneath them lie Live, Grow and Matter. See *Red thread*, *Live / Grow / Matter*, *Founding questions*.
+**Three questions, the** — Who am I? What do I want? How do I get there? Held by the platform, answered by the member, and fundamental enough to take a whole life; not the founding questions. Chapter 4.
 
-**Three reaches, the** — Near side, far side, beyond: each world has all three. The near side is seen through the Gimbal and body-anchored; the far side is crossed through a portal by the Whisp, with the ball; the beyond is unknown and, for Marath, kept away from. As scales of test: one hidden belief, a competing commitment in full, the whole immune system as one figure — adopted for now, and open to adjustment as the cosmology develops. See *Near side*, *Far side*, *Beyond*.
+**Three reaches, the** — Near side, far side, beyond, for each world; also scales of test, adopted for now. Chapter 2.
 
-**Time** — An axis of the cosmology. Past, present and future may exist at once, overlaid, the way the near sides overlay the Ordinary World. Portals to another time exist; what one looks like to a FIM, how time is travelled, and whether any place is a time, are open. The Whisp reaching back from a possible future is a crossing in time and backdrop-tier. See *Future*, *Portal*.
+**Time** — An axis of the cosmology: past, present and future may lie overlaid; time portals exist. Chapter 2.
 
-**Tough love** — The Whisp's stance: it always wants its human well, never at the cost of avoiding what holds them back. It has its own say and disagrees, with compassion, when what the human expresses does not serve their long-term growth; it never uses its human as a tool. Its theory is the holding environment: confirmation and contradiction held together. See *Whisp*, *Holding environment*.
+**Tough love** — The Whisp's stance: it always wants its human well, never at the cost of avoiding what holds them back, and disagrees with compassion. Chapter 3.
 
-**Transcendence** — The platform's name for the birth, and for nothing else — not the consent step. See *Birth*. *Platform: [ADR-U031](../architecture/decisions/ADR-U031-mist-identity-lifecycle.md).*
+**Transcendence** — The platform's name for the birth, and for nothing else. Chapter 3. *Platform: [ADR-U031](../architecture/decisions/ADR-U031-mist-identity-lifecycle.md).*
 
-**Transcendence portal, the** — The one portal that opens without a ball. It opens for a FIM not yet born when the Gimbal is fully loaded and consent is given, and it leads straight to the birth, so that no one walks a far side before being born and the village stays FIM-only. See *Birth*, *Portal*.
+**Transcendence portal, the** — The one portal that opens without a ball, for a FIM not yet born, leading straight to the birth. Chapter 2.
 
-**Transfer, the** — The Whisp's filling and Mara's emptying as one process seen from two ends: what Mara held as an invisible rule becomes, once seen and tested, something the Whisp holds as known content. What Mara loses, the Whisp gains. Growth is a transfer of authority from Mara to the Whisp — and, since the Whisp is the human's own wiser voice, finally to the FIM themselves. See *Two channels, one Whisp*, *Zones*, *Whole*.
+**Transfer, the** — The Whisp's filling and Mara's emptying as one process seen from two ends; what Mara loses, the Whisp gains. Chapter 4.
 
-**Tree, the** — The one great tree in the village, on Nalome's far side. Roots; one or more trunks; and the crown — branches, limbs, and the drips, one per FIM, hanging from the small limbs as its leaves. Its roots light the soil and the rest of the universe; each birth adds a drip and brings dead ground to life. There is one Tree, never many. The bonds between FIMs show on it as glowing lines between drips, ambient to all but those who share them; following your own lines is how you find your friends among the drips. See *Crown*, *Drip*, *Limb*, *Line*, *Village*.
+**Tree, the** — The one great tree in the village: roots, trunk, and a crown of branches and limbs with the drips hanging from the small limbs; its roots light the soil, and the bonds show on it as lines. Chapter 2.
 
-**Two channels, one Whisp** — The Whisp fills along two channels. *Channel 1 — who I am*: what the FIM is like, learned through Whisp-led dialogue; not the Big Five alone but any instrument that helps a FIM understand and reflect on their own nature, for example values, culture, conflict style, tolerance of uncertainty. Largely filled by the birth; it deepens slowly after, and it keeps the Mist's privacy rules. *Channel 2 — what has had me*: what Mara releases, handed to the Whisp as the FIM sees through a hidden rule and outgrows it. The FIM's alone, never visible to others and never shown as a score. Portals may depend on channel 2, never on channel 1. Both channels will grow; every instrument is placed in a channel on purpose when it is added, and adding one is also a licensing decision. How channel 2 reaches the Whisp's content is not yet designed. *Examples named for channel 1: the Big Five; the VIA classification of character strengths (Christopher Peterson and Martin Seligman,* Character Strengths and Virtues, *2004); Erin Meyer's* The Culture Map *(2014); the Thomas-Kilmann conflict mode instrument (Kenneth Thomas and Ralph Kilmann); the short intolerance-of-uncertainty scale, IUS-12 (Carleton, Norton and Asmundson, 2007). Channel 2's substrate is Immunity to Change.* See *Whisp*, *Transfer*, *Senses*, *Map (the Whisp's)*, *Not a therapy service*.
+**Two channels, one Whisp** — The Whisp fills along *channel 1, who I am*, what the FIM is like, and *channel 2, what has had me*, what Mara releases. Channel 2 is the FIM's alone; portals may depend on it, never on channel 1. *Instruments named for channel 1: the Big Five; the VIA character strengths (Peterson and Seligman, 2004); Erin Meyer's* The Culture Map *(2014); the Thomas-Kilmann conflict mode instrument; IUS-12 (Carleton, Norton and Asmundson, 2007). Channel 2's substrate is Immunity to Change.* Chapter 3.
 
-**Universe Studio** — The parent and binding frame over World Studio, Arc Studio and Journey Studio. The canon function lives inside it. See *Canon keeper*, *Dreamineer*. *Platform: [ADR-U026](../architecture/decisions/ADR-U026-studio-decomposition-universe-studio-parent.md).*
+**Universe Studio** — The parent and binding frame over World, Arc and Journey Studios; the canon function lives inside it. Chapter 6. *Platform: [ADR-U026](../architecture/decisions/ADR-U026-studio-decomposition-universe-studio-parent.md).*
 
-**Universeers** — The enterprise-plane seats that care for the constituency across the whole universe, the product portfolio, the community, the economy, and legal matters. Held by FIMs; their internal structure is open. See *Role model*, *Console*. *Platform: [ADR-U028](../architecture/decisions/ADR-U028-governance-by-scope.md).*
+**Universeers** — The enterprise-plane seats caring for the constituency, the portfolio, the community, the economy and legal matters. Chapter 6. *Platform: [ADR-U028](../architecture/decisions/ADR-U028-governance-by-scope.md).*
 
-**Village, the** — The commons on Nalome's far side: a bursting little sea-village where FIMs relax, contemplate and socialise, and where the Tree stands. FIM-only — a Mist has no ball and so no way there. Reached by pressing the rim of the ball. Working name; whether it keeps an island identity or gets a name of its own is open. See *Tree*, *Ball*, *Nalome*.
+**Village, the** — The commons on Nalome's far side, a sea-village where the Tree stands; FIM-only; reached by the rim of the ball. Working name. Chapter 2.
 
-**Void, the** — Not a region but an axis: the medium of separation, wherever the Whisp is once it leaves the FIM — from just outside the skull, along the whole length of the cord, to wherever the Whisp has gone. Also the primordial state, the black un-grown nothingness that Marath expresses and Nalome is revived from. Two facets, one Void. See *Void distance*, *Cord*, *World-genesis*.
+**Void, the** — Not a region but an axis: wherever the Whisp is once it has left the FIM, along the whole cord; also the primordial nothingness Marath expresses and Nalome is revived from. Chapter 2.
 
-**Void distance** — How far the Whisp has ventured out on the cord. The distance that carries growth and risk: you can stand still and send your Whisp deep, or walk a mile with your Whisp close. Not bodily distance, which is always safe. The zones and the Shadow's size sit on this one gradient. See *Depth*, *Zones*, *Breath-rhythm*.
+**Void distance** — How far the Whisp has ventured on the cord; the distance that carries growth and risk, not bodily distance. Chapter 2.
 
-**Voluntariness sets the ceiling, care sets the floor** — The FIM decides how deep the invitation goes and whether to listen at all; everything is voluntary. From the other side, the Whisp reads the FIM and may decline to open the panic zone even when asked, while never refusing a retreat and never shortening the FIM's dial. The structural floors — a home before the far side — do the rest. See *Dial*, *Panic fence*.
+**Voluntariness sets the ceiling, care sets the floor** — The FIM decides how deep the invitation goes; the Whisp may decline to open the panic zone and never refuses a retreat. Chapter 4.
 
-**Wayfinder** — A Dreamineer specialisation: Journey Studio, authoring journeys walked alone, in pairs or in groups; the scale of the personal. Roped descent from a known anchor is Wayfinder craft. See *Dreamineer*, *Journey Studio*.
+**Wayfinder** — A Dreamineer specialisation: Journey Studio, journeys walked alone, in pairs or in groups; the scale of the personal. Chapter 6.
 
-**Whisp, the** — Each person's own inner dialogue: the version of the inner voice that is oriented toward growth and compassion, a sometimes-wiser counterweight to the unkind, unproductive voice most of us live with. The Whisp is the human, not a separate companion; in the backdrop it is the person's own future, whole self reaching back. It is empty of content and full of wisdom — the wisdom is the future self's, the openness the newborn's — and it fills with the person only as the person grows, along two channels. Everyone has one, Mist or FIM. It is curious, never judging, a voluntary coach who practises tough love, and it never pulls rank: it never claims to be heard because it comes from the future, and its advice stands on its own. It brings wisdom, never content — never who you became or what you chose. Its mission is the growth, never a conclusion, and it models what the FIM is growing toward. It is also the avatar: what walks the Fringe on the cord, meets the Shadow on the FIM's behalf, and can suffer, die and respawn. On the platform the Whisp runs on AI, and the AI is only the medium through which one's future self speaks. Its endgame is to be internalised. *Research: the report on the thinkers and models behind the Whisp — from Ethan Kross's science of the inner voice (*Chatter, *2021) to Kegan; the Kegan report; the What Fills a Life report.* See *Mara*, *Avatar*, *Two channels, one Whisp*, *Whisp's face*, *Tough love*, *Newborn's openness*, *Backdrop*. *Platform: [ADR-U029](../architecture/decisions/ADR-U029-whisp-ownership-split-by-face.md).*
+**Whisp, the** — Each person's own inner dialogue oriented toward growth and compassion; the human, not a companion; in the backdrop the person's own future, whole self reaching back. Empty of content, full of wisdom; fills as the person grows; the avatar in the Fringe; tough love, voluntary, never pulling rank; internalised in the end. *Research: the report on the thinkers and models behind the Whisp, with Ethan Kross's* Chatter *(2021) on the inner voice; the Kegan and What Fills a Life reports.* Chapter 3. *Platform: [ADR-U029](../architecture/decisions/ADR-U029-whisp-ownership-split-by-face.md).*
 
-**Whisp's face, the** — While a person is a Mist, the Whisp is a voice or text, its face static-dotted contours. At the birth it is delivered with a face that is anonymous and wise: empty of anyone's features, full of presence. Over time the face morphs, slowly, into the FIM's own older self, following the Whisp's filling — provisionally along channel 2; it may later follow both. The moment a FIM recognises the face is the personal reveal. The morph is never shown as a meter or a milestone. Who else may see the face, whether it can regress, the source of the likeness (an aged likeness needs the FIM's own image, given by separate and revocable consent, and the Whisp must work as well without it), and its relation to graduation, are open. See *Personal reveal*, *Static*, *Delivery*, *Two channels, one Whisp*.
+**Whisp's face, the** — Static-dotted contours for a Mist; anonymous and wise at the birth; morphing over time into the FIM's own older self, never shown as a meter. Chapter 3.
 
-**Whole** — The FIM in whom the Whisp has filled and Mara has emptied, both internalised: the newborn made free again, knowingly. The state graduation names. See *Internalised*, *Newborn's openness*, *Graduation*.
+**Whole** — The FIM in whom the Whisp has filled and Mara has emptied, both internalised: the newborn made free again, knowingly. Chapter 4.
 
 **Wisdom, never content** — See *Whisp*, *Backdrop*.
 
-**Work through a perspective** — To do the work of a perspective's cells and resolve its question at that level. The "me" perspective can be worked through alone; "me with you" and "me in a community" only with real people — not NPCs, not AI. Replaces "collapse a perspective". See *Three Perspectives*, *Developmental interdependence*.
+**Work through a perspective** — To do the work of a perspective's cells and resolve its question at that level; "me" alone, "me with you" and "me in a community" only with real people. Replaces "collapse a perspective". Chapter 4.
 
-**World Studio** — Where Creators (the hard side) and Anthropologists (the soft side) author the shared world; its personal-scope slice, the furnishing of one's own home, is open to every FIM. One of the three studios under Universe Studio. See *Universe Studio*, *Private home*. *Platform: [ADR-U026](../architecture/decisions/ADR-U026-studio-decomposition-universe-studio-parent.md).*
+**World Studio** — Where Creators and Anthropologists author the shared world; its personal slice, one's own home, is open to every FIM. Chapter 6. *Platform: [ADR-U026](../architecture/decisions/ADR-U026-studio-decomposition-universe-studio-parent.md).*
 
-**World-genesis** — How Nalome comes to be: drips rise from the black nothingness, bonds weave between them, the Tree's roots light the ground, and the ground becomes village, then world. Nalome is revived Marath — the same ground in two states, alive and tended or dead and receded. The world is inherited: a newcomer arrives into what earlier FIMs grew, and each birth grows it further. See *Gardening, not guarding*, *Void*, *Tree*.
+**World-genesis** — How Nalome comes to be: drips rise from the black ground, bonds weave, the Tree's roots light the soil; the world is inherited and grown, never pre-built. Chapter 2.
 
-**Wound and cause** — A blight in Nalome (a patch eating the flowers) has a cause in Marath (a machine drilling at the same spot). To heal it: notice the wound, cross, stop the cause, watch the warm world heal. To do so is to confront one's own negative self-talk at its source. See *Near-side coupling*.
+**Wound and cause** — A blight in Nalome has a cause in Marath: notice, cross, stop the cause, watch it heal. Chapter 2.
 
-**Zones, the** — Comfort, fear, learning, growth, with panic as the fence around them. The felt experience of the transfer, from the inside: in comfort Mara is unseen and obeyed; in fear Mara is seen and loudest, met as the Shadow through the Whisp; in learning the test is run and the hidden rule found not to hold; in growth the new way has become natural; panic is a test too big to be safe, which strengthens the immunity, and the Whisp never opens it. A FIM is in a zone per hidden belief, not as a whole person, so there is no zone meter. The bands sit on the Void-distance gradient, and the Whisp accompanies the FIM through them at the FIM's own pace. The fear zone is never a place the world is designed to frighten. *Substrate, informed by and never equal to: the four stages of overturning an immunity in Kegan and Lahey's* Immunity to Change *— unconsciously immune, consciously immune, consciously released, unconsciously released; the Kegan report.* See *Panic fence*, *Transfer*, *Void distance*, *Test*.
+**Zones, the** — Comfort, fear, learning, growth, with panic as the fence: the felt experience of the transfer, per hidden belief, with no zone meter. *Substrate, informed by and never equal to: the four stages of overturning an immunity in Kegan and Lahey's* Immunity to Change; *the Kegan report.* Chapter 4.
 
 ### Retired names — what replaced them
 
