@@ -2,8 +2,8 @@
 
 > **SUPERSEDED-MODEL NOTICE (2026-06-10, reconciliation Session B).** This is a temporal
 > planning record, preserved as written. The sibling-studio framing it describes has since
-> been superseded by the canonical cores and ADRs: see
-> `docs/fringeisland-thinking/bible--fringeisland-universe.md`, `docs/fringeisland-thinking/bible--fringeisland-universe.md`,
+> been superseded by the canonical cores (now the Universe Bible) and ADRs: see
+> `docs/fringeisland-thinking/bible--fringeisland-universe.md`,
 > ADR-U025 (products as equipment profiles; the Game is depth), and ADR-U026 (Universe Studio
 > as parent; World Studio). Where this file conflicts with those, they win.
 
