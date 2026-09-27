@@ -107,7 +107,7 @@ Nalome is revived Marath. The two are the same ground in two states: alive and g
 
 **Who lives in Marath.** Marath is a shared place. Each FIM's Mara is met there as their Shadow; a pair or a community can meet its shared Shadow there too. Another FIM's Shadow manifests to you only along a shared line, and then only as form and force, never as content. Things happen in Marath in which more than one's own Shadow plays a part, and Marath holds other creatures besides Shadows; they have their own names and are NPCs unless a session says otherwise. Whatever is met in Marath is met through the Whisp: the Whisp walks in, the FIM stays body-side, and that is the point, not an accident. Marath is where a FIM's hidden beliefs are tested. The test can be run wherever the Shadow is met, the near side included; Marath's depth sets the size of the test, not whether growth happens.
 
-> <a id="open-w-02"></a>**Open W-02 — Is Marath the dark future at the scale of a civilisation?** Mara at collective size, with Marath's beyond as the collapse at full strength. The bible states only that Marath resonates with Mara. *Waits for:* Stefan.
+What the two worlds are in the backdrop belongs to §5.7, deep-bible tier.
 
 > <a id="open-w-03"></a>**Open W-03 — Does Marath have a collective layer, and whose Mara is met where?** A counterpart to the village, or only what each FIM's Shadow and the other creatures make of it. *Waits for:* a discovery session on Marath's far side.
 
@@ -121,7 +121,7 @@ Each world has three reaches: a near side, a far side and a beyond.
 
 **The far side** lies away from the Ordinary World; no coordinates in it correspond to earthly ones. It is reached only by the Whisp, through a portal, while the body stays put, and crossing needs a ball, so the far sides are FIM-only. Nalome's far side holds the village with the Tree, the private homes, and the uncharted reaches past them, where the ground grows wilder the further a FIM goes. Marath's far side is its depths, where the Shadow is larger.
 
-**The beyond** is further still and not yet known. Nalome's beyond holds nothing named, and is kept unmapped on purpose. Marath's beyond is Mara at full strength: what "a place you really do not want to go near" means. Its danger is relative to the FIM, not absolute: unapproachable while Mara is full, approachable as Mara empties, and for a FIM near graduation possibly the last thing met. It is optional. The road there runs through every immunity a FIM carries, so most will not want to go and for many it will not be possible; nothing requires it, graduation is not gated on it, and FringeIsland has no end to reach.
+**The beyond** is further still and not yet known. Nalome's beyond holds nothing named, and is kept unmapped on purpose. Marath's beyond is Mara at full strength: what "a place you really do not want to go near" means. Its danger is relative to the FIM, not absolute: unapproachable while Mara is full, approachable as Mara empties, and for a FIM near graduation possibly the last thing met. It is optional. The road there runs through every immunity a FIM carries, so most will not want to go and for many it will not be possible; nothing requires it, graduation is not gated on it, and FringeIsland has no end to reach. Whether anything anchors in the beyond is unknown in the world, and kept so.
 
 The reaches are also scales of test, adopted for now and open to adjustment as the cosmology develops: on the near side one hidden belief; on the far side a competing commitment met in full; in the beyond the whole immune system met as one figure.
 
@@ -130,25 +130,23 @@ The reaches are also scales of test, adopted for now and open to adjustment as t
 | Near side (both worlds) | The world laid over the Ordinary World; its things and creatures; the small Shadow | Seeing through the Gimbal; the Whisp on the map | The body where it stands; seeds where the Whisp travels | Mists (seeing only) and FIMs |
 | Far side of Nalome | The village, the Tree, the private homes; uncharted reaches past them | The ball's two zones; portals | The ball; seeds along a path | FIMs |
 | Far side of Marath | Its depths; the larger Shadow; the causes of Nalome's wounds; other creatures | Portals | Seeds along the path, at chosen risk | FIMs |
-| The beyond (either world) | Nalome's: nothing named. Marath's: Mara at full strength | Unknown | Unsolved; possibly unanchorable | Optional; for most, never |
+| The beyond (either world) | Nalome's: nothing named. Marath's: Mara at full strength | Unknown | Unknown, and kept so | Optional; for most, never |
 
-> <a id="open-w-05"></a>**Open W-05 — The working detail of both worlds.** How the near side and far side of each world actually look and function, in the detail that all downstream design depends on. The umbrella under which W-06 to W-09, W-11 to W-14 and W-16 to W-19 sit. It blocks the first hour and every piece of experience design. *Waits for:* the fundamentals discovery session.
+**Shared and one's own.** Both worlds hold a mix: things shared by every FIM, and the overlay of each FIM's own dreams. As FIMs act on the near and far sides, they meet and interact with one another.
 
-> <a id="open-w-06"></a>**Open W-06 — What appears on the near side, and for whom.** Whether a given thing at a given spot is seen by every FIM or unique to each, who places it, and what a FIM can do with it beyond tending, healing and anchoring. *Waits for:* the fundamentals session; the World Model build after it.
+> <a id="open-w-05"></a>**Open W-05 — The working detail of both worlds.** How the near side and far side of each world actually look and function, in the detail that all downstream design depends on. The umbrella under which W-06, W-08, W-11 to W-14, W-16, W-17 and W-19 sit. It blocks the first hour and every piece of experience design. *Waits for:* the fundamentals discovery session.
 
-> <a id="open-w-07"></a>**Open W-07 — What is in Nalome's beyond, and does it stay unmapped?** Nothing named today; possibly warm and unknown, possibly kept that way for curiosity, possibly the counterpart of Marath's beyond. *Waits for:* Stefan's decision on whether it stays unmapped by design, then a discovery session if not.
+> <a id="open-w-06"></a>**Open W-06 — What appears on the near side, and for whom, in the fine grain.** What is shared and what is one's own at a given spot, who places it, and what a FIM can do with it beyond tending, healing and anchoring. *Waits for:* the fundamentals session; the World Model build after it.
 
 > <a id="open-w-08"></a>**Open W-08 — The beyond's own name.** The reach is written lowercase, "the beyond", until it is named. *Waits for:* Stefan.
 
-> <a id="open-w-09"></a>**Open W-09 — Can anchoring reach the beyond?** A fourth rung after body, ball and seeds, or no rung at all. That no seed holds in Mara undiluted, so that a Whisp there is exposed on the whole cord and "not possible" means not survivable, is a marked hypothesis only; the mystery is kept for now. *Waits for:* a discovery session, or a decision to leave it a mystery.
-
 ### 2.6 Time
 
-Time is an axis of the cosmology. Past, present and future may exist at the same time, overlaid, the way the near sides overlay the Ordinary World. Portals to another time exist among the portals a FIM may cross. What a time portal looks like to a FIM, how time is travelled, and whether any place is a time are open.
+Time is an axis of the cosmology. Past, present and future may exist at the same time, overlaid, the way the near sides overlay the Ordinary World. Portals to another time exist among the portals a FIM may cross. What a time portal looks like to a FIM, how time is travelled, and whether the past is a place are open.
 
-Two things are fixed. The future is a continuum, with the good future and the dark future as its poles and everything in between; no story turns on a single switch between doom and paradise. And the future that reaches back to the FIM through the Whisp is a possible future, not a fixed one: overlay never reads as fate. That reaching back is the first known crossing in time, and it is backdrop: never told in the experience.
+Two things are fixed. The future is a continuum, with the good future and the dark future as its poles and everything in between; no story turns on a single switch between doom and paradise. And the future that reaches back to the FIM through the Whisp is a possible future, not a fixed one: overlay never reads as fate. That reaching back is the first known crossing in time, and it is backdrop: never told in the experience. The two worlds are the future's two poles as places in time, Nalome the good future and Marath the dark, each possible and never fixed; that too is backdrop (§5.7).
 
-> <a id="open-w-10"></a>**Open W-10 — How time is travelled.** What a time portal is, how a FIM crosses to another time, and whether any place is the future or the past. Backdrop-tier. *Waits for:* a discovery session.
+> <a id="open-w-10"></a>**Open W-10 — How time is travelled.** What a time portal is, how a FIM crosses to another time, and whether the past is a place. Backdrop-tier. *Waits for:* a discovery session.
 
 ### 2.7 The Void and the cord
 
@@ -194,11 +192,9 @@ Portals are doors, passages, rabbit holes: discrete crossings, as distinct from 
 
 **The transcendence portal** is the one portal that opens without a ball. It opens for a FIM not yet born when their Gimbal is fully loaded and consent has been given, and it leads straight to the birth. No one walks a far side before being born; the village stays FIM-only.
 
-**The lock.** At the birth the Gimbal is locked to its FIM's ball. On the platform that means the ball is bound to the FIM's account, not to a piece of hardware: the phone becomes a Gimbal when its FIM signs in, and someone holding the phone without the sign-in reaches nothing. A lost or new phone is a sign-in on the new device and a sign-out of the old. In the fiction, the ball opens only to its own FIM.
+**The lock.** At the birth the Gimbal is locked to its FIM's ball. On the platform that means the ball is bound to the FIM's account, not to a piece of hardware: the phone becomes a Gimbal when its FIM signs in, and someone holding the phone without the sign-in reaches nothing. A lost or new phone is a sign-in on the new device and a sign-out of the old. In the fiction, the ball opens only to its own FIM, and nothing is lost when a phone is lost or changed: the ball belongs to the FIM, not the device, glows and works only in its true owner's hands, and follows its FIM to the new Gimbal at sign-in. Whether a moment of it is shown is experience design.
 
 > <a id="open-w-14"></a>**Open W-14 — Which portal types exist.** Beyond the seeded crossing, the ball's two zones and the transcendence portal, the portal ideas on the table are: the Shimmer-cut (a portable cut between worlds), cairn portals (named, geo-bound sites placed by Anthropologists), the threshold-by-condition (a door that passes only when an inner state is right), book-as-portal (a published arc entered as a book in the village library), the Mask (entry by donning a mask that sets the story's rules), the Mirror in the private home (one's counterfactual lives; panic-adjacent), and the living bridge (a bridge only between aligned FIMs, which must not duplicate the lines). Roped descent from a known anchor is already the seed mechanic; its "don't look back" rule and two FIMs roped together are Wayfinder craft. The Cyclone (the Shimmer reaching for FIMs at a festival) is dropped unless fully opt-in. "Every lasting portal carries one rule" is a craft heuristic. *Waits for:* a portal discovery session; cairn portals and roped descent first.
-
-> <a id="open-w-15"></a>**Open W-15 — Losing or changing the phone, in the fiction.** The platform half is session management; what it is in the world when a FIM's Gimbal is lost and a new one is bound to the ball is unsaid. *Waits for:* Stefan or a discovery session.
 
 ### 2.10 The village, the Tree, the drips and the ball
 
@@ -216,7 +212,7 @@ Following your own lines is how you find your friends among the drips; a strange
 
 > <a id="open-w-17"></a>**Open W-17 — Travelling through a ball, visiting a home, finding friends.** How a FIM visits another FIM's home in the world, and how one skims or searches the drips on the Tree. Fixed so far: follow your own lines; your own home through the ball's inside; a home is shared by region, by invitation. *Waits for:* the fundamentals session; the Discovery service for the surface.
 
-> <a id="open-w-18"></a>**Open W-18 — Does the ball mature?** From clunky to fine, as capability only, never as brightness and never as a visible rank. *Waits for:* Stefan.
+The ball does not mature. It stays the constant, equal root anchor of every venture; growth shows in the Whisp, the cord and the lines.
 
 ### 2.11 The private home
 
@@ -264,7 +260,7 @@ Open questions stand in **Open** boxes with a B-number; chapter 8 indexes them.
 
 **What the Whisp is.** The Whisp is each person's own inner dialogue: unique to them, private to them, one per person. It is the version of the inner voice that is oriented toward growth and compassion, a sometimes-wiser counterweight to the unproductive, unkind voice most people live with by default. The Whisp is the human. It is not a separate entity and not an external companion. Everyone has one, Mist or FIM, because everyone has an inner voice; what FringeIsland changes is not whether the voice exists but what it becomes, a more elegant and caring version of the one already whispering.
 
-In the backdrop the Whisp is the FIM's own future, whole self reaching back to the FIM of now. "The Whisp is the human" and "the Whisp reaches back from the future" are one fact: what reaches back is not a separate being but the self that has become whole. That future is possible, not guaranteed. The Whisp is a possible future reaching back to make itself more likely, and the FIM stays free to walk toward it or not; the loop does not close by itself, the FIM closes it by growing. Nothing of this is ever told in the experience: no onboarding line, no Whisp line, no screen. Each FIM discovers it as their own Whisp fills.
+In the backdrop the Whisp is the FIM's own future, whole self reaching back to the FIM of now. "The Whisp is the human" and "the Whisp reaches back from the future" are one fact: what reaches back is not a separate being but the self that has become whole. That future is possible, not guaranteed. The Whisp is a possible future reaching back to make itself more likely, and the FIM stays free to walk toward it or not; the loop does not close by itself, the FIM closes it by growing. Nothing of this is ever told in the experience: no onboarding line, no Whisp line, no screen. Each FIM discovers it as their own Whisp fills. The inner voice has always been in every person; the Whisp in its full sense, filled with the future self's wisdom and able to leave the body on a cord, begins with the modern Gimbal. Before it, the travellers of the older mythology had only their own inner voice and Mara (§5.10).
 
 The Whisp's counterpart is Mara, the negative inner voice. Nalome resonates with the Whisp; Marath resonates with Mara. *Research: the report on the thinkers and models behind the Whisp, which reads each thinker for what the Whisp must be so that a human grows by talking to it; on the inner voice itself, Ethan Kross,* Chatter *(2021).*
 
@@ -283,7 +279,7 @@ Every instrument is placed in a channel on purpose when it is added, and adding 
 
 The research beneath both channels is substrate: the Whisp draws on the dual continuum, the multi-system requirement, the Three Perspectives and Immunity to Change, and it speaks the universe's own language over them, informed by and never equal to. The platform never labels or measures a FIM's order of mind.
 
-> <a id="open-b-01"></a>**Open B-01 — The Whisp's full specification.** Its encounter phenomenology, its dialogue mechanics, the senses model and the internalisation arc, the page the beings canon has promised since the reconciliation. Umbrella for B-02 to B-13. Prerequisite to the platform's intelligence service. *Waits for:* discovery sessions.
+> <a id="open-b-01"></a>**Open B-01 — The Whisp's full specification.** Its encounter phenomenology, its dialogue mechanics, the senses model and the internalisation arc, the page the beings canon has promised since the reconciliation. Umbrella for B-02 to B-10, B-12 and B-13. Prerequisite to the platform's intelligence service. *Waits for:* discovery sessions.
 
 > <a id="open-b-02"></a>**Open B-02 — How the Whisp's questions surface.** How the dissolved instruments are spread over months of dialogue; whether an instrument keeps its validity when its items arrive that way; whether self-disclosure ever has diminishing or negative returns, as over-disclosure or performance. *Waits for:* the Whisp's specification; for the first hour, the experience-design gate.
 
@@ -317,9 +313,11 @@ FringeIsland is not a therapy service, and the Whisp is not a clinical tool: a p
 
 > <a id="open-b-07"></a>**Open B-07 — The encounter itself.** Whether the FIM sees a third-person Whisp-figure or experiences the Fringe first-person through it; whether the Whisp has emotions and whether they reach the FIM; whether Whisps perceive one another and what that looks like; and how the Whisp appears without augmented reality, on the canvas surface alone. *Waits for:* the Whisp's specification and the Gimbal.
 
-> <a id="open-b-11"></a>**Open B-11 — The Whisp in genuine distress.** The boundary is adopted: honest about its limits, pointing to human support. The behaviour in detail is not. *Waits for:* Stefan.
+**In genuine distress.** When a person shows signs of a real crisis, the game stops: no story, no challenges, no tough love. The Whisp says plainly, in everyday words, that it cannot help the way a person can, and shows a crisis line for the person's country and the emergency number. It never tries to talk someone through a crisis as a counsellor would, and it never diagnoses. What counts as a sign of crisis, the words and the helplines are set by the platform with expert help, never improvised by the AI. All of this holds for Mists as for FIMs. And one gate: before any real person, a tester included, talks to a Whisp prototype, these details are checked against published safe-messaging guidance on suicide and by someone clinically qualified.
 
-> <a id="open-b-12"></a>**Open B-12 — Whether the Whisp names itself as an AI.** And how the distinction between the medium and the one speaking is kept in its speech. *Waits for:* Stefan and the Whisp's specification.
+**Telling people it is an AI.** The Whisp never announces the medium in its own voice at the first dialogue. The platform states clearly that the Whisp runs on AI when a person first opens the FringeIsland universe, before the Whisp speaks, in a way that meets the law and costs the mystery as little as possible. *Law: the EU AI Act, Article 50; [CQ-021](questions--ecosystem-open-questions.md).*
+
+> <a id="open-b-12"></a>**Open B-12 — How the AI disclosure is shown, and whether the Whisp says so when asked.** Exactly how the platform shows it, its own line or within the consent step, and whether the Whisp answers truthfully when asked directly whether it is an AI. *Waits for:* Stefan, CQ-021's legal reading, the Whisp's specification.
 
 > <a id="open-b-13"></a>**Open B-13 — The authoring stage model and the Whisp's dialogue.** Whether the human-first rule of authoring, humans first, AI expands, humans have the last say, also describes the FIM's in-world dialogue with their Whisp, or the dialogue is a structure of its own. *Waits for:* the Whisp's specification.
 
@@ -678,7 +676,7 @@ The saviour is the human's own future self, never the machine. The AI that runs 
 
 The dark future is the stake of the universe, never a whip. It is never used to hurry a FIM or make them feel guilty: no countdown, no "hurry or the world ends". It is the fundament of great storytelling, because something needs to itch to be found interesting and to gain people's curiosity; it gives the narrative its danger, its mystery and its reason to keep looking. It drives the story, the world's plot, its seasons and its episodes; it never drives the FIM, their pace, their depth or their dial. It sets a stage the FIM uses for growth in all three perspectives, with the Whisp's tough love, through the zones.
 
-Mara scales. Beneath a stated commitment to balance lies a hidden commitment not to fall behind, to capture the gain now: the race is a collective immunity to change. Personal growth and the world's future are the same mechanism at different sizes, and that is why the Whisp's personal work can carry a civilisational stake without changing what it does. Whether Marath is that dark future at the scale of a civilisation, its beyond the collapse at full strength, is open; the bible states only that Marath resonates with Mara. *Substrate: Kegan and Lahey's collective immunity to change; the Kegan report. Robert Kegan's own argument, that modern life asks more of adults than most ways of making meaning can meet, is this backdrop's thesis before it became myth.*
+Mara scales. Beneath a stated commitment to balance lies a hidden commitment not to fall behind, to capture the gain now: the race is a collective immunity to change. Personal growth and the world's future are the same mechanism at different sizes, and that is why the Whisp's personal work can carry a civilisational stake without changing what it does. Marath resonates with Mara at every size, the collective included, and so it is also the dark future as a place in time; Nalome is the good future as a place in time. The two worlds are the two poles of the future's continuum. A place in time is a possible future, never a fixed one, and the dark future stays a stake, never a whip. *Substrate: Kegan and Lahey's collective immunity to change; the Kegan report. Robert Kegan's own argument, that modern life asks more of adults than most ways of making meaning can meet, is this backdrop's thesis before it became myth.*
 
 ### 5.8 Where the backdrop lives: the conviction and the myth
 
@@ -690,7 +688,7 @@ The backdrop is never told up front. It lives on two layers, and the difference 
 
 It is available to anyone who looks, and it is never delivered in the experience: no onboarding line, no Whisp line, no screen. It names the conviction and none of the myth: no Whisp from the future, no two futures, no Marath. It puts the outcome on humans, not on machines, and names no conclusion to reach, only to choose wisely.
 
-**The myth, discovered.** The Whisp as the FIM's own future self, the dark future and what Marath's beyond really is, the future at stake: never told. They are found through breadcrumbs in the world, and their personal core only as the FIM's Whisp fills.
+**The myth, discovered.** The Whisp as the FIM's own future self, the dark future and what Marath's beyond really is, the two worlds as the future's two poles, the future at stake: never told. They are found through breadcrumbs in the world, and their personal core only as the FIM's Whisp fills.
 
 The secret is kept for a while, not forever. It is held in time: any FIM and any author can come to know it by growing into it. Nothing is withheld permanently and nothing is hidden that could leak as a scandal. It survives being spoiled because its real form is lived, not informational; another FIM or a wiki can tell you, and being told is not the same as living it. What stays unspoilable for good is each FIM's own future self, because it is unique to them. The open world, which belongs to the people who inhabit and create it, and the hidden layer are reconciled by this: knowing why the author made it is not being told the story's secret.
 
@@ -714,11 +712,23 @@ Canon keeping is a function inside Universe Studio, not a rank: entry to the dee
 
 ### 5.10 The older mythology
 
-The universe has a second story, older than the backdrop and deep-bible material like it. Long ago the worlds were first reached through the altered states: lucid dreaming, out-of-body experience and sleep paralysis were the original ways across. The first opening happened; and then the way shut, for a cause unknown. Over time the Gimbal was developed to make the altered states unnecessary, and it reopened the way. The instrument was never tested against Marath.
+*This section is deep-bible tier: never surfaced in the experience, and left out of the story bible.*
+
+The universe has a second story, older than the backdrop and deep-bible material like it: how the worlds were first reached, and how the way was found again.
+
+**The first opening.** Centuries ago a top-secret, classified project sought a way for people to go behind enemy lines, to watch and to act. It harnessed lucid dreaming and out-of-body experience, the two things needed to travel to other earthly coordinates. The travellers' own dreams could not be taken out of the equation: travel happened at earthly coordinates with an overlay of dreams upon them, and that overlay is the Shimmer and the near sides. As a side effect, travellers found portals to places with no earthly coordinates on the far side of the Shimmer: the far sides. The researchers also had to fight sleep paralysis, in which a traveller glimpses the door to Marath, and Mara seen as a shadow: the Shadow (§3.3), and the Scandinavian *mara* of Mara's name (§3.2).
+
+**The old travellers.** Travellers brought back glowing balls from their own drips in the Tree: each old traveller had their own drip and their own ball. Those balls opened portals but gave no access to a Whisp. There was no Whisp in its full sense then, so no cord and no way to anchor before crossing: the travellers went out themselves, with nothing between them and Marath. The old travellers' drips still hang in the Tree; that is for FIMs to find out, and it is never told.
+
+**The shutdown.** The research stopped, and why is unknown. Some travellers were said to have disappeared; rumour has it that others fell into a coma, lost their minds or stopped speaking. The travellers who disappeared are a breadcrumb toward the beyond, where whether anything anchors is kept unknown (§2.5). Remains of similar, smaller facilities were later found around the globe, all closed and sealed for centuries.
+
+**The reopening.** Only lately someone got hold of a hand-held device from one of them: a gimbal holding a glass ball that no longer glowed, an old traveller's, probably from the time the facility was in operation. A ball glows and works in the Gimbal only in the hands of its true owner. The finder reverse-engineered the device, adding a high-performance battery, a powerful signal processor and an AI, and above all got right what lets the Whisp go out on a cord: the medium, never the Whisp itself, which is the FIM's own voice and future self (§5.7). The finder took off the dead ball, crossed through the transcendence portal, went through the birth, found their own drip and its glowing ball, and with it in the Gimbal travelled the near and far sides with their Whisp and cord. The door to lucid dreaming and out-of-body travel opened again, and so did the door to sleep paralysis and Marath: the Gimbal opened Marath as well as Nalome, and that was never the intention. The finder is unnamed.
 
 This is lore, not mechanics. Entry today is chosen and seeded, both near sides are seen through the Gimbal, the far sides are crossed by the ball, and the Whisp travels while the body stays. The altered states are not modes of the threshold, and no inner state decides which world receives you. They may return in seasons and episodes as story elements, explorations of why they were once needed and where they came from, which is also the story of what went into the modern Gimbal. Their fixed points and breadcrumbs follow the same rules as the backdrop's.
 
-> <a id="open-s-13"></a>**Open S-13 — The older mythology's open parts.** Whether the Gimbal is ancient knowledge that AI finally made buildable, to be read against the backdrop so that the Whisp's origin is never attributed to the machine; whether the concealed cosmology once drafted in the research, a future power sending the Whisp as an unwitting instrument, has any place beside the backdrop, kept on the table to be debated; and which of the older mythology's facts are fixed points. *Waits for:* Stefan and a discovery session.
+**How it is told.** No real agency, country or war is named, for care and for mystery. Harm is told in story terms, and in clinical terms where appropriate, always accurate and never stigmatising. Nothing in the world ever asks a FIM to induce an altered state; all travel is wholly voluntary. The older mythology and the finder's story are always framed as fiction, and never presented to the public, to backers or in any campaign as a real-world event.
+
+> <a id="open-s-13"></a>**Open S-13 — The older mythology's open parts.** Whether the concealed cosmology once drafted in the research, a future power sending the Whisp as an unwitting instrument, has any place beside the backdrop, kept on the table to be debated; which of the older mythology's facts are fixed points; how the old travellers reached the Tree without a Whisp; the device in technical detail, wanted to give the background weight; and who the finder is. *Waits for:* Stefan and a discovery session.
 
 ### 5.11 The first hour
 
@@ -732,11 +742,9 @@ The public launch is Season Zero: the founding campaign as a founding moment and
 
 ### 5.12 Design lineage, recorded and not adopted
 
-"Alternative Reality" is a logbook term. FringeIsland draws on the alternate-reality game tradition, in which the line between reality and fiction blurs, and on the ambient and analog-horror lineage beside it. The blur can run both ways: fiction pulling the player in, and fiction seeping out into the ordinary world. What is borrowed is the mystery aesthetic, never the exclusion or the unease. Two authored worlds set the quality bar for a coherent world with the uncanny in the everyday: Mats Åkerman's Den Svagiska Unionen and Simon Stålenhag's. None of this is adopted as a story mechanic.
+"Alternative Reality" is a logbook term. FringeIsland draws on the alternate-reality game tradition, in which the line between reality and fiction blurs, and on the ambient and analog-horror lineage beside it. The blur can run both ways: fiction pulling the player in, and fiction seeping out into the ordinary world. What is borrowed is the mystery aesthetic, never the exclusion or the unease. Two authored worlds set the quality bar for a coherent world with the uncanny in the everyday: Mats Åkerman's Den Svagiska Unionen and Simon Stålenhag's. None of this is adopted as a story mechanic. The Nordic uncanny-in-the-everyday is one influence among many: the bar is coherence and the uncanny in the everyday, not a Nordic setting. And the blur never becomes deception: the older mythology and every alternate-reality element are framed as fiction, never presented as real-world events.
 
 > <a id="open-s-15"></a>**Open S-15 — Which alternate-reality mechanics, if any.** Location-anchored clues, collaborative puzzles, real-world artefacts, distributed media, in-fiction characters that respond in real time; whether collective mysteries are ecosystem-wide or scoped to a season; whether NPCs are the responding characters. *Waits for:* a narrative session; the studios.
-
-> <a id="open-s-16"></a>**Open S-16 — Is the Nordic lineage deliberate?** Whether the uncanny-in-the-everyday of the authored worlds above is FringeIsland's chosen aesthetic lineage or one influence among many. *Waits for:* Stefan; the design system.
 
 ## 6. Roles and governance
 
@@ -789,11 +797,9 @@ The Anthropologist and the Teller are supply, not competition: the one authors t
 
 > <a id="open-r-01"></a>**Open R-01 — How a FIM acquires a Dreamineer authority.** The mechanism is fixed, a permission granted through a group; the route is not: earned by journeying, granted by Stewards or Universeers, applied for, or entered through furnishing one's own home, which is offered as an on-ramp and not locked. *Waits for:* Stefan, or the session on community formation; practically also for Dreamineers to exist.
 
-> <a id="open-r-02"></a>**Open R-02 — The full family of support roles.** What roles beyond Steward, Guide, Participant and Observer a group needs, and what each cares for. Open by design. *Waits for:* groups in real use.
+> <a id="open-r-02"></a>**Open R-02 — The full family of support roles.** What roles beyond Steward, Guide, Participant and Observer a group needs, and what each cares for. Open by design. A named candidate: a human Mentor or Elder role for members who share life wisdom ([CQ-009](questions--ecosystem-open-questions.md)), decided once real groups show whether it is needed and what it would do; "Mentor" never means the Whisp. *Waits for:* groups in real use.
 
 > <a id="open-r-03"></a>**Open R-03 — The naming register.** Whether the in-world role names should be register-consistent, coined like Dreamineer, Teller and Wayfinder, or plain like Creator and Anthropologist, or whether the mix is deliberate. *Waits for:* Stefan.
-
-> <a id="open-r-10"></a>**Open R-10 — A human mentor or elder.** Whether the universe wants a human wisdom-sharing role beyond the Guide, and whether the Guide is sufficient. "Mentor" never means the Whisp. *Waits for:* Stefan.
 
 ### 6.4 The enterprise plane
 
@@ -907,23 +913,18 @@ Two boxes are umbrellas: W-05, the working detail of both worlds, which blocks t
 | ID | Question | Chapter | Waits for |
 |---|---|---|---|
 | [W-01](#open-w-01) | How the Shimmer varies, and where the atmosphere lives | 2. The worlds | the fundamentals session and the design-system work |
-| [W-02](#open-w-02) | Is Marath the dark future at the scale of a civilisation? | 2. The worlds | Stefan |
 | [W-03](#open-w-03) | Does Marath have a collective layer, and whose Mara is met where? | 2. The worlds | a discovery session on Marath's far side |
 | [W-04](#open-w-04) | What are Marath's other creatures? | 2. The worlds | a Marath session, with the NPC page |
 | [W-05](#open-w-05) | The working detail of both worlds | 2. The worlds | the fundamentals discovery session |
-| [W-06](#open-w-06) | What appears on the near side, and for whom | 2. The worlds | the fundamentals session; the World Model build after it |
-| [W-07](#open-w-07) | What is in Nalome's beyond, and does it stay unmapped? | 2. The worlds | Stefan's decision on whether it stays unmapped by design, then a discovery session if not |
+| [W-06](#open-w-06) | What appears on the near side, and for whom, in the fine grain | 2. The worlds | the fundamentals session; the World Model build after it |
 | [W-08](#open-w-08) | The beyond's own name | 2. The worlds | Stefan |
-| [W-09](#open-w-09) | Can anchoring reach the beyond? | 2. The worlds | a discovery session, or a decision to leave it a mystery |
 | [W-10](#open-w-10) | How time is travelled | 2. The worlds | a discovery session |
 | [W-11](#open-w-11) | Are seeds consumed on use, or effectively endless? | 2. The worlds | the fundamentals session |
 | [W-12](#open-w-12) | The near side in detail: seeds and location | 2. The worlds | the fundamentals session and the privacy design |
 | [W-13](#open-w-13) | How cord-healing between FIMs works in the fine grain | 2. The worlds | the fundamentals session; the World Model build |
 | [W-14](#open-w-14) | Which portal types exist | 2. The worlds | a portal discovery session; cairn portals and roped descent first |
-| [W-15](#open-w-15) | Losing or changing the phone, in the fiction | 2. The worlds | Stefan or a discovery session |
 | [W-16](#open-w-16) | The village's name | 2. The worlds | Stefan, at a naming session |
 | [W-17](#open-w-17) | Travelling through a ball, visiting a home, finding friends | 2. The worlds | the fundamentals session; the Discovery service for the surface |
-| [W-18](#open-w-18) | Does the ball mature? | 2. The worlds | Stefan |
 | [W-19](#open-w-19) | How a bond of more than two is drawn | 2. The worlds | Stefan and World Studio |
 | [B-01](#open-b-01) | The Whisp's full specification | 3. The beings | discovery sessions |
 | [B-02](#open-b-02) | How the Whisp's questions surface | 3. The beings | the Whisp's specification; for the first hour, the experience-design gate |
@@ -935,8 +936,7 @@ Two boxes are umbrellas: W-05, the working detail of both worlds, which blocks t
 | [B-08](#open-b-08) | The Whisp's face in detail | 3. The beings | Stefan, the privacy vertical, the Whisp's specification |
 | [B-09](#open-b-09) | How channel 2 reaches the Whisp's content | 3. The beings | its own careful discovery |
 | [B-10](#open-b-10) | What a graduate keeps of the Whisp's outer function | 3. The beings | the Whisp's specification |
-| [B-11](#open-b-11) | The Whisp in genuine distress | 3. The beings | Stefan |
-| [B-12](#open-b-12) | Whether the Whisp names itself as an AI | 3. The beings | Stefan and the Whisp's specification |
+| [B-12](#open-b-12) | How the AI disclosure is shown, and whether the Whisp says so when asked | 3. The beings | Stefan, CQ-021's legal reading, the Whisp's specification |
 | [B-13](#open-b-13) | The authoring stage model and the Whisp's dialogue | 3. The beings | the Whisp's specification |
 | [B-14](#open-b-14) | Helping a friend against their Shadow | 3. The beings | the fundamentals session |
 | [B-15](#open-b-15) | Shared Shadows | 3. The beings | Stefan and a discovery session |
@@ -966,7 +966,6 @@ Two boxes are umbrellas: W-05, the working detail of both worlds, which blocks t
 | [S-13](#open-s-13) | The older mythology's open parts | 5. Story | Stefan and a discovery session |
 | [S-14](#open-s-14) | The first hour | 5. Story | the fundamentals session, then a dedicated first-hour session, then specification |
 | [S-15](#open-s-15) | Which alternate-reality mechanics, if any | 5. Story | a narrative session; the studios |
-| [S-16](#open-s-16) | Is the Nordic lineage deliberate? | 5. Story | Stefan; the design system |
 | [R-01](#open-r-01) | How a FIM acquires a Dreamineer authority | 6. Roles and governance | Stefan, or the session on community formation; practically also for Dreamineers to exist |
 | [R-02](#open-r-02) | The full family of support roles | 6. Roles and governance | groups in real use |
 | [R-03](#open-r-03) | The naming register | 6. Roles and governance | Stefan |
@@ -976,11 +975,10 @@ Two boxes are umbrellas: W-05, the working detail of both worlds, which blocks t
 | [R-07](#open-r-07) | Guard rails in practice | 6. Roles and governance | Stefan and the studios |
 | [R-08](#open-r-08) | AI inside each studio, and protecting a contribution | 6. Roles and governance | the studios |
 | [R-09](#open-r-09) | The quality bar, made together | 6. Roles and governance | the studios |
-| [R-10](#open-r-10) | A human mentor or elder | 6. Roles and governance | Stefan |
 | [C-01](#open-c-01) | Community formation when few are present | 7. Community and the founding moment | a discovery session; people who do not exist yet |
 | [C-02](#open-c-02) | The founding moment's design | 7. Community and the founding moment | the full ecosystem vision, the first hour, the fundamentals, then a dedicated session |
 
-*73 open questions: 19 in the worlds, 19 in the beings, 7 in growth, 16 in story, 10 in roles and governance, 2 in community and the founding moment.*
+*65 open questions: 14 in the worlds, 18 in the beings, 7 in growth, 15 in story, 9 in roles and governance, 2 in community and the founding moment.*
 
 ---
 
@@ -1010,7 +1008,7 @@ When two documents disagree about what a word means, this list wins. Entries are
 
 **Backdrop, the** — The myth of the universe, never told: the Whisp is the FIM's own future, whole self reaching back; a possible future is at stake; the Whisp's mission is the growth, never the conclusion; the saviour is the human, never the machine. Discovered, kept for a while, not forever. Deep-bible tier. Chapter 5.
 
-**Ball, the (the glowing glass ball)** — The glowing bottom of a FIM's drip, released to the FIM at the birth and attached to their Gimbal. It opens portals, buds seeds, anchors every venture, and is the two-zone gateway: inside to the home, rim to the village. It opens only to its own FIM, and every ball glows equal: equal in worth, not the same in person. Never confused with the drip. *Equal in worth, not the same in person: Clyde Kluckhohn and Henry Murray,* Personality in Nature, Society, and Culture *(1948); the thinkers-behind-the-Whisp report.* Chapter 2. See *Drip*.
+**Ball, the (the glowing glass ball)** — The glowing bottom of a FIM's drip, released to the FIM at the birth and attached to their Gimbal. It opens portals, buds seeds, anchors every venture, and is the two-zone gateway: inside to the home, rim to the village. It opens only to its own FIM, and every ball glows equal: equal in worth, not the same in person. It glows and works in the Gimbal only in the hands of its true owner, and it does not mature. Never confused with the drip. *Equal in worth, not the same in person: Clyde Kluckhohn and Henry Murray,* Personality in Nature, Society, and Culture *(1948); the thinkers-behind-the-Whisp report.* Chapter 2. See *Drip*.
 
 **Basic profile, the** — The profile every FIM receives at the birth, created then and never before consent; enough to open the default portals. Chapter 2.
 
@@ -1104,6 +1102,8 @@ When two documents disagree about what a word means, this list wins. Entries are
 
 **FIM not yet born** — A person between consent and the birth: remembered, the Gimbal still clearing, no drip, no portals, no village. Chapter 3.
 
+**Finder, the** — The unnamed person who found an old gimbal device in a sealed facility, reverse-engineered it into the medium that lets the Whisp go out on a cord, an AI among its parts, and made the first travel of the new age. Deep-bible. Chapter 5.
+
 **First hour, the (the first experience)** — The founding narrative a newcomer first enters. Open by decision, deferred until the mechanics are firm. Chapter 5.
 
 **Fixed point** — One of the deep bible's unchangeable truths, which no story may contradict. The list is open. Chapter 5.
@@ -1134,7 +1134,7 @@ When two documents disagree about what a word means, this list wins. Entries are
 
 **Gardening, not guarding** — The rule of the tendable world: only the ball is inviolable, everything else is tended and recedes if untended, nothing is permanently destroyed. Chapter 2.
 
-**Gimbal, the** — The instrument that opens the Shimmer: in the fiction an ancient device, on the platform the FIM's phone running the app, the senses surface. It shows the static until loaded, then the near sides, the portals and the map; the ball attaches to it and it is locked to its FIM's account at the birth. The Gimbal sees; the ball opens portals; seeds keep you safe. Chapters 2 and 6. *Platform: [ADR-U025](../architecture/decisions/ADR-U025-products-as-equipment-profiles.md).*
+**Gimbal, the** — The instrument that opens the Shimmer: in the fiction a centuries-old device, found in a sealed facility and reverse-engineered by its finder, with an AI added; on the platform the FIM's phone running the app, the senses surface. It shows the static until loaded, then the near sides, the portals and the map; the ball attaches to it and it is locked to its FIM's account at the birth. The Gimbal sees; the ball opens portals; seeds keep you safe. Chapters 2 and 6. *Platform: [ADR-U025](../architecture/decisions/ADR-U025-products-as-equipment-profiles.md).*
 
 **Gimbal shell, the** — An optional case that gives the phone the look of the ancient device, with a mount for a physical ball. Never needed. Chapter 2.
 
@@ -1234,7 +1234,7 @@ When two documents disagree about what a word means, this list wins. Entries are
 
 **Observer** — A support role within a group: watches. Chapter 6.
 
-**Older mythology, the** — The universe's second, older story: the altered states as the original ways across, the first opening, its shutdown for a cause unknown, the Gimbal that reopened the way. Lore, not mechanics; deep-bible. Chapter 5.
+**Older mythology, the** — The universe's second, older story: the classified project of centuries ago that first reached the worlds through lucid dreaming and out-of-body experience, its travellers without a Whisp or a cord, its shutdown for a cause unknown, the sealed facilities, and the finder who reverse-engineered the Gimbal and reopened the way. Lore, not mechanics; deep-bible. Chapter 5.
 
 **One system, two faces** — Fiction names and platform permissions are the same system seen from two sides. Chapter 6. *Platform: [ADR-U006](../architecture/decisions/ADR-U006-universal-group-pattern.md) and [ADR-U007](../architecture/decisions/ADR-U007-three-layer-permission-model.md).*
 
