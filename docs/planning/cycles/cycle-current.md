@@ -15,7 +15,6 @@
 
 ## Waiting on Stefan
 - Session 06 in the Claude.ai project — nine rulings on the bible's open questions, two of them the Whisp's safety; the brief is in the [plan record's session queue](../../fringeisland-thinking/record--universe-bible-plan.md#the-session-queue)
-- The re-paste of the Claude.ai project instructions — changed in #687 and again for the session queue
 - The two kickoff decisions in the plan §4 — the Eid appetite, and which of the three themes goes first
 - Leaked-password protection — a Supabase Pro decision (the org is on Free; the toggle refuses to save)
 - The E2E smoke job in CI — Eid's first tooling item, a ruling on design before a build

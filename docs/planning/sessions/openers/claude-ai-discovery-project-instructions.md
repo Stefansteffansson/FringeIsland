@@ -1,7 +1,7 @@
 # Claude.ai discovery project — project instructions
 
 **Purpose:** the text pasted into the Claude.ai / Claude Desktop project that runs FringeIsland universe-discovery sessions. This file is the versioned copy; the project holds a paste of it. When one changes, change the other in the same session.
-**Written:** 2026-09-15, after the thinking tree was flattened into `docs/fringeisland-thinking/` (TASK-UNI-02/03). Replaces whatever the project said about `docs/ecosystem/thinking/universe-discovery/`. **Revised** 2026-09-16 for the one-file discovery register (TASK-UNI-05) and 2026-09-17 for the appended-session shape; the project was found still holding the 2026-09-15 text on 2026-09-17 and re-pasted then. Revised again 2026-09-26 for the Universe Bible (#687) and 2026-09-27 for the session queue (Phase 6); both need the re-paste.
+**Written:** 2026-09-15, after the thinking tree was flattened into `docs/fringeisland-thinking/` (TASK-UNI-02/03). Replaces whatever the project said about `docs/ecosystem/thinking/universe-discovery/`. **Revised** 2026-09-16 for the one-file discovery register (TASK-UNI-05) and 2026-09-17 for the appended-session shape; the project was found still holding the 2026-09-15 text on 2026-09-17 and re-pasted then. Revised again 2026-09-26 for the Universe Bible (#687) and 2026-09-27 for the session queue (Phase 6); re-pasted by Stefan 2026-09-27, and the project's own copy of the plan (`claude/universe-bible-plan.md`) deleted then — the repository's copy is the only one.
 **Authority:** [`AGENTS.md`](../../../../AGENTS.md) "Discovery worktree" is the rule; this text restates it for the other side of the worktree.
 
 ---
