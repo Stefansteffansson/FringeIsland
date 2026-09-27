@@ -1,6 +1,6 @@
 # Ecosystem — Open Questions
 
-**Last Updated:** 2026-09-26 (the universe questions now carried in the Universe Bible)
+**Last Updated:** 2026-09-27 (CQ-021, the Whisp and the EU AI Act, from the bible's B-12)
 
 ---
 
@@ -107,6 +107,16 @@
 **In the bible:** the name is settled (Nalome, na-LOME, from the unalome) and carried in the glossary; only the checks are open, and they are business items, so they live here.
 
 The warm world was named Nalome in Session 05. A web search on 2026-09-25 found the name only as a personal name and surname, and no company or brand; the Bolagsverket, trademark (EUIPO, USPTO) and domain checks are still owed before the name appears publicly. The unalome is sacred in Thai Buddhist practice: the name borrows the idea, and the symbol itself is not used as a logo, ornament or in-world decoration unless a person from the tradition is consulted.
+
+---
+
+### CQ-021: The Whisp and the EU AI Act — Telling People They Are Talking With an AI
+**Status:** Open — Active (owed before any real person meets a Whisp prototype)
+**Scope:** Legal / product; Eid onward (the Whisp theme)
+**Raised:** 2026-09-27 (Universe Bible Phase 6, from the bible's Open box B-12)
+**In the bible:** B-12 asks whether the Whisp names itself as an AI; the universe half is ruled in discovery (Session 06 in the plan record's queue), and the legal half lives here.
+
+Article 50(1) of the EU AI Act (Regulation (EU) 2024/1689) requires that people interacting directly with an AI system are informed of it, unless that is obvious to a reasonably well-informed person in the context. The duty has applied since 2 August 2026, and the Digital Omnibus, which pushed back the high-risk timeline, left it on schedule. The Whisp is an AI system talking with people, and it speaks to a Mist before consent, while the Gimbal is being loaded, so the question is how and when the disclosure is made, not whether. Also to check: Article 50(3) on emotion recognition, if the Whisp's reading of where the FIM is (B-06) ever infers emotion from biometric data. Sources, checked 2026-09-27: the regulation's Article 50 text and the Commission's guidelines on the transparency obligations.
 
 ## Open — Parked
 

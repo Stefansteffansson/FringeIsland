@@ -110,7 +110,7 @@ Cross-cutting design records produced by joint-design spikes — the design live
 |---|---|
 | [`record--breach-response-gdpr-art-33-34.md`](record--breach-response-gdpr-art-33-34.md) | Breach-response design (GDPR Art. 33/34) across all five verticals — detect → assess → clock → notify authority → notify members → record |
 | [`record--universe-to-spec-manifestation.md`](record--universe-to-spec-manifestation.md) | Snapshot map of how the universe's concepts are (or aren't) realised as capabilities in the entity specifications, and since the 2026-09-17 re-run whether a shipped feature has built them; what changed since June; prioritised gaps. Written against the canon files; its next run is against the bible |
-| [`record--universe-bible-plan.md`](record--universe-bible-plan.md) | The plan the bible was built to — its goal, Stefan's decisions, the shape, the phases and the rules. Kept until the plan's last phases (the switch-over, then prioritising the open questions) are closed. The two Phase 2 working records (the rulings list and the chapter maps) were deleted at the switch-over; git keeps them |
+| [`record--universe-bible-plan.md`](record--universe-bible-plan.md) | The plan the bible was built to — its goal, Stefan's decisions, the shape, the phases and the rules — and, since Phase 6, the **session queue**: the order in which the bible's open questions are taken up, with the next session's brief. Kept until the queue holds only parked boxes. The two Phase 2 working records (the rulings list and the chapter maps) were deleted at the switch-over; git keeps them |
 
 ---
 
