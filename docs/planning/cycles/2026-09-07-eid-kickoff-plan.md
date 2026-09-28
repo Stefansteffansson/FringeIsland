@@ -22,6 +22,7 @@
 - **Supabase drops the default table grants on 2026-10-30** — [TASK-SEC-03](../backlog/tasks/TASK-SEC-03-explicit-table-grants-before-supabase-drops-the-default-acl.md), Eid's second tooling item, built and applied 2026-09-23 (#683): the backfill migration, the static gate over the files, the presence cells, the rule. Landed before the first Eid table migration; the hard external date is met. MAINTAIN ruled the same day → [TASK-SEC-04](../backlog/tasks/TASK-SEC-04-maintain-off-the-client-roles.md) (applied on both projects the same day, #684); anon's default SELECT waits for the anon-policy audit.
 - The latest-read-wins rule as a `feature-development` line.
 - Leaked-password protection — plan-gated (Supabase Pro); a billing decision.
+- **Breach response (GDPR Art. 33/34) is designed, not built** — the [design](../../verticals/personal-data-breach-response.md) (2026-06-13) routed three pieces of tooling out and nothing picked them up: the breach-register store, breach-signal alerting and escalation, and the public-notice fallback channel. The 72-hour duty applies from the first byte of personal data. In or out, in writing (found 2026-09-28).
 - Two walk observations: the player's Pause affordance is easy to miss; a Steward wanting to pause the group's walk has no door (FEAT-H019 STORY-8's no-go).
 - The `next dev` agent-rules files (`hub/AGENTS.md`, `hub/CLAUDE.md`) — commit, disable, or ignore.
 

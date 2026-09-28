@@ -15,3 +15,9 @@ Concerns that touch every layer (Platform Core, Domain Services, Surfaces — Pr
 - `transactions/SPECIFICATION.md` — V5 Transactions, Stripe
 
 Each vertical lives in its own directory with a `SPECIFICATION.md` (the spec itself) and a `features/` subdirectory for any V-prefix features the vertical owns as shipped infrastructure. The `SPECIFICATION.md` files are authored across three decomposition levels (L2 / L3 / L4) — see `../templates/vertical-spec.md` and `.claude/skills/ecosystem-decomposition/SKILL.md` for the authorship split.
+
+## Cross-vertical design records
+
+Designs that span several verticals at once; each vertical spec carries its own obligations and links here for the whole story.
+
+- [`personal-data-breach-response.md`](personal-data-breach-response.md) — how FringeIsland responds to a personal-data breach (GDPR Art. 33/34) across all five verticals: detect, assess, clock, notify the authority, notify members, record. Designed 2026-06-13; not yet built.
