@@ -1,6 +1,6 @@
 # The Universe Bible — the plan (a single truth)
 
-**Status (2026-09-27):** Phases 0–6 done — the bible written (nine chapters, 73 Open boxes), reviewed, merged and its glossary trimmed; the canon files and the Phase 2 records deleted and every active reference repointed, the ADR amendments (#688) and the steering-file pointers (#690) merged on 2026-09-26; the open questions ordered into sessions on 2026-09-27 (Phase 6, below). This record now holds the session queue and stays until the queue is empty. Next: Session 06, Stefan's rulings. Decision 2 was changed at the switch-over: the canon files were deleted, not stubbed.
+**Status (2026-09-27):** Phases 0–6 done — the bible written (nine chapters, 73 Open boxes), reviewed, merged and its glossary trimmed; the canon files and the Phase 2 records deleted and every active reference repointed, the ADR amendments (#688) and the steering-file pointers (#690) merged on 2026-09-26; the open questions ordered into sessions on 2026-09-27 (Phase 6, below). This record now holds the session queue and stays until the queue is empty. Session 06 ran on 2026-09-27 (S115–S119): eight boxes answered and carried into the bible, B-12 ruled in principle and moved to row 5, and the older mythology told and written into §5.10. Next: row 2 or row 5, by the Eid kickoff's choice of theme. Decision 2 was changed at the switch-over: the canon files were deleted, not stubbed.
 **Origin:** drafted 2026-09-24 with Stefan at the end of discovery Session 03; kept in the claude.ai project as `claude/universe-bible-plan.md` until 2026-09-27, when Stefan deleted that copy; this copy, placed in the repository on 2026-09-25 so Claude Code could read it, is now the only one.
 
 ## Goal
@@ -70,11 +70,10 @@ Set on 2026-09-27 from the bible's chapter 8 as it stood that day; every box pla
 
 | # | Session | Boxes | Needs first | Who | Register |
 |---|---|---|---|---|---|
-| 1 | **Session 06 — Stefan's rulings** (brief below) | W-02, W-07, W-09, W-15, W-18, B-11, B-12, R-10, S-16 | — | Stefan | CQ-021 (B-12), CQ-009 (R-10) |
-| 2 | **Fundamentals I — Nalome's near side and the lines** (W-05 opens) | W-06, W-11, W-12, W-13, W-17, W-19, B-16, S-06 | 1 | Stefan + discovery | — |
-| 3 | **Fundamentals II — Marath, its creatures, the Shadows** | W-03, W-04, B-14, B-15, B-18, B-19 | 1 (W-02 frames it) | Stefan + discovery | CQ-013 |
+| 2 | **Fundamentals I — Nalome's near side and the lines** (W-05 opens) | W-06, W-11, W-12, W-13, W-17, W-19, B-16, S-06 | — | Stefan + discovery | — |
+| 3 | **Fundamentals II — Marath, its creatures, the Shadows** | W-03, W-04, B-14, B-15, B-18, B-19 | — | Stefan + discovery | CQ-013 |
 | 4 | **Fundamentals III — portals and the Shimmer** (W-05 closes) | W-14 (cairn portals and roped descent first), W-01 | 2 | Stefan + discovery; W-01's atmosphere half passes to the design-system work | — |
-| 5 | **Whisp I — the dialogue and what it learns** (B-01 opens) | B-02, B-03, B-06, B-13, G-06, G-07 | 1 (B-11, B-12); no fundamentals | Stefan + discovery; B-03 needs research and a licensing decision per instrument | CQ-011 |
+| 5 | **Whisp I — the dialogue and what it learns** (B-01 opens) | B-02, B-03, B-06, B-12, B-13, G-06, G-07 | no fundamentals | Stefan + discovery; B-03 needs research and a licensing decision per instrument; B-12 also needs CQ-021's legal reading | CQ-011, CQ-021 (B-12) |
 | 6 | **Whisp II — how the Whisp is felt** | B-04, B-05, B-07, B-08, G-01 | 2, 4, 5 | Stefan + discovery; B-08 bounded by the privacy vertical | CQ-012 |
 | 7 | **Whisp III — channel 2 and the end of the road** (B-01 closes) | B-09, B-10, G-02 | 6 | Stefan + discovery | — |
 | 8 | **Narrative I — respawn** | S-02, S-03, S-04, S-05 | 5 | Stefan + discovery | — |
@@ -88,14 +87,16 @@ Set on 2026-09-27 from the bible's chapter 8 as it stood that day; every box pla
 
 **Two tracks**, set by the Eid kickoff's open decision on which theme goes first:
 
-- **The Whisp first:** 1, 5, then the fundamentals (2 to 4), then 6 and 7. The queue is on Eid's critical path.
-- **Journey Studio v1 or the design foundation first:** 1 to 7 in order, with 9 riding along with the build. No build waits on discovery.
+- **The Whisp first:** 5, then the fundamentals (2 to 4), then 6 and 7. The queue is on Eid's critical path.
+- **Journey Studio v1 or the design foundation first:** 2 to 7 in order, with 9 riding along with the build. No build waits on discovery.
 
 Sessions 8 and 10 to 13 fit between them in any order once what they need first is done; 14 comes last.
 
 **Keeping the queue.** At a session's close Claude Code carries its "Baked into the bible" list across, removes each answered box from its row here as the bible's index line goes, and removes the row once it is empty. A box a session opens is slotted into a row at the same close. A box answered out of order is removed from wherever it sits. When only the parked row is left, this record is deleted; the parked boxes stay in the bible's index with their "waits for".
 
 ## Session 06 — the brief
+
+*Ran on 2026-09-27 as Session 06 and closed at S119; its rulings are in the bible and its record in Part 3 of the discovery file. Kept until the next brief replaces it.*
 
 Nine boxes that need only Stefan's ruling. For each: what the bible already says, the options, and Claude Code's recommendation. The recommendations are proposals, not canon; the session rules, and its "Baked into the bible" list carries the answers.
 

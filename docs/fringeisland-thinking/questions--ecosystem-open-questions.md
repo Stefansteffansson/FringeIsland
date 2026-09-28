@@ -1,6 +1,6 @@
 # Ecosystem — Open Questions
 
-**Last Updated:** 2026-09-27 (CQ-021, the Whisp and the EU AI Act, from the bible's B-12)
+**Last Updated:** 2026-09-27 (Session 06: notes on CQ-009 and CQ-021; earlier the same day CQ-021 itself, from the bible's B-12)
 
 ---
 
@@ -118,6 +118,8 @@ The warm world was named Nalome in Session 05. A web search on 2026-09-25 found 
 
 Article 50(1) of the EU AI Act (Regulation (EU) 2024/1689) requires that people interacting directly with an AI system are informed of it, unless that is obvious to a reasonably well-informed person in the context. The duty has applied since 2 August 2026, and the Digital Omnibus, which pushed back the high-risk timeline, left it on schedule. The Whisp is an AI system talking with people, and it speaks to a Mist before consent, while the Gimbal is being loaded, so the question is how and when the disclosure is made, not whether. Also to check: Article 50(3) on emotion recognition, if the Whisp's reading of where the FIM is (B-06) ever infers emotion from biometric data. Sources, checked 2026-09-27: the regulation's Article 50 text and the Commission's guidelines on the transparency obligations.
 
+**Note (2026-09-27, universe-discovery Session 06, S118–S119):** the universe half of B-12 is ruled in principle. The Whisp never announces the medium in its own voice at the first dialogue; the platform states clearly that the Whisp runs on AI when a person first opens the FringeIsland universe, before the Whisp speaks, in a way that meets the law and costs the mystery as little as possible. The form waits on this entry's legal reading: its own line or within the consent step (the session noted that a line folded into a cookie banner risks falling short of "clear and distinguishable"), and whether the Whisp answers truthfully when asked directly. B-12 now sits in row 5 of the plan record's session queue (Whisp I).
+
 ## Open — Parked
 
 ### CQ-006: Foundation Formal Establishment
@@ -148,6 +150,7 @@ Article 50(1) of the EU AI Act (Regulation (EU) 2024/1689) requires that people 
 **Blocks:** Nothing immediate
 **Context:** VISION.md highlights 50+ as "a particularly important role" for wisdom-sharing. How do we attract and empower them? Is the Guide role sufficient or do we need a Mentor/Elder concept?
 **Note (2026-06-22, F-04):** "Mentor/Elder" here denotes a *human* wisdom-sharing role — distinct from the FIM's AI companion, which is canonically the **Whisp** (the inner dialogue voice that mentors through warm challenge; ADR-U029, the bible's beings chapter), not a separate "Mentor." The Hub's Whisp representation in Ferd/Eid without AR is tracked separately as CQ-012.
+**Note (2026-09-27, universe-discovery Session 06, S119):** the bible's R-10 is folded into R-02. A human Mentor or Elder role is a named candidate among the future group support roles, decided once real groups show whether it is needed and what it would do; the Guide is enough for now. This entry stays parked beside it.
 
 ### CQ-012: Whisp Representation in Ferd/Eid — Without AR
 **Status:** Parked
