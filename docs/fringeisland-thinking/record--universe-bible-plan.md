@@ -73,7 +73,7 @@ Set on 2026-09-27 from the bible's chapter 8 as it stood that day; every box pla
 | 2 | **Fundamentals I — Nalome's near side and the lines** (W-05 opens) | W-06, W-11, W-12, W-13, W-17, W-19, B-16, S-06 | — | Stefan + discovery | — |
 | 3 | **Fundamentals II — Marath, its creatures, the Shadows** | W-03, W-04, B-14, B-15, B-18, B-19 | — | Stefan + discovery | CQ-013 |
 | 4 | **Fundamentals III — portals and the Shimmer** (W-05 closes) | W-14 (cairn portals and roped descent first), W-01 | 2 | Stefan + discovery; W-01's atmosphere half passes to the design-system work | — |
-| 5 | **Whisp I — the dialogue and what it learns** (B-01 opens) | B-02, B-03, B-06, B-12, B-13, G-06, G-07 | no fundamentals | Stefan + discovery; B-03 needs research and a licensing decision per instrument; B-12 also needs CQ-021's legal reading | CQ-011, CQ-021 (B-12) |
+| 5 | **Whisp I — the dialogue and what it learns** (B-01 opens) | B-02, B-03, B-06, B-12, B-13, G-06, G-07 | no fundamentals | Stefan + discovery; B-03 needs research and a licensing decision per instrument; B-12 also needs CQ-021's legal reading | CQ-011, CQ-021 (B-12), CQ-022 (B-11's record) |
 | 6 | **Whisp II — how the Whisp is felt** | B-04, B-05, B-07, B-08, G-01 | 2, 4, 5 | Stefan + discovery; B-08 bounded by the privacy vertical | CQ-012 |
 | 7 | **Whisp III — channel 2 and the end of the road** (B-01 closes) | B-09, B-10, G-02 | 6 | Stefan + discovery | — |
 | 8 | **Narrative I — respawn** | S-02, S-03, S-04, S-05 | 5 | Stefan + discovery | — |
@@ -96,7 +96,7 @@ Sessions 8 and 10 to 13 fit between them in any order once what they need first 
 
 ## Session 06 — the brief
 
-*Ran on 2026-09-27 as Session 06 and closed at S119; its rulings are in the bible and its record in Part 3 of the discovery file. Kept until the next brief replaces it.*
+*Ran on 2026-09-27 as Session 06 and closed at S119. The recommendations below were proposals; the rulings, several of them different, are in the bible, which wins, and the session record is in Part 3 of the discovery file. Kept until the next brief replaces it.*
 
 Nine boxes that need only Stefan's ruling. For each: what the bible already says, the options, and Claude Code's recommendation. The recommendations are proposals, not canon; the session rules, and its "Baked into the bible" list carries the answers.
 

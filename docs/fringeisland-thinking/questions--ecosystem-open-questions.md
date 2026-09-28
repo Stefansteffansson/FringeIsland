@@ -1,6 +1,6 @@
 # Ecosystem — Open Questions
 
-**Last Updated:** 2026-09-27 (Session 06: notes on CQ-009 and CQ-021; earlier the same day CQ-021 itself, from the bible's B-12)
+**Last Updated:** 2026-09-28 (CQ-022, from Session 06's open threads; the day before, the Session 06 notes on CQ-009 and CQ-021, and CQ-021 itself)
 
 ---
 
@@ -119,6 +119,16 @@ The warm world was named Nalome in Session 05. A web search on 2026-09-25 found 
 Article 50(1) of the EU AI Act (Regulation (EU) 2024/1689) requires that people interacting directly with an AI system are informed of it, unless that is obvious to a reasonably well-informed person in the context. The duty has applied since 2 August 2026, and the Digital Omnibus, which pushed back the high-risk timeline, left it on schedule. The Whisp is an AI system talking with people, and it speaks to a Mist before consent, while the Gimbal is being loaded, so the question is how and when the disclosure is made, not whether. Also to check: Article 50(3) on emotion recognition, if the Whisp's reading of where the FIM is (B-06) ever infers emotion from biometric data. Sources, checked 2026-09-27: the regulation's Article 50 text and the Commission's guidelines on the transparency obligations.
 
 **Note (2026-09-27, universe-discovery Session 06, S118–S119):** the universe half of B-12 is ruled in principle. The Whisp never announces the medium in its own voice at the first dialogue; the platform states clearly that the Whisp runs on AI when a person first opens the FringeIsland universe, before the Whisp speaks, in a way that meets the law and costs the mystery as little as possible. The form waits on this entry's legal reading: its own line or within the consent step (the session noted that a line folded into a cookie banner risks falling short of "clear and distinguishable"), and whether the Whisp answers truthfully when asked directly. B-12 now sits in row 5 of the plan record's session queue (Whisp I).
+
+---
+
+### CQ-022: What Is Recorded When the Whisp Sees Distress
+**Status:** Open — Active (owed before any real person meets a Whisp prototype, beside B-11's gate)
+**Scope:** Privacy vertical / product; Eid onward (the Whisp theme)
+**Raised:** 2026-09-28 (doc-health §10, from the open threads of universe-discovery Session 06, S119)
+**In the bible:** B-11's answer (§3.1) sets the Whisp's crisis rules and the gate before any prototype meets a person; what the platform records about a distress event is a privacy question, so it lives here and the answer points at it.
+
+When the Whisp sees signs of a real crisis, the game stops and the person is shown a crisis line and the emergency number. Open: whether anything about that moment is recorded at all; if so what (the fact, the signals that triggered it, the words shown), for how long, who can see it, and whether the person can see and erase it — for FIMs and for Mists, whose sessions are otherwise unrecorded beyond the session (ADR-U031). The answer sits with the privacy vertical and the Whisp's specification, and the clinical adviser that B-11's gate requires should see it.
 
 ## Open — Parked
 
