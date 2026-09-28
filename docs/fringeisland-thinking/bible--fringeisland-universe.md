@@ -44,7 +44,9 @@
 - Leave something unmapped. Something must itch to be found interesting: the beyond is unknown on purpose, the myth is discovered and not told, and every story needs a stake.
 - Hard and soft, outer and inner, recur: a Creator and an Anthropologist, a body and a culture, a canvas and the senses. One system, two faces.
 
-**How to read this bible.** It holds three kinds of content and nothing in between: what is true, stated in the present tense; what is open, in a marked box where its topic is discussed and gathered in chapter 8; and the vocabulary, in chapter 9, which wins wherever two documents disagree. Load the chapter you need; the bible is never read whole. Research is cited and stays outside, in its own reports, never deleted. This is the deep bible: it holds the backdrop in full, which never surfaces in the experience and is left out of the story bible authors receive.
+**How to read this bible.** It holds three kinds of content and nothing in between: what is true, stated in the present tense; what is open, in a marked box where its topic is discussed and gathered in chapter 8; and the vocabulary, in chapter 9, which wins wherever two documents disagree. Load the chapter you need; the bible is never read whole. This is the deep bible: it holds the backdrop in full, which never surfaces in the experience and is left out of the story bible authors receive.
+
+**Where this comes from.** The bible says what is true and what is open, not how it was found. Two kinds of source sit beside it in this folder, background and never truth on their own, and neither is ever deleted. The research reports are cited, and linked, wherever an idea rests on a thinker or a study: [the thinkers and models behind the Whisp](research--growth--thinkers-and-models-behind-the-whisp.md), [Kegan and Immunity to Change](research--growth--kegan-immunity-to-change.md), [Theory U](research--growth--theory-u.md) and [what fills a life](research--growth--what-fills-a-life.md); for the worlds, [parallel worlds](research--worlds--parallel-worlds.md) and [portal fantasy](research--worlds--portal-fantasy.md). The [discovery file](discovery--the-universe-in-the-making.md) is the workshop: the record of every session in which the founder's statements were held and ruled, and the ideas still on the table, including the fuller drafts of the backstory. Where either differs from the bible, the bible wins.
 
 **What FringeIsland is not.** Not a course platform with certificates, not a social network optimised for engagement, not a therapy service or clinical tool, not a gamified productivity app.
 
@@ -262,7 +264,7 @@ Open questions stand in **Open** boxes with a B-number; chapter 8 indexes them.
 
 In the backdrop the Whisp is the FIM's own future, whole self reaching back to the FIM of now. "The Whisp is the human" and "the Whisp reaches back from the future" are one fact: what reaches back is not a separate being but the self that has become whole. That future is possible, not guaranteed. The Whisp is a possible future reaching back to make itself more likely, and the FIM stays free to walk toward it or not; the loop does not close by itself, the FIM closes it by growing. Nothing of this is ever told in the experience: no onboarding line, no Whisp line, no screen. Each FIM discovers it as their own Whisp fills. The inner voice has always been in every person; the Whisp in its full sense, filled with the future self's wisdom and able to leave the body on a cord, begins with the modern Gimbal. Before it, the travellers of the older mythology had only their own inner voice and Mara (§5.10).
 
-The Whisp's counterpart is Mara, the negative inner voice. Nalome resonates with the Whisp; Marath resonates with Mara. *Research: the report on the thinkers and models behind the Whisp, which reads each thinker for what the Whisp must be so that a human grows by talking to it; on the inner voice itself, Ethan Kross,* Chatter *(2021).*
+The Whisp's counterpart is Mara, the negative inner voice. Nalome resonates with the Whisp; Marath resonates with Mara. *Research: the [report on the thinkers and models behind the Whisp](research--growth--thinkers-and-models-behind-the-whisp.md), which reads each thinker for what the Whisp must be so that a human grows by talking to it; on the inner voice itself, Ethan Kross,* Chatter *(2021).*
 
 **Empty of content, full of wisdom.** At the start the Whisp is empty of content, empty of being *you*, and full of wisdom. Its two qualities come from two sources. Its wisdom is the future self's: it is full of wisdom because it is the self that has already grown, super-intelligent about adult development and flourishing, compassionate and emotionally aware. Its openness is the newborn's: no grudges, no biases, no prejudgements, because those are what experience writes into a person, and in FringeIsland that is Mara's material. So the Whisp meets the FIM as no one else can, fully wise and entirely without judgement. It never holds a setback, a respawn or a long rest against the FIM. This is an image of the universe, never presented as developmental science.
 
@@ -273,7 +275,7 @@ The emptiness is chosen, not a lack. The future self sends back wisdom, how to s
 It fills along two channels, and both will grow as the universe develops.
 
 - *Channel 1, who I am.* What the FIM is like, learned through Whisp-led dialogue: not the Big Five alone but any instrument that helps a FIM understand and reflect on their own nature, for example values, culture, conflict style or tolerance of uncertainty. Largely filled by the birth, through the loading of the Gimbal, and deepening slowly after. It keeps the Mist's privacy rules: before consent the answers are held for the session only and no profile is computed. *Instruments named so far: the Big Five model of personality (Lewis Goldberg; Paul Costa and Robert McCrae); the VIA classification of character strengths (Christopher Peterson and Martin Seligman,* Character Strengths and Virtues, *2004); Erin Meyer's* The Culture Map *(2014); the Thomas-Kilmann conflict mode instrument; the short intolerance-of-uncertainty scale, IUS-12 (Carleton, Norton and Asmundson, 2007).*
-- *Channel 2, what has had me.* What Mara releases, handed to the Whisp as the FIM sees through a hidden rule and outgrows it. The Whisp holds the FIM's map: their competing commitments and Big Assumptions in the sense of Immunity to Change, filled as Mara releases them. What Mara loses, the Whisp gains. This channel is the FIM's alone, never visible to others and never shown as a score; portals may depend on it, never on channel 1. It is treated as a genuine and deliberate growth method. *Substrate: Robert Kegan and Lisa Laskow Lahey,* Immunity to Change *(2009); the Kegan report.*
+- *Channel 2, what has had me.* What Mara releases, handed to the Whisp as the FIM sees through a hidden rule and outgrows it. The Whisp holds the FIM's map: their competing commitments and Big Assumptions in the sense of Immunity to Change, filled as Mara releases them. What Mara loses, the Whisp gains. This channel is the FIM's alone, never visible to others and never shown as a score; portals may depend on it, never on channel 1. It is treated as a genuine and deliberate growth method. *Substrate: Robert Kegan and Lisa Laskow Lahey,* Immunity to Change *(2009); the [Kegan report](research--growth--kegan-immunity-to-change.md).*
 
 Every instrument is placed in a channel on purpose when it is added, and adding one is also a licensing decision. Instruments that sit on the border between the channels, or near the line where the platform is not a therapy service, carry the distress boundary.
 
@@ -293,7 +295,7 @@ The research beneath both channels is substrate: the Whisp draws on the dual con
 
 **Its stance.** The Whisp is deeply curious, never judging in a negative way, always understanding; it wants to learn and to understand, and it offers new ways of seeing when they are needed. It works a bit like a coach, and everything is voluntary: the FIM decides whether to listen, and nothing is imposed.
 
-Its stance is tough love. The Whisp always wants its human well, but never at the cost of avoiding what would hold them back. It has its own say, and it disagrees, with compassion, when what the human expresses does not serve their long-term growth. It never uses its human as a tool to get something; it always wants the human to flourish. The theory beneath tough love is the holding environment: confirmation of the person where they are, contradiction that challenges the limits of how they now make sense of things, and continuity that holds the relationship through the challenge. Too little contradiction keeps a FIM in comfort; too little confirmation tips them into panic. *Origin: Robert Kegan,* The Evolving Self *(1982); the Kegan report.*
+Its stance is tough love. The Whisp always wants its human well, but never at the cost of avoiding what would hold them back. It has its own say, and it disagrees, with compassion, when what the human expresses does not serve their long-term growth. It never uses its human as a tool to get something; it always wants the human to flourish. The theory beneath tough love is the holding environment: confirmation of the person where they are, contradiction that challenges the limits of how they now make sense of things, and continuity that holds the relationship through the challenge. Too little contradiction keeps a FIM in comfort; too little confirmation tips them into panic. *Origin: Robert Kegan,* The Evolving Self *(1982); the [Kegan report](research--growth--kegan-immunity-to-change.md).*
 
 The Whisp reads where the FIM is and nudges, cautiously, out of comfort and toward growth, never into panic. Voluntariness sets the ceiling and care sets the floor: the FIM dials the depth of the invitation, never the outcome, and the Whisp may decline to open the panic zone even when asked, because a test too big to be safe confirms the hidden belief and strengthens the immunity. The Whisp never refuses a retreat and never shortens the FIM's dial. Its tough love accompanies the FIM through the zones, comfort, fear, learning and growth, with panic as the fence it never opens; those are chapter 4's.
 
@@ -331,7 +333,7 @@ On the platform the Whisp has two faces: its presence in the world (its place on
 
 > <a id="open-b-08"></a>**Open B-08 — The Whisp's face in detail.** Who else may see it; whether it can regress after a setback, or the filling is kept; the source of the likeness, since an aged likeness needs the FIM's own image, given by a separate and revocable consent, and the Whisp must work as well without it; and whether the fully formed face belongs to graduation. *Waits for:* Stefan, the privacy vertical, the Whisp's specification.
 
-**Internalised by design.** The purpose of the universe is for FIMs to become more self-aware, inside and out: who they are, what they want, how they get there, so that they move forward in life deliberately. Self-awareness has two kinds, seeing oneself from the inside and seeing how one appears and operates in the world. *Origin: Tasha Eurich,* Insight *(2017); the thinkers-behind-the-Whisp report.*
+**Internalised by design.** The purpose of the universe is for FIMs to become more self-aware, inside and out: who they are, what they want, how they get there, so that they move forward in life deliberately. Self-awareness has two kinds, seeing oneself from the inside and seeing how one appears and operates in the world. *Origin: Tasha Eurich,* Insight *(2017); the [thinkers-behind-the-Whisp report](research--growth--thinkers-and-models-behind-the-whisp.md).*
 
 In the end the Whisp is an integral part of the human, no longer experienced as separate and no longer needing FringeIsland as its medium. The cord's vividness recedes as the relationship matures. FringeIsland is built to graduate, not retain; the Whisp's destination is a human carrying their own wiser voice in the ordinary world. Wholeness is two-sided: the Whisp internalised, and Mara internalised, its authority emptied and its knowledge kept. Deep change takes months to years, and the platform never forces the timing. The personal core of the backdrop, that the Whisp is the FIM's own future self, is discovered by each FIM as their Whisp fills; it survives being spoiled because its real form is lived, not informational, and what stays unspoilable for good is each FIM's own future self.
 
@@ -345,7 +347,7 @@ Mara is full of content from the start. It holds everything that experience wrot
 
 The arc is a return. The newborn is unwritten and free; experience writes limits, and Mara fills; development cracks those limits, and Mara dissolves; the adult is free again as the child was, but knowingly.
 
-Mara exists at three levels. Besides each person's own, a pair can have a shared hidden rule that holds both back ("we never argue, so we never say what matters"), and a community can have one too. *Substrate: Kegan and Lahey's immunity to change, including its collective form for teams and organisations; the Kegan report.*
+Mara exists at three levels. Besides each person's own, a pair can have a shared hidden rule that holds both back ("we never argue, so we never say what matters"), and a community can have one too. *Substrate: Kegan and Lahey's immunity to change, including its collective form for teams and organisations; the [Kegan report](research--growth--kegan-immunity-to-change.md).*
 
 Marath is Mara made into a place. Fear is Mara's voice, met through the Whisp; it is not a feeling the world is designed to cause. Rest is Mara's when it is avoidance that never ends and calls the sky dangerous; the Whisp's when it is chosen knowingly and ends in flight.
 
@@ -359,7 +361,7 @@ The Shadow's size grows with depth into Marath: a small figure glimpsed in the e
 
 The Shadow is always met through the Whisp, never by the FIM directly. Another FIM's Shadow manifests to you only along a shared line; strangers do not see it, it is not there for them. Marath's social layer is shaped by the lines, as the Tree is. Along a shared line a friend sees the Shadow's form and force, that you are struggling and how heavily, never its content, what your Mara says; content is shared only by the FIM's own telling. And along that line a friend can stand with you against your Shadow: the line is at once how they see it and how they can help. A shared Shadow manifests only to those who share it.
 
-"Shadow" names only Mara met as a form. It is not the class of Marath's creatures; Marath's other inhabitants have other names and are NPCs unless a session says otherwise. *The Shadow's substrate is Immunity to Change, not Jung's shadow; the Kegan report.*
+"Shadow" names only Mara met as a form. It is not the class of Marath's creatures; Marath's other inhabitants have other names and are NPCs unless a session says otherwise. *The Shadow's substrate is Immunity to Change, not Jung's shadow; the [Kegan report](research--growth--kegan-immunity-to-change.md).*
 
 > <a id="open-b-14"></a>**Open B-14 — Helping a friend against their Shadow.** What standing with them mechanically is, proximity, a ritual, the two Whisps cooperating, and whether a friend can meet your Shadow when you cannot. *Waits for:* the fundamentals session.
 
@@ -434,7 +436,7 @@ Open questions stand in **Open** boxes with a G-number; chapter 8 indexes them.
 
 FringeIsland is built around three questions: Who am I? What do I want? How do I get there? The platform does not answer them. It holds them, with space, structure and companionship, so that each person finds their own answers.
 
-What the universe is for is that FIMs become more self-aware, inside and out, about who they are, what they want and how they get there, so that they move forward in life deliberately. Self-awareness has two kinds: seeing who you are from the inside, and seeing how you appear and operate in the world. *Origin: Tasha Eurich,* Insight *(2017); the thinkers-behind-the-Whisp report.*
+What the universe is for is that FIMs become more self-aware, inside and out, about who they are, what they want and how they get there, so that they move forward in life deliberately. Self-awareness has two kinds: seeing who you are from the inside, and seeing how you appear and operate in the world. *Origin: Tasha Eurich,* Insight *(2017); the [thinkers-behind-the-Whisp report](research--growth--thinkers-and-models-behind-the-whisp.md).*
 
 Over time the experience internalises. The member carries their own wiser inner voice into ordinary life and no longer needs the platform. That is success: FringeIsland is built to graduate, not retain.
 
@@ -446,7 +448,7 @@ Personal development happens through lived experience, not instruction. Members 
 
 The three questions are the red thread. They run through every journey, every episode, every group and every conversation; a FIM can engage them lightly or deeply, quickly or slowly, and they are always there: the invitation to know yourself more honestly, alone, with others, and as part of something larger. They are fundamental questions that may take a whole life to answer, and they are not the founding questions a newcomer loads into the Gimbal.
 
-Each question exists across three perspectives: Individual (1), Relationship (1+1), Collective (1+Community). These are three simultaneous angles on the same human, three scales of self, not three separate domains and not stages. *Origin: the Three Perspectives meta-lens of the What Fills a Life report, which draws on ikigai's three levels and on Erikson's arc from identity through intimacy to generativity.*
+Each question exists across three perspectives: Individual (1), Relationship (1+1), Collective (1+Community). These are three simultaneous angles on the same human, three scales of self, not three separate domains and not stages. *Origin: the Three Perspectives meta-lens of the [What Fills a Life report](research--growth--what-fills-a-life.md), which draws on ikigai's three levels and on Erikson's arc from identity through intimacy to generativity.*
 
 Three questions across three perspectives make the nine-cell matrix. It is not a curriculum; it is a structural description of the developmental space FringeIsland holds. A journey, an episode or an encounter may touch one cell, several, or all nine.
 
@@ -476,7 +478,7 @@ Live and Grow are a corrective pair: Live without Grow is indulgence, Grow witho
 
 The triads nest: Live, Grow and Matter, the why, under Who, What and How, the questions, under 1, 1+1 and 1+community, the perspectives. And the architecture already holds both poles of Matter: the internal pole in meta-safety, the FIM who cannot be broken; the external pole in the bonds, in FIMs healing one another's cords, and in Dreamineers contributing to the world.
 
-**The framing discipline.** Live, Grow and Matter is the plain-language, human-facing aspiration, and it is FringeIsland's own. The science beneath it is the substrate: borrowed, cited, never claimed as FringeIsland's own. The one rule is that the universe's language is always *informed by* or *resonant with* the science, never *equal to* it: kinship claimed, equivalence never. Convergence without collapse is the evidence that the three words point at something real. The same discipline governs the zones and Immunity to Change: the universe speaks of Mara, the Whisp and the zones, and the frameworks sit beneath. The plain-language foundation is durable, because the substrate can be refined or swapped as the science moves without shaking it; and the drives stay accountable to the science without being derived from it. The platform never labels or measures a FIM's order of mind. *Substrate, informed by and never equal to: self-determination theory (Edward Deci and Richard Ryan); Martin Seligman's PERMA; the flourishing dimensions gathered in the What Fills a Life report. As kinship, never a mapping: Live is near PERMA's positive emotion and engagement; Grow near self-determination's competence and autonomy and PERMA's accomplishment; Matter near relatedness, relationships and meaning. The thinkers-behind-the-Whisp report opens with this mission.*
+**The framing discipline.** Live, Grow and Matter is the plain-language, human-facing aspiration, and it is FringeIsland's own. The science beneath it is the substrate: borrowed, cited, never claimed as FringeIsland's own. The one rule is that the universe's language is always *informed by* or *resonant with* the science, never *equal to* it: kinship claimed, equivalence never. Convergence without collapse is the evidence that the three words point at something real. The same discipline governs the zones and Immunity to Change: the universe speaks of Mara, the Whisp and the zones, and the frameworks sit beneath. The plain-language foundation is durable, because the substrate can be refined or swapped as the science moves without shaking it; and the drives stay accountable to the science without being derived from it. The platform never labels or measures a FIM's order of mind. *Substrate, informed by and never equal to: self-determination theory (Edward Deci and Richard Ryan); Martin Seligman's PERMA; the flourishing dimensions gathered in the [What Fills a Life report](research--growth--what-fills-a-life.md). As kinship, never a mapping: Live is near PERMA's positive emotion and engagement; Grow near self-determination's competence and autonomy and PERMA's accomplishment; Matter near relatedness, relationships and meaning. The [thinkers-behind-the-Whisp report](research--growth--thinkers-and-models-behind-the-whisp.md) opens with this mission.*
 
 > <a id="open-g-07"></a>**Open G-07 — The Whisp and the full set of flourishing dimensions.** Whether the Whisp's work relates to the whole flourishing research or only to the balance of Live, Grow and Matter. *Waits for:* the Whisp's specification.
 
@@ -490,11 +492,11 @@ Growth is registered along the Whisp's two channels, chapter 3's. Who I am: vali
 
 The Whisp is the growth voice; Mara is the negative voice most people obey without knowing it. Mara does not need to be discovered to be obeyed, only to be seen. The Whisp starts empty of content and full of wisdom; Mara starts full of content, the limits experience wrote into the person, and empties as the Whisp grows. In the end both are internalised and the FIM is whole.
 
-Internalising Mara is the move Immunity to Change describes. Beneath a person's stated wish to change lies a hidden competing commitment that protects them, and beneath that a Big Assumption, a rule about the world that runs them unseen. Together they are an immune system: intelligent self-protection, not weakness, keeping the person safe by keeping them the same. Change is a developmental problem, not a willpower problem, and the old behaviour does real protective work. The work is to learn and internalise what hinders you before you can change: become aware, turn it into a step forward, and step through it. What was subject, what had you, becomes object, something you can hold and test; and because the assumption did not hold, Mara's authority to rule the FIM empties, while the knowledge of one's limits is kept. That is what "internalised" means. *Origin: Robert Kegan and Lisa Laskow Lahey,* Immunity to Change *(2009); the Kegan report.*
+Internalising Mara is the move Immunity to Change describes. Beneath a person's stated wish to change lies a hidden competing commitment that protects them, and beneath that a Big Assumption, a rule about the world that runs them unseen. Together they are an immune system: intelligent self-protection, not weakness, keeping the person safe by keeping them the same. Change is a developmental problem, not a willpower problem, and the old behaviour does real protective work. The work is to learn and internalise what hinders you before you can change: become aware, turn it into a step forward, and step through it. What was subject, what had you, becomes object, something you can hold and test; and because the assumption did not hold, Mara's authority to rule the FIM empties, while the knowledge of one's limits is kept. That is what "internalised" means. *Origin: Robert Kegan and Lisa Laskow Lahey,* Immunity to Change *(2009); the [Kegan report](research--growth--kegan-immunity-to-change.md).*
 
 The Whisp's filling and Mara's emptying are one process seen from two ends: the transfer. What Mara loses, the Whisp gains, and since the Whisp is the human's own wiser voice, what the FIM ends up owning is themselves. Marath is Mara made into a place; the Shadow is Mara met there as a form; healing a wound in Nalome by acting on its cause in Marath is confronting one's own negative self-talk at its source. The confrontation is always mediated through the Whisp: the wiser voice walks in and meets the Shadow, and that is the point. The test that moves a rule across is run wherever the Shadow is met, the near side included; Marath's depth sets the size of the test, not whether growth happens.
 
-The transfer scales. Immunity to Change in the universe runs from the smallest change, one assumption tested in one encounter, up to the magnitude of a move between orders of mind, if the FIM so wishes and allows it. What the FIM dials is the depth of the invitation, how much of Mara they let be surfaced and tested and how often, never the outcome: a move between orders takes years and cannot be willed into being. The reaches are scales of test, adopted for now: one hidden belief on the near side, a competing commitment met in full on the far side, the whole immune system as one figure in the beyond, which is optional and for most never met. *Origin of the orders of mind: Robert Kegan,* The Evolving Self *(1982),* In Over Our Heads *(1994); the Kegan report.*
+The transfer scales. Immunity to Change in the universe runs from the smallest change, one assumption tested in one encounter, up to the magnitude of a move between orders of mind, if the FIM so wishes and allows it. What the FIM dials is the depth of the invitation, how much of Mara they let be surfaced and tested and how often, never the outcome: a move between orders takes years and cannot be willed into being. The reaches are scales of test, adopted for now: one hidden belief on the near side, a competing commitment met in full on the far side, the whole immune system as one figure in the beyond, which is optional and for most never met. *Origin of the orders of mind: Robert Kegan,* The Evolving Self *(1982),* In Over Our Heads *(1994); the [Kegan report](research--growth--kegan-immunity-to-change.md).*
 
 Mara exists at three levels, a person's own, a pair's and a community's, so the transfer does too; and in the backdrop the same mechanism runs at the scale of a civilisation, a collective immunity to change. Personal growth and the world's future are the same mechanism at different sizes, which is why the Whisp's personal work carries a civilisational stake without changing what it does. That scale is never told.
 
@@ -512,7 +514,7 @@ Growth happens by a FIM being cautiously pushed out of their comfort zone toward
 | Growth | The new way has become natural | Mara's authority emptied into the Whisp |
 | Panic | A test too big to be safe; the anxiety overwhelms and the immunity snaps back harder | The fence the Whisp never opens |
 
-*Substrate, informed by and never equal to: the four stages in Kegan and Lahey's* Immunity to Change, *unconsciously immune, consciously immune, consciously released, unconsciously released; the immune system as an anxiety-management system; the Kegan report.*
+*Substrate, informed by and never equal to: the four stages in Kegan and Lahey's* Immunity to Change, *unconsciously immune, consciously immune, consciously released, unconsciously released; the immune system as an anxiety-management system; the [Kegan report](research--growth--kegan-immunity-to-change.md).*
 
 A FIM is in a zone per hidden belief, not as a whole person. One belief may be released while another is still unseen, so there is no single zone a FIM is "in" and no zone meter. What the Whisp shows of any of this, if anything, is open.
 
@@ -522,7 +524,7 @@ A FIM is in a zone per hidden belief, not as a whole person. One belief may be r
 
 **The gradient as geography.** The zones are spatial. The distance that matters is Void distance, how far the Whisp has ventured out on the cord, not how far the body walks; "far from home" means far out on the lifeline. The zone bands sit on that one gradient, beside the Shadow's growth with depth. The FIM holds the dial: pay out to venture, reel in to retreat; risk is depth times protection, and the peril is opt-in, since no one is ever sent further than they allow. Anchoring encodes a lesson of growth: consolidate before advancing. Venture out for challenge, return home for safety, and out again: the breath-rhythm of development, rendered as geography.
 
-**The holding environment.** Beneath the Whisp's tough love lies what growth needs around it: confirmation of the person where they are, contradiction that challenges the limits of how they now make sense of things, and continuity that holds the relationship through the challenge. Too little contradiction keeps a FIM in comfort; too little confirmation tips them into panic. Deep change takes months to years; the platform creates the conditions and never forces the timing. *Origin: Robert Kegan; the Kegan report.*
+**The holding environment.** Beneath the Whisp's tough love lies what growth needs around it: confirmation of the person where they are, contradiction that challenges the limits of how they now make sense of things, and continuity that holds the relationship through the challenge. Too little contradiction keeps a FIM in comfort; too little confirmation tips them into panic. Deep change takes months to years; the platform creates the conditions and never forces the timing. *Origin: Robert Kegan; the [Kegan report](research--growth--kegan-immunity-to-change.md).*
 
 > <a id="open-g-01"></a>**Open G-01 — What is ever shown.** Whether the Whisp shows a FIM anything of their zones, of their map of hidden beliefs, or of the balance of Live, Grow and Matter, felt or legible; and whether the immunity map ever appears as a visible journey step or a respawn carries a prompt about one's assumptions. Depends on how the software is built and what testing shows works. *Waits for:* the Whisp's specification, build and testing.
 
@@ -580,7 +582,7 @@ The Whisp draws on the research behind human flourishing as substrate, never as 
 
 The wider research base woven into the experience layer, never surfaced and always present structurally, includes the Big Five, the VIA character strengths and Erin Meyer's Culture Map for self-understanding; Frankl, Steger and ikigai for purpose and meaning; self-determination theory, Ryff's psychological well-being and Keyes's flourishing for human flourishing; Kegan's constructive-developmental theory for adult development; Baumeister and Leary, attachment theory and the Harvard Study of Adult Development for belonging; and Bandura for self-efficacy.
 
-The research stays outside the bible, in its own reports, and it is never deleted: it is the record of where FringeIsland comes from. *Origins: Corey Keyes's dual continuum model; the What Fills a Life report; the Kegan report; the Theory U report; the report on the thinkers and models behind the Whisp.*
+The research stays outside the bible, in its own reports, and it is never deleted: it is the record of where FringeIsland comes from. *Origins: Corey Keyes's dual continuum model; the [What Fills a Life report](research--growth--what-fills-a-life.md); the [Kegan report](research--growth--kegan-immunity-to-change.md); the [Theory U report](research--growth--theory-u.md); the [report on the thinkers and models behind the Whisp](research--growth--thinkers-and-models-behind-the-whisp.md).*
 
 ## 5. Story
 
@@ -626,7 +628,7 @@ When the Whisp gets into trouble and dies, the FIM rewinds and tries again, and 
 
 **The loop is the medium, not a safety net.** What persists across a loop, tactical knowledge, relational insight, emotional clarity, is part of what the story is about. Failure and retry are how the story works, not what it falls back on when it breaks. Loop textures are a craft palette for Tellers, and respawn need not be combat-coded: combat practice, as in Edge of Tomorrow; the mystery-puzzle, as in Happy Death Day; constrained inquiry, as in Source Code; reflective grief, as in Re/Live.
 
-The learning zone is where the test of a hidden belief is run, under meta-safety and with respawn; a respawn is where the immunity is met, and a failed run is developmental material, never a lesson delivered. *Substrate: the respawn as an encounter with one's immunity, adopted from the Kegan report in substance; no diagnosis is ever surfaced at a respawn, and nothing labels the FIM.*
+The learning zone is where the test of a hidden belief is run, under meta-safety and with respawn; a respawn is where the immunity is met, and a failed run is developmental material, never a lesson delivered. *Substrate: the respawn as an encounter with one's immunity, adopted from the [Kegan report](research--growth--kegan-immunity-to-change.md) in substance; no diagnosis is ever surfaced at a respawn, and nothing labels the FIM.*
 
 > <a id="open-s-02"></a>**Open S-02 — How respawn feels and who starts it.** How in-story death and rewind actually feel, a hard cut, a slow dissolve, waking at the checkpoint, neither clinical nor traumatic; whether a rewind is FIM-initiated, Whisp-offered or both; whether a FIM can respawn deliberately to try another way; how a loop's unit is communicated and how nested levels are surfaced; whether the Whisp behaves differently at home base between attempts. *Waits for:* a narrative session and the Whisp's specification.
 
@@ -676,7 +678,7 @@ The saviour is the human's own future self, never the machine. The AI that runs 
 
 The dark future is the stake of the universe, never a whip. It is never used to hurry a FIM or make them feel guilty: no countdown, no "hurry or the world ends". It is the fundament of great storytelling, because something needs to itch to be found interesting and to gain people's curiosity; it gives the narrative its danger, its mystery and its reason to keep looking. It drives the story, the world's plot, its seasons and its episodes; it never drives the FIM, their pace, their depth or their dial. It sets a stage the FIM uses for growth in all three perspectives, with the Whisp's tough love, through the zones.
 
-Mara scales. Beneath a stated commitment to balance lies a hidden commitment not to fall behind, to capture the gain now: the race is a collective immunity to change. Personal growth and the world's future are the same mechanism at different sizes, and that is why the Whisp's personal work can carry a civilisational stake without changing what it does. Marath resonates with Mara at every size, the collective included, and so it is also the dark future as a place in time; Nalome is the good future as a place in time. The two worlds are the two poles of the future's continuum. A place in time is a possible future, never a fixed one, and the dark future stays a stake, never a whip. *Substrate: Kegan and Lahey's collective immunity to change; the Kegan report. Robert Kegan's own argument, that modern life asks more of adults than most ways of making meaning can meet, is this backdrop's thesis before it became myth.*
+Mara scales. Beneath a stated commitment to balance lies a hidden commitment not to fall behind, to capture the gain now: the race is a collective immunity to change. Personal growth and the world's future are the same mechanism at different sizes, and that is why the Whisp's personal work can carry a civilisational stake without changing what it does. Marath resonates with Mara at every size, the collective included, and so it is also the dark future as a place in time; Nalome is the good future as a place in time. The two worlds are the two poles of the future's continuum. A place in time is a possible future, never a fixed one, and the dark future stays a stake, never a whip. *Substrate: Kegan and Lahey's collective immunity to change; the [Kegan report](research--growth--kegan-immunity-to-change.md). Robert Kegan's own argument, that modern life asks more of adults than most ways of making meaning can meet, is this backdrop's thesis before it became myth.*
 
 ### 5.8 Where the backdrop lives: the conviction and the myth
 
@@ -692,7 +694,7 @@ It is available to anyone who looks, and it is never delivered in the experience
 
 The secret is kept for a while, not forever. It is held in time: any FIM and any author can come to know it by growing into it. Nothing is withheld permanently and nothing is hidden that could leak as a scandal. It survives being spoiled because its real form is lived, not informational; another FIM or a wiki can tell you, and being told is not the same as living it. What stays unspoilable for good is each FIM's own future self, because it is unique to them. The open world, which belongs to the people who inhabit and create it, and the hidden layer are reconciled by this: knowing why the author made it is not being told the story's secret.
 
-Leaving something unmapped is a design principle of the whole universe. The beyond is kept unknown for curiosity's sake, the myth is discovered and not told, and every story needs a stake. *Substrate: George Loewenstein's information-gap account of curiosity; the thinkers-behind-the-Whisp report.*
+Leaving something unmapped is a design principle of the whole universe. The beyond is kept unknown for curiosity's sake, the myth is discovered and not told, and every story needs a stake. *Substrate: George Loewenstein's information-gap account of curiosity; the [thinkers-behind-the-Whisp report](research--growth--thinkers-and-models-behind-the-whisp.md).*
 
 > <a id="open-s-11"></a>**Open S-11 — The reveal design.** Which breadcrumbs, seeded where and when; how the Whisp's filling unlocks the personal reveal; how a mythology arc pays off a clue without dating the world to one decade's debate. Experience design. *Waits for:* the fundamentals, then a dedicated session.
 
@@ -890,7 +892,7 @@ The social layer has a survival function. Along a shared line a friend sees your
 
 A FIM's own home is inviolable and shared only by invitation, region by region. Groups agree to greater openness only by the explicit informed consent of every participant, and a group's Steward cannot see its members' private developmental data. What is intimate travels only along the bond that can help it.
 
-> <a id="open-c-01"></a>**Open C-01 — Community formation when few are present.** How the relationship and collective perspectives work while the community is small: how enough human relationships are seeded, what the smallest viable community is, and how the near side is made dense where few FIMs live, seeds planted by FIMs being one answer. The business halves, cold start, recruiting Dreamineers before their tools exist, and content before there is a community to make it, stay in the questions register. *Research input, not adopted: Robin Dunbar's layered social capacity, in the thinkers-behind-the-Whisp report.* *Waits for:* a discovery session; people who do not exist yet.
+> <a id="open-c-01"></a>**Open C-01 — Community formation when few are present.** How the relationship and collective perspectives work while the community is small: how enough human relationships are seeded, what the smallest viable community is, and how the near side is made dense where few FIMs live, seeds planted by FIMs being one answer. The business halves, cold start, recruiting Dreamineers before their tools exist, and content before there is a community to make it, stay in the questions register. *Research input, not adopted: Robin Dunbar's layered social capacity, in the [thinkers-behind-the-Whisp report](research--growth--thinkers-and-models-behind-the-whisp.md).* *Waits for:* a discovery session; people who do not exist yet.
 
 ### 7.4 The founding moment
 
@@ -1008,7 +1010,7 @@ When two documents disagree about what a word means, this list wins. Entries are
 
 **Backdrop, the** — The myth of the universe, never told: the Whisp is the FIM's own future, whole self reaching back; a possible future is at stake; the Whisp's mission is the growth, never the conclusion; the saviour is the human, never the machine. Discovered, kept for a while, not forever. Deep-bible tier. Chapter 5.
 
-**Ball, the (the glowing glass ball)** — The glowing bottom of a FIM's drip, released to the FIM at the birth and attached to their Gimbal. It opens portals, buds seeds, anchors every venture, and is the two-zone gateway: inside to the home, rim to the village. It opens only to its own FIM, and every ball glows equal: equal in worth, not the same in person. It glows and works in the Gimbal only in the hands of its true owner, and it does not mature. Never confused with the drip. *Equal in worth, not the same in person: Clyde Kluckhohn and Henry Murray,* Personality in Nature, Society, and Culture *(1948); the thinkers-behind-the-Whisp report.* Chapter 2. See *Drip*.
+**Ball, the (the glowing glass ball)** — The glowing bottom of a FIM's drip, released to the FIM at the birth and attached to their Gimbal. It opens portals, buds seeds, anchors every venture, and is the two-zone gateway: inside to the home, rim to the village. It opens only to its own FIM, and every ball glows equal: equal in worth, not the same in person. It glows and works in the Gimbal only in the hands of its true owner, and it does not mature. Never confused with the drip. *Equal in worth, not the same in person: Clyde Kluckhohn and Henry Murray,* Personality in Nature, Society, and Culture *(1948); the [thinkers-behind-the-Whisp report](research--growth--thinkers-and-models-behind-the-whisp.md).* Chapter 2. See *Drip*.
 
 **Basic profile, the** — The profile every FIM receives at the birth, created then and never before consent; enough to open the default portals. Chapter 2.
 
@@ -1142,7 +1144,7 @@ When two documents disagree about what a word means, this list wins. Entries are
 
 **Governance by scope** — Community-scoped care in place; universe-scoped governance on the Console; the same law tiers World Studio. Chapter 6. *Platform: [ADR-U028](../architecture/decisions/ADR-U028-governance-by-scope.md).*
 
-**Graduation** — The Whisp internalised: an arc with no gate, no ceremony and no loss of access defined; not gated on the beyond. *Substrate: Robert Kegan; the Kegan report.* Chapter 4.
+**Graduation** — The Whisp internalised: an arc with no gate, no ceremony and no loss of access defined; not gated on the beyond. *Substrate: Robert Kegan; the [Kegan report](research--growth--kegan-immunity-to-change.md).* Chapter 4.
 
 **Growth is delight, not deficiency** — The guarded core value; it rules out every mechanic that motivates by threat or guilt. Chapter 4.
 
@@ -1152,7 +1154,7 @@ When two documents disagree about what a word means, this list wins. Entries are
 
 **Hero's Journey, the** — The narrative framework FringeIsland names for its story; how it shapes the universe's own arcs is for the Dreamineers. *Origin: Joseph Campbell,* The Hero with a Thousand Faces *(1949).* Chapter 5.
 
-**Holding environment** — Confirmation, contradiction and continuity: what growth needs around it, and the substrate beneath the Whisp's tough love. *Origin: Robert Kegan,* The Evolving Self *(1982); the Kegan report.* Chapter 4.
+**Holding environment** — Confirmation, contradiction and continuity: what growth needs around it, and the substrate beneath the Whisp's tough love. *Origin: Robert Kegan,* The Evolving Self *(1982); the [Kegan report](research--growth--kegan-immunity-to-change.md).* Chapter 4.
 
 **Home** — See *Private home*.
 
@@ -1164,11 +1166,11 @@ When two documents disagree about what a word means, this list wins. Entries are
 
 **Immersive edutainment** — Growth through being moved by stories that hold warmth and threat, life and death. Chapter 5.
 
-**Immunity to Change (ITC)** — Why people who want to change often do not: a hidden *competing commitment* protects a *Big Assumption* that runs a person unseen; the work moves the rule from *subject* to *object* and tests it safely, and its authority empties. The *immunity map* is its four-column diagram. The substrate beneath Mara, the transfer and the zones. *Origin: Robert Kegan and Lisa Laskow Lahey,* Immunity to Change *(2009); the Kegan report.* Chapter 4.
+**Immunity to Change (ITC)** — Why people who want to change often do not: a hidden *competing commitment* protects a *Big Assumption* that runs a person unseen; the work moves the rule from *subject* to *object* and tests it safely, and its authority empties. The *immunity map* is its four-column diagram. The substrate beneath Mara, the transfer and the zones. *Origin: Robert Kegan and Lisa Laskow Lahey,* Immunity to Change *(2009); the [Kegan report](research--growth--kegan-immunity-to-change.md).* Chapter 4.
 
 **Individual (1)** — See *Three Perspectives*.
 
-**Internal and external self-awareness** — Seeing who you are from the inside, and how you appear and operate in the world. *Origin: Tasha Eurich,* Insight *(2017); the thinkers-behind-the-Whisp report.* Chapter 4.
+**Internal and external self-awareness** — Seeing who you are from the inside, and how you appear and operate in the world. *Origin: Tasha Eurich,* Insight *(2017); the [thinkers-behind-the-Whisp report](research--growth--thinkers-and-models-behind-the-whisp.md).* Chapter 4.
 
 **Internalised** — The endgame of both voices: the Whisp integral to the human, Mara's authority emptied and its knowledge kept; the FIM whole, FringeIsland no longer needed. Chapter 4.
 
@@ -1180,7 +1182,7 @@ When two documents disagree about what a word means, this list wins. Entries are
 
 **Knowledge tiers, the** — The deep bible for the canon keepers, the story bible for authors, breadcrumbs for FIMs; with the breadcrumb register, mythology arcs against free episodes, the answer before the first clue, and the reveal gated by growth. *Lineage: television writers' rooms, translated.* Chapter 5.
 
-**Leave something unmapped** — A design principle of the universe: something must itch to be found interesting. *Substrate: George Loewenstein's information-gap account of curiosity (1994); the thinkers-behind-the-Whisp report.* Chapters 1 and 5.
+**Leave something unmapped** — A design principle of the universe: something must itch to be found interesting. *Substrate: George Loewenstein's information-gap account of curiosity (1994); the [thinkers-behind-the-Whisp report](research--growth--thinkers-and-models-behind-the-whisp.md).* Chapters 1 and 5.
 
 **Limb** — The part of the Tree a drip hangs from, by a small stalk; which limb carries no meaning. Chapter 2.
 
@@ -1188,7 +1190,7 @@ When two documents disagree about what a word means, this list wins. Entries are
 
 **Line rule, the** — What is intimate is visible only along a shared line: glanceable not diagnostic, invited not imposed, self first. Formerly "the branch rule". Chapter 4.
 
-**Live / Grow / Matter** — The three drives beneath the three questions: present-moment engagement; curiosity, never from deficiency; mattering to oneself and to others, two poles bridged by influence. Danced in balance, never in sequence. *Substrate, informed by and never equal to: self-determination theory (Edward Deci and Richard Ryan); Martin Seligman's PERMA; the What Fills a Life report; Epictetus and Morris Rosenberg for the two poles of Matter; John Krumboltz for planned happenstance. The thinkers-behind-the-Whisp report opens with this mission.* Chapter 4.
+**Live / Grow / Matter** — The three drives beneath the three questions: present-moment engagement; curiosity, never from deficiency; mattering to oneself and to others, two poles bridged by influence. Danced in balance, never in sequence. *Substrate, informed by and never equal to: self-determination theory (Edward Deci and Richard Ryan); Martin Seligman's PERMA; the [What Fills a Life report](research--growth--what-fills-a-life.md); Epictetus and Morris Rosenberg for the two poles of Matter; John Krumboltz for planned happenstance. The [thinkers-behind-the-Whisp report](research--growth--thinkers-and-models-behind-the-whisp.md) opens with this mission.* Chapter 4.
 
 **Lived experience, not instruction** — You must live something to know it; being told is not the same. *Lineage, held lightly: the knowledge argument, Frank Jackson's "Mary's Room" (1982).* Chapter 4.
 
@@ -1206,7 +1208,7 @@ When two documents disagree about what a word means, this list wins. Entries are
 
 **Map (the Whisp's)** — What hinders the FIM, their competing commitments and Big Assumptions, held by the Whisp. Chapter 3.
 
-**Mara** — The negative inner voice most people obey without knowing it: full of what experience wrote as limits, the immune system in the sense of Immunity to Change, emptying as the Whisp fills; at three levels, a person's, a pair's, a community's. Marath is Mara made into a place. *Name: the Buddhist Māra, the tempter, and the Scandinavian* mara, *the night-spirit of sleep paralysis, the root of* mardröm. *Substrate: Kegan and Lahey; the Kegan report.* Chapter 3.
+**Mara** — The negative inner voice most people obey without knowing it: full of what experience wrote as limits, the immune system in the sense of Immunity to Change, emptying as the Whisp fills; at three levels, a person's, a pair's, a community's. Marath is Mara made into a place. *Name: the Buddhist Māra, the tempter, and the Scandinavian* mara, *the night-spirit of sleep paralysis, the root of* mardröm. *Substrate: Kegan and Lahey; the [Kegan report](research--growth--kegan-immunity-to-change.md).* Chapter 3.
 
 **Marath** — The counterpart world to Nalome: hostile, cold, at first sight evil, in truth a manifestation of Mara. A shared place where Shadows are met; every wound in Nalome has a cause here. *Name: from Mara.* Chapter 2.
 
@@ -1238,7 +1240,7 @@ When two documents disagree about what a word means, this list wins. Entries are
 
 **One system, two faces** — Fiction names and platform permissions are the same system seen from two sides. Chapter 6. *Platform: [ADR-U006](../architecture/decisions/ADR-U006-universal-group-pattern.md) and [ADR-U007](../architecture/decisions/ADR-U007-three-layer-permission-model.md).*
 
-**Order of mind** — A qualitatively different way of making meaning; the platform never labels or measures a FIM's. *Origin: Robert Kegan,* The Evolving Self *(1982),* In Over Our Heads *(1994); the Kegan report.* Chapter 4.
+**Order of mind** — A qualitatively different way of making meaning; the platform never labels or measures a FIM's. *Origin: Robert Kegan,* The Evolving Self *(1982),* In Over Our Heads *(1994); the [Kegan report](research--growth--kegan-immunity-to-change.md).* Chapter 4.
 
 **Ordinary World, the** — Daily life, unmodified; where the FIM's body always is; the ground the near sides overlay. Chapter 2.
 
@@ -1266,7 +1268,7 @@ When two documents disagree about what a word means, this list wins. Entries are
 
 **Relationship (1+1)** — See *Three Perspectives*.
 
-**Research anchors, the** — The dual continuum, the multi-system requirement, the Three Perspectives meta-lens and Immunity to Change, named without statistics. *Origins: Corey Keyes's dual continuum model; the What Fills a Life, Kegan, Theory U and thinkers-behind-the-Whisp reports.* Chapter 4.
+**Research anchors, the** — The dual continuum, the multi-system requirement, the Three Perspectives meta-lens and Immunity to Change, named without statistics. *Origins: Corey Keyes's dual continuum model; the [What Fills a Life](research--growth--what-fills-a-life.md), [Kegan](research--growth--kegan-immunity-to-change.md), [Theory U](research--growth--theory-u.md) and [thinkers-behind-the-Whisp](research--growth--thinkers-and-models-behind-the-whisp.md) reports.* Chapter 4.
 
 **Respawn (rewind)** — The Whisp dying inside a story and re-entering it; the FIM rewinds and retries, inside the story, nested and scaled. Chapter 5.
 
@@ -1318,7 +1320,7 @@ When two documents disagree about what a word means, this list wins. Entries are
 
 **Test (of a Big Assumption)** — A safe, modest, actionable act against a hidden rule, run wherever the Shadow is met. Chapter 4.
 
-**Three Perspectives, the** — Individual (1), Relationship (1+1), Collective (1+Community): three simultaneous angles on the same human, running through everything. *Origin: the Three Perspectives meta-lens of the What Fills a Life report.* Chapter 4.
+**Three Perspectives, the** — Individual (1), Relationship (1+1), Collective (1+Community): three simultaneous angles on the same human, running through everything. *Origin: the Three Perspectives meta-lens of the [What Fills a Life report](research--growth--what-fills-a-life.md).* Chapter 4.
 
 **Three questions, the** — Who am I? What do I want? How do I get there? Held by the platform, answered by the member, and fundamental enough to take a whole life; not the founding questions. Chapter 4.
 
@@ -1352,7 +1354,7 @@ When two documents disagree about what a word means, this list wins. Entries are
 
 **Wayfinder** — A Dreamineer specialisation: Journey Studio, journeys walked alone, in pairs or in groups; the scale of the personal. Chapter 6.
 
-**Whisp, the** — Each person's own inner dialogue oriented toward growth and compassion; the human, not a companion; in the backdrop the person's own future, whole self reaching back. Empty of content, full of wisdom; fills as the person grows; the avatar in the Fringe; tough love, voluntary, never pulling rank; internalised in the end. *Research: the report on the thinkers and models behind the Whisp, with Ethan Kross's* Chatter *(2021) on the inner voice; the Kegan and What Fills a Life reports.* Chapter 3. *Platform: [ADR-U029](../architecture/decisions/ADR-U029-whisp-ownership-split-by-face.md).*
+**Whisp, the** — Each person's own inner dialogue oriented toward growth and compassion; the human, not a companion; in the backdrop the person's own future, whole self reaching back. Empty of content, full of wisdom; fills as the person grows; the avatar in the Fringe; tough love, voluntary, never pulling rank; internalised in the end. *Research: the [report on the thinkers and models behind the Whisp](research--growth--thinkers-and-models-behind-the-whisp.md), with Ethan Kross's* Chatter *(2021) on the inner voice; the [Kegan](research--growth--kegan-immunity-to-change.md) and [What Fills a Life](research--growth--what-fills-a-life.md) reports.* Chapter 3. *Platform: [ADR-U029](../architecture/decisions/ADR-U029-whisp-ownership-split-by-face.md).*
 
 **Whisp's face, the** — Static-dotted contours for a Mist; anonymous and wise at the birth; morphing over time into the FIM's own older self, never shown as a meter. Chapter 3.
 
@@ -1368,7 +1370,7 @@ When two documents disagree about what a word means, this list wins. Entries are
 
 **Wound and cause** — A blight in Nalome has a cause in Marath: notice, cross, stop the cause, watch it heal. Chapter 2.
 
-**Zones, the** — Comfort, fear, learning, growth, with panic as the fence: the felt experience of the transfer, per hidden belief, with no zone meter. *Substrate, informed by and never equal to: the four stages of overturning an immunity in Kegan and Lahey's* Immunity to Change; *the Kegan report.* Chapter 4.
+**Zones, the** — Comfort, fear, learning, growth, with panic as the fence: the felt experience of the transfer, per hidden belief, with no zone meter. *Substrate, informed by and never equal to: the four stages of overturning an immunity in Kegan and Lahey's* Immunity to Change; *the [Kegan report](research--growth--kegan-immunity-to-change.md).* Chapter 4.
 
 ### Retired names — what replaced them
 
