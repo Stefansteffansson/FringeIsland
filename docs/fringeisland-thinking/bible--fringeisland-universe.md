@@ -226,7 +226,7 @@ The home is furnished with the personal-scope slice of World Studio, which is op
 
 The bond between FIMs is a line: a straight glowing line between their drips, brighter with a stronger bond. It is grown over time, and it never kills a Whisp; losing a line thins the world there, nothing more. A drifted line fades and waits, and glows again when the bond is tended.
 
-Lines are the channel for what is intimate. Along a shared line a friend sees your cord's health and can steady it; along a shared line another FIM's Shadow can manifest to you, as form and force, never content, and a friend can stand with you against yours. Strangers see none of this. The brightness of a line is seen only by the FIMs who share it; everyone else sees the Tree's lines as ambient glow, never who is bound to whom or how strongly. No rankings, no counts.
+Lines are the channel for what is intimate. Along a shared line a friend sees your cord's health and can steady it. How much they see, and how much their help reaches, follows the line's brightness: a bright line is an open channel, a faint one shows and reaches less. Along a shared line another FIM's Shadow can manifest to you, as form and force, never content, and a friend can stand with you against yours. Strangers see none of this. The brightness of a line is seen only by the FIMs who share it; everyone else sees the Tree's lines as ambient glow, never who is bound to whom or how strongly. No rankings, no counts.
 
 A bond is not only between two. A FIM can be bound to many at once, and one relationship can hold several FIMs together: a circle, a crew, a group on a journey. A bond of more than two is one bond shared by all its members, its brightness seen by them alone; a pair inside a larger circle keep their pair line as well, each glowing on its own. A FIM who leaves a circle takes their share of the glow with them, and the bond among the others stays. The lines are not the crown: the crown is the Tree's own top, and the lines are drawn between the drips in it. The word "line" is reserved for this bond and its drawing in the Tree.
 
@@ -375,7 +375,7 @@ The test that moves a rule across is run wherever the Shadow is met, the near si
 
 ### 3.5 Mists and FIMs: becoming, and the birth
 
-**The Mist.** The anonymous entrant is a Mist: a translucent, drifting becoming-figure in the hyaline state, present but not yet anchored, seen but incomplete. The Mist is the figure; hyaline is the condition.
+**The Mist.** The anonymous entrant is a Mist: a translucent, drifting becoming-figure in the hyaline state, present but not yet anchored, seen but incomplete. The Mist is the figure; hyaline is the condition. A Mist's presence is visible to FIMs on the near side and recognisable as a Mist, yet it carries no name: others see how far it has formed, never who it is.
 
 A Mist accretes form as it answers the founding questions: first eyes (it can be met), then a mouth and features (it can respond), then firmer edges and less translucence, then condensation. Accretion tracks how far along a Mist is, never which question it answered: stage legible, content private. Two Mists at the same stage look equally present, whoever they are. Accretion and the clearing of the static in the Mist's Gimbal are one progress seen from two sides: as the world becomes clear to you, you become clear to the world.
 
@@ -393,7 +393,7 @@ Between consent and the birth a person is a FIM not yet born: remembered by the 
 
 *Transcendence* is the platform's name for the birth; *metamorphosis* and *the birth* are the lore's. They name the birth only, never the consent step. *The delivery* is the birth seen from the Whisp's side: the Whisp born into separateness across a kept cord. Parturition, not genesis. The cord is kept, never severed, the umbilical inverted: FIM and Whisp are forever two, and bound, and the cord is the preserved trace of their original unity. The frame of mother and child illuminates this; it is not the mechanics. The sequence as a FIM experiences it is the first hour, chapter 5's open question.
 
-> <a id="open-b-16"></a>**Open B-16 — How a Mist appears to others.** Whether FIMs and NPCs perceive a Mist in the world, and how a Mist looks to them beyond being recognisable as a Mist. *Waits for:* the fundamentals session.
+> <a id="open-b-16"></a>**Open B-16 — How a Mist appears to others.** Whether NPCs perceive a Mist, and how a Mist looks to others beyond being recognisable as one. *Waits for:* the fundamentals session.
 
 ### 3.6 NPCs
 
@@ -436,7 +436,7 @@ Open questions stand in **Open** boxes with a G-number; chapter 8 indexes them.
 
 FringeIsland is built around three questions: Who am I? What do I want? How do I get there? The platform does not answer them. It holds them, with space, structure and companionship, so that each person finds their own answers.
 
-What the universe is for is that FIMs become more self-aware, inside and out, about who they are, what they want and how they get there, so that they move forward in life deliberately. Self-awareness has two kinds: seeing who you are from the inside, and seeing how you appear and operate in the world. *Origin: Tasha Eurich,* Insight *(2017); the [thinkers-behind-the-Whisp report](research--growth--thinkers-and-models-behind-the-whisp.md).*
+What the universe is for is that FIMs become more self-aware, inside and out, about who they are, what they want and how they get there, so that they move forward in life deliberately. Self-awareness has two kinds: seeing who you are from the inside, and seeing how you appear and operate in the world. *Origin: Tasha Eurich,* Insight *(2017); the [thinkers-behind-the-Whisp report](research--growth--thinkers-and-models-behind-the-whisp.md).* Self-awareness is one part of growth, not the whole of it.
 
 Over time the experience internalises. The member carries their own wiser inner voice into ordinary life and no longer needs the platform. That is success: FringeIsland is built to graduate, not retain.
 
@@ -470,11 +470,11 @@ The three perspectives run through everything in the universe. Respawn happens a
 
 Beneath the questions lie the drives: why a human bothers to ask at all. All humans, in the end, want to live, to grow, and to matter, to themselves and to someone or something bigger than themselves. This is held as a design axiom, chosen and not derived, and supported by convergent evidence rather than claimed as its sum.
 
-- **Live** is present-moment engagement: enjoying the ride, not postponing happiness to a far future.
+- **Live** is present-moment engagement: enjoying the ride, not postponing happiness to a far future; a parallel to mindfulness.
 - **Grow** is curiosity and the urge to learn, explicitly not from deficiency. Growth is delight, never repair. It includes deliberate choices of action and planned happenstance, the readiness to act on the unplanned. The healthiest Grow is responsiveness, not tightness: awake enough to catch the train, loose enough to enjoy the platform while waiting. *Origin of planned happenstance: John Krumboltz.*
-- **Matter** has two poles, bridged by influence. The internal pole, "I feel I matter", is anchored in what I think, feel and do, which is within my control: the seat of freedom and security. The external pole, mattering to others and to something bigger, is the seat of contribution and connection, pursued through what one can offer and influence, with the outcome held lightly. You cannot control whether you matter to others; you can contribute, and let it follow. The internal anchor makes you free; the external reaching makes you not alone. Collapsing Matter onto the internal pole alone would be a cruel empty promise to the genuinely isolated. *Origins: for the internal pole the Stoic dichotomy of control, Epictetus; for the external pole Morris Rosenberg's work on mattering.*
+- **Matter** is the heaviest of the three: its negative pole is not sadness but meaninglessness. It has two poles, bridged by influence. The internal pole, "I feel I matter", is anchored in what I think, feel and do, which is within my control: the seat of freedom and security. The external pole, mattering to others and to something bigger, is the seat of contribution and connection, pursued through what one can offer and influence, with the outcome held lightly. You cannot control whether you matter to others; you can contribute, and let it follow. Rejection then wounds but does not destroy: the floor was never in another's hands. The internal anchor makes you free; the external reaching makes you not alone. The internal pole holds in a world that is rather free, which not everyone has. Collapsing Matter onto the internal pole alone would be a cruel empty promise to the genuinely isolated. *Origins: for the internal pole the Stoic dichotomy of control, Epictetus; for the external pole Morris Rosenberg's work on mattering.*
 
-Live and Grow are a corrective pair: Live without Grow is indulgence, Grow without Live is joyless striving. The three dance in balance, never in sequence. None is ever complete, so there are no rungs to climb, and each feeds the other two. The Whisp does not march a FIM up through them; it senses which drive is currently starved and leans the journey toward restoring the balance.
+Live and Grow are a corrective pair: Live without Grow is indulgence, Grow without Live is joyless striving. The three dance in balance, never in sequence. None is ever complete, so there are no rungs to climb, and each feeds the other two: living fully makes a person teachable, which feeds Grow; growing gives them something to contribute, which feeds Matter; mattering makes the moment worth savouring, which feeds Live. Pull one out and the other two wobble. The Whisp does not march a FIM up through them; it senses which drive is currently starved and leans the journey toward restoring the balance.
 
 The triads nest: Live, Grow and Matter, the why, under Who, What and How, the questions, under 1, 1+1 and 1+community, the perspectives. And the architecture already holds both poles of Matter: the internal pole in meta-safety, the FIM who cannot be broken; the external pole in the bonds, in FIMs healing one another's cords, and in Dreamineers contributing to the world.
 
@@ -496,7 +496,7 @@ Internalising Mara is the move Immunity to Change describes. Beneath a person's 
 
 The Whisp's filling and Mara's emptying are one process seen from two ends: the transfer. What Mara loses, the Whisp gains, and since the Whisp is the human's own wiser voice, what the FIM ends up owning is themselves. Marath is Mara made into a place; the Shadow is Mara met there as a form; healing a wound in Nalome by acting on its cause in Marath is confronting one's own negative self-talk at its source. The confrontation is always mediated through the Whisp: the wiser voice walks in and meets the Shadow, and that is the point. The test that moves a rule across is run wherever the Shadow is met, the near side included; Marath's depth sets the size of the test, not whether growth happens.
 
-The transfer scales. Immunity to Change in the universe runs from the smallest change, one assumption tested in one encounter, up to the magnitude of a move between orders of mind, if the FIM so wishes and allows it. What the FIM dials is the depth of the invitation, how much of Mara they let be surfaced and tested and how often, never the outcome: a move between orders takes years and cannot be willed into being. The reaches are scales of test, adopted for now: one hidden belief on the near side, a competing commitment met in full on the far side, the whole immune system as one figure in the beyond, which is optional and for most never met. *Origin of the orders of mind: Robert Kegan,* The Evolving Self *(1982),* In Over Our Heads *(1994); the [Kegan report](research--growth--kegan-immunity-to-change.md).*
+The transfer scales. Immunity to Change in the universe runs from the smallest change, one assumption tested in one encounter, up to the magnitude of a move between orders of mind, if the FIM so wishes and allows it. What the FIM dials is the depth of the invitation, how much of Mara they let be surfaced and tested and how often, never the outcome: a move between orders takes years and cannot be willed into being. The reaches are scales of test, adopted for now: one hidden belief on the near side, a competing commitment met in full on the far side, the whole immune system as one figure in the beyond, which is optional and for most never met. *Origin of the orders of mind: Robert Kegan,* The Evolving Self *(1982),* In Over Our Heads *(1994); the [Kegan report](research--growth--kegan-immunity-to-change.md).* Over the years a FIM's Marath may deepen and change character as the way they make meaning changes, without the universe ever naming an order.
 
 Mara exists at three levels, a person's own, a pair's and a community's, so the transfer does too; and in the backdrop the same mechanism runs at the scale of a civilisation, a collective immunity to change. Personal growth and the world's future are the same mechanism at different sizes, which is why the Whisp's personal work carries a civilisational stake without changing what it does. That scale is never told.
 
@@ -504,7 +504,7 @@ Mara exists at three levels, a person's own, a pair's and a community's, so the 
 
 ### 4.6 The zones
 
-Growth happens by a FIM being cautiously pushed out of their comfort zone toward growth, without getting into panic. "Cautiously" is structural: the Whisp reads where the FIM is and nudges. There are five zones, comfort, fear, learning and growth, with panic as the fence around them. They are the felt experience of the transfer from the inside, and they follow the four stages of overturning an immunity.
+Growth happens by a FIM being cautiously pushed out of their comfort zone toward growth, without getting into panic. Personalisation follows Immunity to Change, not preference: the Whisp does not simply give a FIM what they prefer. "Cautiously" is structural: the Whisp reads where the FIM is and nudges. There are five zones, comfort, fear, learning and growth, with panic as the fence around them. They are the felt experience of the transfer from the inside, and they follow the four stages of overturning an immunity.
 
 | Zone | What it feels like | In the universe |
 |---|---|---|
@@ -622,7 +622,7 @@ When the Whisp gets into trouble and dies, the FIM rewinds and tries again, and 
 
 **Respawn is plural, not singular.** Topologies coexist: event-local, for a FIM alone; round-bounded, where a group dies during a round and returns together at the next, as in Counter-Strike; day-bounded; episode-bounded. Different stories use different loop units, and group respawn is solvable because a round-bounded structure resets everyone at a shared boundary.
 
-**Respawn stays inside the story.** A FIM who dies respawns within the same journey, season or episode: at home base, a safe return point within the arc, or by episode-repeat, the whole episode replayed. The containing arc keeps holding the FIM; a story never ejects its participant on failure. A story may define its own home base, which may be the FIM's own home.
+**Respawn stays inside the story.** A FIM who dies respawns within the same journey, season or episode: at home base, a safe return point within the arc, or by episode-repeat, the whole episode replayed. The containing arc keeps holding the FIM; a story never ejects its participant on failure. A story may define its own home base, which may be the FIM's own home. Home base and episode-repeat are two examples, not the whole list: one story may run several respawn modes at different scales, and the design space stays open for Tellers.
 
 **Respawn is nested and scaled.** Small failures, small respawn, at home base; large failures, a larger unit repeats, the episode, and by the same scaling the season. The units nest: journey, season, episode, moment, and a respawn exists at each level. The cord's two tiers of severance, fall back to the last seed or start over from the beginning, are the same system given a cause and a currency.
 
@@ -744,7 +744,7 @@ The public launch is Season Zero: the founding campaign as a founding moment and
 
 ### 5.12 Design lineage, recorded and not adopted
 
-"Alternative Reality" is a logbook term. FringeIsland draws on the alternate-reality game tradition, in which the line between reality and fiction blurs, and on the ambient and analog-horror lineage beside it. The blur can run both ways: fiction pulling the player in, and fiction seeping out into the ordinary world. What is borrowed is the mystery aesthetic, never the exclusion or the unease. Two authored worlds set the quality bar for a coherent world with the uncanny in the everyday: Mats Åkerman's Den Svagiska Unionen and Simon Stålenhag's. None of this is adopted as a story mechanic. The Nordic uncanny-in-the-everyday is one influence among many: the bar is coherence and the uncanny in the everyday, not a Nordic setting. And the blur never becomes deception: the older mythology and every alternate-reality element are framed as fiction, never presented as real-world events.
+"Alternative Reality" is a logbook term. FringeIsland draws on the alternate-reality game tradition, in which the line between reality and fiction blurs, and on the ambient and analog-horror lineage beside it. The alternate-reality games are *The Beast* (2001), *I Love Bees* (2004), *The Art of the Heist* (2005), *Year Zero* (2007) and the *Portal 2* ARG (2010); the puzzles and the ambient and analog-horror works are *Cicada 3301*, *The Sun Vanished* and *Local58*. The blur can run both ways: fiction pulling the player in, and fiction seeping out into the ordinary world. What is borrowed is the mystery aesthetic, never the exclusion or the unease. Two authored worlds set the quality bar for a coherent world with the uncanny in the everyday: Mats Åkerman's *Den Svagiska Unionen* and Simon Stålenhag's *Tales from the Loop* and *The Electric State*. None of this is adopted as a story mechanic. The Nordic uncanny-in-the-everyday is one influence among many: the bar is coherence and the uncanny in the everyday, not a Nordic setting. And the blur never becomes deception: the older mythology and every alternate-reality element are framed as fiction, never presented as real-world events.
 
 > <a id="open-s-15"></a>**Open S-15 — Which alternate-reality mechanics, if any.** Location-anchored clues, collaborative puzzles, real-world artefacts, distributed media, in-fiction characters that respond in real time; whether collective mysteries are ecosystem-wide or scoped to a season; whether NPCs are the responding characters. *Waits for:* a narrative session; the studios.
 
@@ -866,7 +866,7 @@ A FIM inviting someone is a referral to the platform: an invitation carrying a g
 
 ### 6.10 Who holds the canon
 
-Canon keeping is a function inside Universe Studio, not a role or a rank; the founder is the first canon keeper. The deep bible is received by commission, never by rank or developmental level, and every Teller and Wayfinder receives the story bible; authoring access is never gated on a person's order of mind, which the platform never labels. The repository is not the vault. How the mythology is held, the tiers, the fixed points, the mythology arcs and the breadcrumb register, is chapter 5's; who keeps the canon after the founder, and how an author enters the deep bible, is its open question S-12.
+Canon keeping is a function inside Universe Studio, not a role or a rank. The founder is the first canon keeper and holds it alone until Dreamineers exist; later the FringeIsland Council seats the canon group and arbitrates disputes, but does not author. DeusEx is not the canon keeper. The deep bible is received by commission, never by rank or developmental level, and every Teller and Wayfinder receives the story bible; authoring access is never gated on a person's order of mind, which the platform never labels. The repository is not the vault. How the mythology is held, the tiers, the fixed points, the mythology arcs and the breadcrumb register, is chapter 5's; who keeps the canon after the founder, and how an author enters the deep bible, is its open question S-12.
 
 ## 7. Community and the founding moment
 
@@ -877,6 +877,8 @@ Open questions stand in **Open** boxes with a C-number; chapter 8 indexes them.
 ### 7.1 A movement, not a product
 
 FringeIsland is a movement, not a product. The community is not an add-on to the platform; it is the reason the platform exists. Humans and their stories outrank aesthetics and worldbuilding: when they pull apart, the human wins, then the story, then the world. Constant change is the steady state.
+
+**How we treat each other.** Mutual respect over judgment of others: every person here is in the middle of their own journey, incomplete and still becoming, and so is everyone they meet; judgment assumes the full picture, which no one has. Belonging over fitting in: no one has to arrive already shaped; come as you are, and there is a place here for exactly that person. Belonging is not earned. *Source: the [MANIFESTO](../ecosystem/MANIFESTO.md), "How we treat each other".*
 
 Growth is structurally social. The relationship and collective perspectives can only be worked through with real people, never with NPCs or AI-generated activity, so community and group features are not add-ons; they are the only path to two of the three perspectives. Participation is always voluntary, and a FIM who cultivates their home alone is inhabiting FringeIsland completely; the full arc opens only through connection. The world invites, and does not force.
 
@@ -1130,6 +1132,8 @@ When two documents disagree about what a word means, this list wins. Entries are
 
 **FringeIsland** — The universe seen from outside: the project, the product, and the frame that holds the Ordinary World and the whole Fringe; also the enterprise. It names no one place. Chapter 2.
 
+**FringeIsland Council, the** — The enterprise-plane seat that cares for all major decisions concerning FringeIsland and its connection to partners; later it also seats the canon group and arbitrates canon disputes, without authoring. Every seat is a FIM. Chapter 6.
+
 **Future, the** — A continuum between the good future and the dark future; a possible future reaches back through the Whisp. Chapters 2 and 5.
 
 **Game, the** — Not a product: a depth setting of journeys. Chapter 6. *Platform: [ADR-U025](../architecture/decisions/ADR-U025-products-as-equipment-profiles.md).*
@@ -1260,7 +1264,7 @@ When two documents disagree about what a word means, this list wins. Entries are
 
 **Private home, the** — A FIM's self-chosen representation of where they feel safest, reached through the inside of the ball; default-locked, shareable by part; furnished from World Studio's personal slice. Chapter 2.
 
-**Productive failure** — Real felt stakes inside guaranteed reversibility. Chapter 4.
+**Productive failure** — Real felt stakes inside guaranteed reversibility. Chapters 4 and 5.
 
 **Red thread, the** — The three questions across the three perspectives, running through everything. Chapter 4.
 
