@@ -1,7 +1,7 @@
 # FringeIsland — Vision
 
 **Status:** Constitutional document
-**Version:** 1.3 (2026-09-26 — vocabulary aligned to the Universe Bible, which replaced the canonical cores; before that 1.2, reconciliation Session B, 2026-06-10 — aligned to the universe-discovery locks; cosmology and roles then lived in canonical cores under [Universe](../fringeisland-thinking/README.md))
+**Version:** 1.4 (2026-09-28 — the consent step and the birth named as the Universe Bible names them, TASK-VOC-01; before that 1.3, 2026-09-26 — vocabulary aligned to the Universe Bible, which replaced the canonical cores; before that 1.2, reconciliation Session B, 2026-06-10 — aligned to the universe-discovery locks; cosmology and roles then lived in canonical cores under [Universe](../fringeisland-thinking/README.md))
 
 ---
 
@@ -36,7 +36,7 @@ An immersive edutainment platform where personal development happens through liv
 
 ## Structural concepts
 
-**FIM** (FringeIsland Member) — the base identity: a person with a Whisp. Entrants begin as **Mists** (anonymous, ephemeral, unlinkable, near-side only — translucent becoming-figures that accrete form as they answer the founding questions) and **transcend** into FIMs at the persistence-and-consent threshold — also called **metamorphosis**, fired when the questions are complete and consent is given — which grants their glowing glass ball in the Tree (ADR-U031).
+**FIM** (FringeIsland Member) — the base identity: a person with a Whisp. Entrants begin as **Mists** (anonymous, ephemeral, unlinkable, near-side only — translucent becoming-figures that accrete form as they answer the founding questions) and **become FIMs** by consent, the moment they agree to be remembered. When the founding questions are complete, the FIM is **born** — the birth, which the platform calls **transcendence** and the lore **metamorphosis** — and receives their drip in the Tree and its glowing glass ball (ADR-U031).
 
 **The worlds** — the cosmological frame: the *Ordinary World* (daily life — always present, never absent), the *Shimmer* (the membrane between), and the *Fringe* — two co-located worlds behind the one Shimmer: *Nalome*, warm and welcoming, and *Marath*, hostile and cold, two poles of a single continuum, each with a near side (tied to worldly coordinates), a far side (with no earthly coordinates) and a beyond (not yet known). The *village* — the commons with the Tree, where each FIM's drip hangs and every ball glows equal — lies on the far side of Nalome. The *Void* is the axis of separation: the medium the Whisp hangs in, out on its cord.
 
