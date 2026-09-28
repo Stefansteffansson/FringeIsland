@@ -20,7 +20,7 @@ Found by the doc-health run of 2026-09-28 (Sections 1.5 and 10). The bible says 
 
 Active documents still give transcendence that former meaning:
 
-- `docs/ecosystem/VISION.md:39` — "**transcend** into FIMs at the persistence-and-consent threshold". The R-50 vocabulary pass (#689) did not reach this line. A vocabulary-only correction is prepared in the held pull request of 2026-09-28, beside the AGENTS.md change, because VISION is constitutional.
+- `docs/ecosystem/VISION.md:39` — "**transcend** into FIMs at the persistence-and-consent threshold". The R-50 vocabulary pass (#689) did not reach this line. **Fixed 2026-09-28 (#699, on Stefan's "ok merge 699"): VISION 1.4.**
 - `docs/platform/core/identity-specification.md:238`, `:482` — "Transcendence (metamorphosis) — the persistence-and-consent threshold".
 - `docs/platform/core/features/FEAT-PC002-mist-transcendence-reaper-consent.md` — the title, and `:18`, `:33`, `:79`, `:118`.
 - `docs/products/hub/features/FEAT-H004-mist-transcendence-and-farewell.md` — the title, and `:32`, `:50`, `:135`.
@@ -30,7 +30,7 @@ Active documents still give transcendence that former meaning:
 
 ## Acceptance criteria
 
-1. VISION.md:39 corrected, on Stefan's nod (the held pull request of 2026-09-28).
+1. ~~VISION.md:39 corrected, on Stefan's nod.~~ Done 2026-09-28, #699.
 2. Each spec's **present-tense** prose names the consent step "becoming a FIM" (or "consent") and keeps "transcendence" for the birth; where a shipped name must stay (a route, a function, a spec filename), one line says it is the platform's historical name for the consent step. Implementation notes and other shipped history are not rewritten.
 3. Stefan rules on the code: rename the `transcend` route and its telemetry now, or when the birth is built (the 2026-09-26 recommendation). The ruling is recorded here.
 4. A doc-health grep for "persistence-and-consent threshold" and "transcend into FIMs" (the Section 1.5 row added 2026-09-28) returns only history.
