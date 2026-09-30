@@ -4,7 +4,7 @@
 |---|---|
 | **Cycle** | The Eid kickoff — open Wave 2 — the wave file with its DoD on day one, the carry-overs dispositioned, design tools and narrative decomposed to 4-ready |
 | **Plan** | [`2026-09-07-eid-kickoff-plan.md`](2026-09-07-eid-kickoff-plan.md) |
-| **Latest bridge** | [`../sessions/2026-09-28_01_-_UNIVERSE-BIBLE-SESSION-06-CARRIED-IN.md`](../sessions/2026-09-28_01_-_UNIVERSE-BIBLE-SESSION-06-CARRIED-IN.md) |
+| **Latest bridge** | [`../sessions/2026-09-30_01_-_UNIVERSE-BIBLE-COMPLETENESS-AUDIT.md`](../sessions/2026-09-30_01_-_UNIVERSE-BIBLE-COMPLETENESS-AUDIT.md) |
 | **Board** | open 2026-09-07 — the kickoff decomposes in a fresh session; two decisions in the plan are Stefan's |
 | **Next** | the first Eid build cycle — Journey Studio v1, the minimal design foundation or the Whisp, whichever the kickoff bets on first |
 
@@ -14,12 +14,12 @@
 - **Thinking tree closed 2026-09-17** — 33 → 21 files, names that say what is inside, the discovery file content-reviewed, the manifestation map re-run; inputs for the kickoff in the [close bridge](../sessions/2026-09-17_01_-_THINKING-TREE-CLOSE.md)
 
 ## Waiting on Stefan
-- The two kickoff decisions in the plan §4 — the Eid appetite, and which of the three themes goes first; the theme also picks the next discovery session, row 2 or row 5 of the [bible's session queue](../../fringeisland-thinking/record--universe-bible-plan.md#the-session-queue)
+- The two kickoff decisions in the plan §4 — the Eid appetite, and which of the three themes goes first; the theme also picks the next discovery session, row 2 or row 5 of the [bible's session queue](../../fringeisland-thinking/record--universe-bible-plan.md#the-session-queue); and the breach-response tooling carry-over, in or out
 - Leaked-password protection — a Supabase Pro decision (the org is on Free; the toggle refuses to save)
 - The E2E smoke job in CI — Eid's first tooling item, a ruling on design before a build
 
 ## Landed this cycle
-- **The Universe Bible written and switched over 2026-09-26** — nine chapters (#685), canon files deleted (#687); open questions queued 2026-09-27; Session 06 answered eight and told the older mythology (#695); the [bridge](../sessions/2026-09-28_01_-_UNIVERSE-BIBLE-SESSION-06-CARRIED-IN.md)
+- **The Universe Bible written 2026-09-26 and made complete 2026-09-30** — nine chapters (#685); its open questions queued (#693); Session 06 told the older mythology (#695); sources linked, backstory in full, a 627-item audit ported (#701–#704); the [bridge](../sessions/2026-09-30_01_-_UNIVERSE-BIBLE-COMPLETENESS-AUDIT.md)
 - **Wave 1, Ferd, declared CLOSED 2026-09-07** — `ferd.md` completed, the [close plan](../hub-v2/2026-09-05-ferd-close-plan.md) CLOSED, the [DoD walk](../hub-v2/2026-09-05-ferd-dod-walk.md) with no open row, the [wave retro](../retrospectives/retro-wave-ferd.md) carrying the carry-overs
 - G-04 ruled and executed — the waves band is the ecosystem roadmap; six pointers repointed, nothing deleted
 - The front door written by `npm run cycle:kickoff`; cycle plans live in `cycles/` from now on
