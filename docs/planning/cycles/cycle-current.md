@@ -14,12 +14,12 @@
 - **Thinking tree closed 2026-09-17** — 33 → 21 files, names that say what is inside, the discovery file content-reviewed, the manifestation map re-run; inputs for the kickoff in the [close bridge](../sessions/2026-09-17_01_-_THINKING-TREE-CLOSE.md)
 
 ## Waiting on Stefan
-- The two kickoff decisions in the plan §4 — the Eid appetite, and which of the three themes goes first; the theme also picks the next discovery session, row 2 or row 5 of the [bible's session queue](../../fringeisland-thinking/record--universe-bible-plan.md#the-session-queue); and the breach-response tooling carry-over, in or out
+- The two kickoff decisions in the plan §4 — the Eid appetite, and which theme goes first (it also picks the next discovery session: row 2 or 5 of the [queue](../../fringeisland-thinking/record--universe-bible-plan.md#the-session-queue)); and the breach-response tooling carry-over, in or out
 - Leaked-password protection — a Supabase Pro decision (the org is on Free; the toggle refuses to save)
 - The E2E smoke job in CI — Eid's first tooling item, a ruling on design before a build
 
 ## Landed this cycle
-- **The Universe Bible written 2026-09-26 and made complete 2026-09-30** — nine chapters (#685); its open questions queued (#693); Session 06 told the older mythology (#695); sources linked, backstory in full, a 627-item audit ported (#701–#704); the [bridge](../sessions/2026-09-30_01_-_UNIVERSE-BIBLE-COMPLETENESS-AUDIT.md)
+- **The Universe Bible written 2026-09-26, made complete 2026-09-30** — nine chapters, the open questions queued, the older mythology told, sources linked, a 627-item audit ported (#685–#704); the [bridge](../sessions/2026-09-30_01_-_UNIVERSE-BIBLE-COMPLETENESS-AUDIT.md)
 - **Wave 1, Ferd, declared CLOSED 2026-09-07** — `ferd.md` completed, the [close plan](../hub-v2/2026-09-05-ferd-close-plan.md) CLOSED, the [DoD walk](../hub-v2/2026-09-05-ferd-dod-walk.md) with no open row, the [wave retro](../retrospectives/retro-wave-ferd.md) carrying the carry-overs
 - G-04 ruled and executed — the waves band is the ecosystem roadmap; six pointers repointed, nothing deleted
 - The front door written by `npm run cycle:kickoff`; cycle plans live in `cycles/` from now on
