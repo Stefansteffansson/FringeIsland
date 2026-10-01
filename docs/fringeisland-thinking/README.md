@@ -30,17 +30,16 @@
 
 ```
 <register>--<area>--<topic>.ext    research
-<register>--<topic>.ext            bible, discovery, questions, quotes (one file each), record (one-off design records)
+<register>--<topic>.ext            bible, discovery, questions, quotes (one file each)
 ```
 
-The first token says **what kind of thing this is**. The second token is **what you would scan for inside that register** — the area for research; for the bible, discovery, questions, quotes and the records the name itself says what the file holds. Sorted alphabetically, any file lister groups by register, then by area.
+The first token says **what kind of thing this is**. The second token is **what you would scan for inside that register** — the area for research; for the bible, discovery, questions and quotes the name itself says what the file holds. Sorted alphabetically, any file lister groups by register, then by area.
 
 | Register | Meaning | How it changes |
 |---|---|---|
 | `bible--` | **The Universe Bible** — the single truth about what the universe **is** and how it works, present tense, one file, nine chapters. The vocabulary authority is its glossary. | Through a discovery session, then Claude Code bakes the session's statements into it. Never edited ad hoc. |
 | `discovery--` | One file: where the discovery work stands, the ideas on the table, and the sessions record. Working notes, **never truth** on their own; the workshop where new thinking happens before it is baked into the bible. Part 3 (the sessions) is append-only and is never rewritten. | A session is appended to Part 3; its "Baked into the bible" list is carried into the bible. |
 | `research--` | Reports and studies — what we learned from studying something. Areas: `growth` (human development, flourishing, facilitation, the thinkers behind the Whisp), `worlds` (portals, parallel worlds), `method` (how a solo developer runs an ecosystem), `engineering`. **Core origin material: rename and rearrange if necessary, never delete.** | Informs the bible, ADRs and specs; the bible cites it and never absorbs it. |
-| `record--` | Design records and snapshots produced by a session — the design lives here, the obligations land in the owning specs. | — |
 | `questions--` | The ecosystem open-questions (CQ) register: business, product and technical questions. Universe questions live in the bible's Open boxes and chapter 8; the register points at them. | Resolved questions move to the register's Resolved section; strategic direction → `../ecosystem/strategy/`; constitutional change → `VISION.md` / `MANIFESTO.md`. |
 | `quotes--` | Quotes, sayings and lines kept for later — Whisp lines, breadcrumbs, seeds for seasons and episodes. Stored as they are, never analysed here. | Add at the end; never renumber. |
 
@@ -99,17 +98,6 @@ Any document that answers "what did we learn from studying something?" Research 
 | [`research--engineering--performance-budget-and-cold-start.md`](research--engineering--performance-budget-and-cold-start.md) | Two reports, one investigation — the first-paint performance budget vetted against Core Web Vitals, RAIL, Nielsen limits and SaaS benchmarks (2026-07-07, locked as ADR-U043), and cold start: how the field solves what we measured, Vercel's solution stack (2026-07-10, feeds ADR-U036) |
 
 The `worlds` reports are the external cross-media surveys that fed the discovery work — see Candidate A in Part 2 of [`discovery--the-universe-in-the-making.md`](discovery--the-universe-in-the-making.md) and the portal types held open in the bible's worlds chapter.
-
----
-
-## record-- — design records
-
-Cross-cutting design records produced by joint-design spikes — the design lives here; the obligations land in the owning specs.
-
-| File | What it is |
-|---|---|
-| [`record--universe-to-spec-manifestation.md`](record--universe-to-spec-manifestation.md) | Snapshot map of how the universe's concepts are (or aren't) realised as capabilities in the entity specifications, and since the 2026-09-17 re-run whether a shipped feature has built them; what changed since June; prioritised gaps. Written against the canon files; its next run is against the bible |
-| [`record--universe-bible-plan.md`](record--universe-bible-plan.md) | The plan the bible was built to — its goal, Stefan's decisions, the shape, the phases and the rules — and, since Phase 6, the **session queue**: the order in which the bible's open questions are taken up, with the next session's brief. Kept until the queue holds only parked boxes. The two Phase 2 working records (the rulings list and the chapter maps) were deleted at the switch-over; git keeps them |
 
 ---
 

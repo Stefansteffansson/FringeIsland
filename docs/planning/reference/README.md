@@ -18,6 +18,7 @@ docs/planning/reference/
 ├── ANATOMY-CONFORMANCE-AUDIT-3.md         ← audit III (July 2026, Cycle COR-C): the composition column (GC-14) + findings AC3-*; cited by every per-RPC gate roll-up since
 ├── ANATOMY-CONFORMANCE-AUDIT-4.md         ← audit IV (2026-08-10, Cycle COR-D): ring-focused, full Hub v2 census; findings AC4-*, GC-15..23; the declared-composition class (ADR-U047 A3); CLOSED 2026-08-11
 ├── ANATOMY-CONFORMANCE-AUDIT-5.md         ← audit V (2026-09-05, Cycle COR-E): whole repository post-cutover — code rings conformant and gate-green; the drift is in docs/steering/tooling; findings AC5-*, GC-24..27; board OPEN
+├── UNIVERSE-TO-SPEC-MANIFESTATION.md      ← how the universe's concepts show up in the specs and the build (June 2026, re-run 2026-09-17 against the canon files; re-run against the bible when the Eid kickoff needs it; moved from the thinking folder 2026-10-01)
 ├── PERF-MEASUREMENT-LEDGER.md             ← the durable ADR-U043 record — one row per measurement pass (ADR-U052 §5; append-only from 2026-07-31)
 ├── supabase-support-es256-admin-api.md    ← ready-to-send Supabase support ticket for the Admin-API ES256 flake (TASK-INT-01)
 ├── mist-reconciliation-register.md        ← Shadow -> Mist rename + re-scope worklist (June 2026; Step 1 ratified 2026-06-21, ADR-U031)
