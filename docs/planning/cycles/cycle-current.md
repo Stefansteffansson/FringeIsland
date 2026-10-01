@@ -4,7 +4,7 @@
 |---|---|
 | **Cycle** | The Eid kickoff — open Wave 2 — the wave file with its DoD on day one, the carry-overs dispositioned, design tools and narrative decomposed to 4-ready |
 | **Plan** | [`2026-09-07-eid-kickoff-plan.md`](2026-09-07-eid-kickoff-plan.md) |
-| **Latest bridge** | [`../sessions/2026-09-30_01_-_UNIVERSE-BIBLE-COMPLETENESS-AUDIT.md`](../sessions/2026-09-30_01_-_UNIVERSE-BIBLE-COMPLETENESS-AUDIT.md) |
+| **Latest bridge** | [`../sessions/2026-10-01_01_-_THINKING-FOLDER-UNIVERSE-ONLY-AND-RESEARCH-ADDENDA.md`](../sessions/2026-10-01_01_-_THINKING-FOLDER-UNIVERSE-ONLY-AND-RESEARCH-ADDENDA.md) |
 | **Board** | open 2026-09-07 — the kickoff decomposes in a fresh session; two decisions in the plan are Stefan's |
 | **Next** | the first Eid build cycle — Journey Studio v1, the minimal design foundation or the Whisp, whichever the kickoff bets on first |
 
@@ -19,7 +19,7 @@
 - The E2E smoke job in CI — Eid's first tooling item, a ruling on design before a build
 
 ## Landed this cycle
-- **The Universe Bible written 2026-09-26, made complete 2026-09-30** — nine chapters, the open questions queued, the older mythology told, sources linked, a 627-item audit ported (#685–#704); the [bridge](../sessions/2026-09-30_01_-_UNIVERSE-BIBLE-COMPLETENESS-AUDIT.md)
+- **The Universe Bible written 2026-09-26, made complete 2026-09-30** — nine chapters, questions queued, mythology told, sources linked, a 627-item audit ported, findings routed (#685–#713); the [bridge](../sessions/2026-10-01_01_-_THINKING-FOLDER-UNIVERSE-ONLY-AND-RESEARCH-ADDENDA.md)
 - **Wave 1, Ferd, declared CLOSED 2026-09-07** — `ferd.md` completed, the [close plan](../hub-v2/2026-09-05-ferd-close-plan.md) CLOSED, the [DoD walk](../hub-v2/2026-09-05-ferd-dod-walk.md) with no open row, the [wave retro](../retrospectives/retro-wave-ferd.md) carrying the carry-overs
 - G-04 ruled and executed — the waves band is the ecosystem roadmap; six pointers repointed, nothing deleted
 - The front door written by `npm run cycle:kickoff`; cycle plans live in `cycles/` from now on
