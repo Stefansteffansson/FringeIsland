@@ -55,6 +55,7 @@ Exploratory outputs from non-session conversations. Not decisions; not statement
 | Portal ideas from research (Part 2, Candidate A) | 2026-05-28 | Ten candidate portal-type ideas for FringeIsland, sourced from the Portal Fantasy and Parallel Worlds research dossiers (`research--worlds--portal-fantasy.md`, `research--worlds--parallel-worlds.md`) and cross-checked against Session 01's locked topology | ruled in Session 05 (S113): the surviving ideas are the bible's Open box W-14; the Cyclone dropped unless opt-in; "Shadow-side" absorbed by the near-side coupling |
 | The Gimbal's origin, the ball as key, the three altered states (Part 2, Candidate B) | 2026-07-24 | The Gimbal as ancient knowledge with a modern implementation, the key/instrument split, ball resonance as a third connection channel, the three altered states as modes of the threshold, the first opening and its shutdown, the physical glass ball (paused) | ruled in Session 05 (S113): the altered states and the first opening are the older mythology (bible chapter 5); the ball opens portals and the Gimbal sees; the physical ball is settled as optional; since Session 06 (2026-09-27) the ball does not mature, the Gimbal's origin is the classified project and the finder, and the first opening, the unclosed door and the fragments are kept (bible §5.10) |
 | Naming the warm world (Part 2, Candidate C) | 2026-09-17 | Buddhist and Taoist terms for the Whisp's voice, as candidate names for the warm world | ruled in Session 05 (S111–S112): the warm world is named Nalome |
+| Research candidates from the research audit (Part 2, Candidate D) | 2026-10-01 | Fourteen research-fed ideas with a place in the universe, from four audits of the six universe research reports against the bible | not ruled; each rides with its row of the discovery queue and is ruled when that session runs |
 
 ---
 
@@ -685,6 +686,34 @@ lines have been written; no reconciliation with `README.md` or the novel has bee
 
 **Not done:** Bolagsverket, trademark and domain checks on Options 1–4; a check that *Glasira* means nothing unfortunate in Icelandic or Faroese; the world-or-village question.
 
+
+---
+
+### Candidate D — Research candidates from the completeness audit of the research reports (2026-10-01; candidate material, not locked)
+
+**Date:** 2026-10-01
+**Status:** CANDIDATE MATERIAL -- NOT LOCKED
+**Kind:** Research-fed candidates: ideas with a concrete place in the universe that no session has ruled on, found by four read-only audits of the six universe research reports against the bible (Stefan okayed the audit's three outputs the same day: nine citations and five sentences the bible already rested on went into the bible; these fourteen wait for their sessions).
+**Relates to:** the Open boxes named per row; the [discovery queue](../planning/universe-discovery-queue.md), whose rows these ride with; Session 05 S113 (the research ideas Rs-1 to Rs-14 already ruled; nothing here repeats one). Each row names the report and the lines it rests on.
+
+Nothing here is truth. A row enters the bible only when its session rules on it; the sentence is what it would become if kept.
+
+| # | The candidate, as the sentence it would become | Source | Bible place / Open box | Queue row |
+|---|---|---|---|---|
+| D-1 | The Whisp fills across all three perspectives: who the FIM is alone, with another, and in a community; a Whisp filled only with the FIM alone is not yet full, and none of the three fills first by rule. | What Fills a Life §7.5, §7.8 (lines 410–418, 435) | G-07; §3.1, §4.4 | 5 (Whisp I) |
+| D-2 | The Whisp senses the whole of a life, not only the balance of Live, Grow and Matter: how a FIM feels, what they hold as mattering, what they can do and are learning, who they belong with, and the ground beneath; it measures none of these and leans the journey toward where a life has thinned. | What Fills a Life, preamble and §1–§5 (lines 28, 88, 135, 185, 227, 276) | G-07; §4.3 | 5 (Whisp I) |
+| D-3 | Deep encounter changes the Whisp too: it is not only the FIM who leaves the meeting different. | thinkers report, entry 5, Gadamer (lines 376, 389, 504) | G-06; §4.5 | 5 (Whisp I) |
+| D-4 | The cord's health is also a reading of how a FIM tends to themselves: to care for the Whisp is to care for yourself. | thinkers report, cosmology section (lines 180, 186–190) | B-05; §2.7, §4.8 | 6 (Whisp II) |
+| D-5 | Mara speaks in three registers: it judges before the FIM has looked, it shrugs that nothing changes, and at the edge of a hidden rule it fears; the fear zone is named for the last. (Do not carry the dominant voice shifting with the Whisp's fullness: it conflicts with a zone per hidden belief.) | Theory U report §2.2 (lines 99–109); Kegan report §3.1 (lines 199–206) | §3.2, §4.6 | 3 (Marath and the Shadows) |
+| D-6 | A pair or a group goes into Marath only as deep as the trust between them allows: what is possible on the far side is made in the village first, and a group that crosses together can meet what none of them could alone. | Theory U report §4.2–4.3, §7.5, §7.7 (lines 173–194, 276, 333–341, 349–357) | G-05, B-15, C-01; §7.3 | 11 (Community formation) |
+| D-7 | Between seeing through a rule and the new way becoming natural there is a still moment, where the old rule has loosened and nothing has yet taken its place; the universe gives it room and does not fill it. | Theory U report §2.1, §6.4, §7.1 (lines 61, 272, 290); Kegan report §3.1 (lines 200–202) | S-02, B-07; §4.5, the zones | 8 (Narrative I) |
+| D-8 | A journey may carry a FIM from one perspective toward another, from the self alone into encounter, from encounter into contribution; the way back, from the community to the self alone, is as developmental as the way out. | What Fills a Life §7.6 (lines 422–427) | G-04; §4.2, §5.5 | 9 (Wayfinder craft) |
+| D-9 | A portal is where the story says the rules are about to change; the Shimmer is only where the world is seen. | portal-fantasy report, the spectrum and the genre history (lines 58–67, 897, 901); parallel-worlds report (line 390) | W-14; §2.9, §2.3 | 4 (Fundamentals III) |
+| D-10 | No door in the Fringe has a guardian who judges: a portal opens for what a FIM has done, never for who they are. (Adjacent to the open threshold-by-condition, A-3, which it would narrow.) | portal-fantasy report, the threshold guardian (lines 887, 920) | W-14; §2.9 | 4 (Fundamentals III) |
+| D-11 | In the stories the universe grew from, the way home is the hardest part; here it is the one thing always there, the cord reeled in and the ball one step away. | portal-fantasy report, the return (lines 91, 117, 281, 519, 695, 773–775) | §2.8, §2.2 | 2 (Fundamentals I) |
+| D-12 | A Mist stands on the threshold itself: in neither world, seeing both sides and acting in none; that is where a crossing becomes possible. | portal-fantasy report, the liminal mode (lines 883, 912); parallel-worlds report (line 451) | B-16; §2.14, §3.5 | 2 (Fundamentals I) |
+| D-13 | Behind the crossing runs the loop the other-world stories of the East run on: try, die, return, keep what you learned. | portal-fantasy report, the two streams (lines 897–899, 910, 923); this file, line 248 | S-05; §5.4 | 8 (Narrative I) |
+| D-14 | The far sides keep the Ordinary World's clock: the body is here, so an hour of the Whisp's is an hour of the FIM's — or the folklore rate, if the universe wants it. | parallel-worlds report, the time-slip (lines 391, 321, 345, 110); portal-fantasy report (lines 283, 773) | W-10, W-05; §2.6 | 12 (The mythology) |
 
 ---
 
