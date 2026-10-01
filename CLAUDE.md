@@ -97,15 +97,16 @@ Start at [`docs/README.md`](docs/README.md) for the full navigation map. Everyth
 | Domain entities | [`docs/architecture/DOMAIN_ENTITIES.md`](docs/architecture/DOMAIN_ENTITIES.md) |
 | ADRs (architecture decision records) | [`docs/architecture/decisions/`](docs/architecture/decisions/) |
 | **Planning** | |
-| Current wave (Ferd) | [`docs/planning/waves/ferd.md`](docs/planning/waves/ferd.md) |
+| Current wave (Eid) | [`docs/planning/waves/eid.md`](docs/planning/waves/eid.md) |
 | Ferd capability map | [`docs/planning/waves/FERD-CAPABILITY-MAP.md`](docs/planning/waves/FERD-CAPABILITY-MAP.md) |
 | **The front door** — what is being built now (cycle, dated plan, latest bridge, next) | [`docs/planning/cycles/cycle-current.md`](docs/planning/cycles/cycle-current.md) — written at every cycle kickoff, repointed at every close (PROCESS.md §3) |
 | Tasks in motion | [`docs/planning/backlog/tasks/`](docs/planning/backlog/) |
+| The universe discovery queue — the order in which the bible's open questions are taken up, session by session | [`docs/planning/universe-discovery-queue.md`](docs/planning/universe-discovery-queue.md) |
 | Retrospectives (weekly / cycle / wave / quarterly) | [`docs/planning/retrospectives/`](docs/planning/retrospectives/) |
 | Session bridges | [`docs/planning/sessions/`](docs/planning/sessions/) |
 | Reference snapshots | [`docs/planning/reference/`](docs/planning/reference/) |
 | **Templates** (canonical shapes) | [`docs/templates/`](docs/templates/) |
-| **Thinking** — the universe canon, discovery sessions, research reports, design records (one flat folder; the filename prefix is the register) | [`docs/fringeisland-thinking/`](docs/fringeisland-thinking/) |
+| **Thinking** — the Universe Bible, the discovery file, the research reports, the questions register, the quotes (one flat folder; the filename prefix is the register) | [`docs/fringeisland-thinking/`](docs/fringeisland-thinking/) |
 
 ---
 
