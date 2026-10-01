@@ -1,5 +1,7 @@
 # What Fills a Life: The Architecture of Human Flourishing
 
+**How this report grows:** open, append-only. New findings go to the Addenda section at the end, dated and with their source; the text above them is never rewritten (origin material, never deleted). A finding that bears on the universe also gets a candidate in Part 2 of `discovery--the-universe-in-the-making.md`; the bible changes only through a session.
+
 *A research synthesis for FringeIsland — what a developmental profile should hold, express, and grow*
 
 *March 2026 — Version 2, updated to include Ikigai and the Three Perspectives*
@@ -537,3 +539,11 @@ For the Whisp, this means seven concrete design principles:
 - Design across all three perspectives — a Whisp that is rich at the self level but thin relationally and communally is not full; genuine fullness requires development of the person in all three dimensions of their existence
 
 > *The Whisp begins nearly empty not because the person is empty, but because the person has not yet mapped, integrated, and made visible what they carry. Filling the Whisp is not acquisition. It is the progressive articulation, connection, and deepening of capacities that were always latent — the making visible of what was always possible. Not just in the self, but in the relationships that shape the self, and in the larger world the self is part of. The research says, consistently, that this process never finishes. But it can become more coherent, more flexible, more generous, and more alive.*
+
+---
+
+## Addenda
+
+New findings, newest last, each dated and with its source: the thinker, the work, the link. The report above is never rewritten. A finding that bears on the universe also gets a candidate in Part 2 of `discovery--the-universe-in-the-making.md`, and the bible changes only through a session; where the bible cites this report for an idea an addendum changes, the citation is refreshed at the next carry-over.
+
+*None yet.*

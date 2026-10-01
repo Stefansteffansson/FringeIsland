@@ -1,5 +1,7 @@
 # Multi-Product Ecosystem Management for Solo Developers
 
+**How this report grows:** open, append-only. New findings go to the Addenda section at the end, dated and with their source; the text above them is never rewritten (origin material, never deleted). A finding that bears on the universe also gets a candidate in Part 2 of `discovery--the-universe-in-the-making.md`; the bible changes only through a session.
+
 **Research companion to: The Solo Developer's Complete Guide to Systematic Web Development**
 
 The previous research covered how to manage *work items* — from vague idea to shipped code. This companion report covers the layer above that: how to manage *products* when your platform is actually a family of related products sharing a universe, a backend, and a cosmology but serving users through different clients and experiences.
@@ -348,3 +350,11 @@ The answer is a **document hierarchy that mirrors your architecture**:
 - **Work items** at the bottom
 
 For a solo developer, the important thing is not to create all these documents at once. Start with the ecosystem vision and one product description. Let the rest emerge as the complexity demands it — just as the first report advised: *"Start minimal, add only when you feel pain."*
+
+---
+
+## Addenda
+
+New findings, newest last, each dated and with its source: the thinker, the work, the link. The report above is never rewritten. A finding that bears on the universe also gets a candidate in Part 2 of `discovery--the-universe-in-the-making.md`, and the bible changes only through a session; where the bible cites this report for an idea an addendum changes, the citation is refreshed at the next carry-over.
+
+*None yet.*

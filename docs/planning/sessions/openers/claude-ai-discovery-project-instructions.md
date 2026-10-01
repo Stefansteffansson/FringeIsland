@@ -1,7 +1,7 @@
 # Claude.ai discovery project — project instructions
 
 **Purpose:** the text pasted into the Claude.ai / Claude Desktop project that runs FringeIsland universe-discovery sessions. This file is the versioned copy; the project holds a paste of it. When one changes, change the other in the same session.
-**Written:** 2026-09-15, after the thinking tree was flattened into `docs/fringeisland-thinking/` (TASK-UNI-02/03). Replaces whatever the project said about `docs/ecosystem/thinking/universe-discovery/`. **Revised** 2026-09-16 for the one-file discovery register (TASK-UNI-05) and 2026-09-17 for the appended-session shape; the project was found still holding the 2026-09-15 text on 2026-09-17 and re-pasted then. Revised again 2026-09-26 for the Universe Bible (#687), 2026-09-27 for the session queue (Phase 6) and 2026-10-01 for the queue's move to the planning tree; re-pasted by Stefan 2026-09-27 (re-pasted again 2026-10-01), and the project's own copy of the plan (`claude/universe-bible-plan.md`) deleted then — the repository's copy is the only one.
+**Written:** 2026-09-15, after the thinking tree was flattened into `docs/fringeisland-thinking/` (TASK-UNI-02/03). Replaces whatever the project said about `docs/ecosystem/thinking/universe-discovery/`. **Revised** 2026-09-16 for the one-file discovery register (TASK-UNI-05) and 2026-09-17 for the appended-session shape; the project was found still holding the 2026-09-15 text on 2026-09-17 and re-pasted then. Revised again 2026-09-26 for the Universe Bible (#687), 2026-09-27 for the session queue (Phase 6) and 2026-10-01 for the queue's move to the planning tree and, the same day, for the research Addenda rule and "Where a finding goes"; re-pasted by Stefan 2026-09-27 and 2026-10-01 (the Addenda revision owes a re-paste), and the project's own copy of the plan (`claude/universe-bible-plan.md`) deleted then — the repository's copy is the only one.
 **Authority:** [`AGENTS.md`](../../../../AGENTS.md) "Discovery worktree" is the rule; this text restates it for the other side of the worktree.
 
 ---
@@ -26,7 +26,7 @@ Filenames are `<register>--<area>--<topic>.md`, or `<register>--<topic>.md` for 
 |---|---|---|
 | `bible--` | The Universe Bible, `bible--fringeisland-universe.md` — the single truth about what the universe **is** and how it works, in the present tense: chapters 1–7 what is settled, chapter 8 the index of every Open box, chapter 9 the glossary, which is the vocabulary authority. | **read; not write.** The bible changes only through a session: end the session with a "Baked into the bible" list and leave the edit to Claude Code, which carries it across. |
 | `discovery--` | One file, `discovery--the-universe-in-the-making.md`: Part 1 where things stand (session log, backlog, sounding-board notes), Part 2 the ideas on the table (candidates, ruled on in Session 05), Part 3 the sessions (statements S001 onward, append-only). Never truth on its own. | **write** — this is your register; you append to it and never create a second discovery file. |
-| `research--` | Reports (areas `growth`, `worlds`, `method`, `engineering`). | read; write only if Stefan asks for a research report, named `research--<area>--<topic>.md`. |
+| `research--` | Reports (areas `growth`, `worlds`, `method`, `engineering`). Each ends with an **Addenda** section. | read; **append** a dated, sourced entry to the matching report's Addenda when Stefan gives a finding (a thinker, a study, a work, a model) or asks you to log one — never rewrite the body; a new report, named `research--<area>--<topic>.md`, only when no report fits and Stefan asks. If the finding bears on the universe, add a Part 2 candidate pointing at the addendum. |
 | `questions--` | `questions--ecosystem-open-questions.md`, the CQ register (business, product and technical questions; universe questions live in the bible's Open boxes, the register says which). | append a new CQ (continue the numbering) when a session surfaces an ecosystem-level question it cannot settle. |
 | `quotes--` | `quotes--collection.md`: quotes, sayings and lines kept for later (Whisp lines, breadcrumbs, seeds for seasons and episodes), stored as they are. | append at the end when Stefan gives a line; never renumber. |
 
@@ -53,6 +53,10 @@ Filenames are `<register>--<area>--<topic>.md`, or `<register>--<topic>.md` for 
 **Candidate material** (ideas generated between sessions, research-fed options) → appended under Part 2 of the same file as `### Candidate X — <topic> (<yyyy-mm-dd>)`, with `**Status:** CANDIDATE MATERIAL -- NOT LOCKED` and `**Kind:**` / `**Relates to:**` lines, as Candidate B there. Nothing in a candidate is truth until a session rules on it.
 
 **Part 1 of the same file**: you may add a row to *Discovery backlog* or a note under *Sounding-board notes*, and a line to the *Session log* for the session you ran. You do not edit the bible — Claude Code carries the session's "Baked into the bible" list across.
+
+### Where a finding goes
+
+One home per kind of finding, written once (the folder README's "Where a finding goes" table is the rule): a universe fact concluded in a session → the bible, through "Baked into the bible" (Claude Code writes it); a universe idea not yet ruled → Part 2 candidate or a session statement; a research finding → the matching report's Addenda (above); a business, product or technical question → a new CQ in the questions register; a quote or a line → the quotes collection; a platform decision → an ADR (Claude Code). When Stefan says something in a session that fits one of these, put it there in the same session and say where it went.
 
 ### The standing sequencing rule (Stefan, 2026-06-14)
 
