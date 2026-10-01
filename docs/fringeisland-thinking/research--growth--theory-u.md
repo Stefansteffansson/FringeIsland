@@ -1,4 +1,6 @@
 # Theory U — A Research Report for FringeIsland
+
+**How this report grows:** open, append-only. New findings go to the Addenda section at the end, dated and with their source; the text above them is never rewritten (origin material, never deleted). A finding that bears on the universe also gets a candidate in Part 2 of `discovery--the-universe-in-the-making.md`; the bible changes only through a session.
 ## The Phenomenology of Transformation: How Deep Change Actually Moves
 
 *A standalone research document. Prepared as a companion to "What Fills a Life: The Architecture of Human Flourishing."*
@@ -379,3 +381,11 @@ The four specific contributions:
 ---
 
 *This report is a standalone companion to "What Fills a Life: The Architecture of Human Flourishing." Together, the two documents provide both a map of the destination (flourishing dimensions) and a map of the journey (Theory U phenomenology). A third companion report — on Kegan's full developmental model and Immunity to Change — completes the triptych by addressing why people fail to move even when they genuinely want to.*
+
+---
+
+## Addenda
+
+New findings, newest last, each dated and with its source: the thinker, the work, the link. The report above is never rewritten. A finding that bears on the universe also gets a candidate in Part 2 of `discovery--the-universe-in-the-making.md`, and the bible changes only through a session; where the bible cites this report for an idea an addendum changes, the citation is refreshed at the next carry-over.
+
+*None yet.*

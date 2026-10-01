@@ -7,6 +7,8 @@ created: 2026-06-15
 
 # Knowledge Base: Philosophical & Conceptual Foundations
 
+**How this report grows:** open, append-only. New findings go to the Addenda section at the end, dated and with their source; the text above them is never rewritten (origin material, never deleted). A finding that bears on the universe also gets a candidate in Part 2 of `discovery--the-universe-in-the-making.md`; the bible changes only through a session.
+
 This document collects thinkers, concepts, and ideas that inform the FringeIsland universe — specifically the nature of the Whisp, the cosmological structure (Ordinary World / Shimmer / Fringe / Beyond), and the psychological journey of the FIM across the three founding questions.
 
 This document is intentionally **open and append-only**. New entries are added as they are discovered. Nothing is removed; superseding insights are added below prior ones with context.
@@ -1629,4 +1631,12 @@ This entry reframes what the Whisp is actually *doing*. Its work is not primaril
 
 ---
 
-*This document is open. New entries are appended below the existing entries, above this footer line.*
+*This document is open. New entries are appended in the Addenda section below, dated and sourced.*
+
+---
+
+## Addenda
+
+New findings, newest last, each dated and with its source: the thinker, the work, the link. The report above is never rewritten. A finding that bears on the universe also gets a candidate in Part 2 of `discovery--the-universe-in-the-making.md`, and the bible changes only through a session; where the bible cites this report for an idea an addendum changes, the citation is refreshed at the next carry-over.
+
+*None yet.*

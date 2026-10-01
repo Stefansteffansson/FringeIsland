@@ -26,6 +26,22 @@
 
 ---
 
+## Where a finding goes
+
+One home per kind of finding, written once. The bible changes only through a session.
+
+| What was found | Where it goes | Who writes it |
+|---|---|---|
+| A fact about the universe, concluded in a discovery session | The bible — a true sentence, an answered box, a glossary entry — via the session's "Baked into the bible" list | Claude Code at the session's close, with the [discovery queue](../planning/universe-discovery-queue.md) updated in the same change |
+| A universe idea not yet ruled on | The discovery file: a candidate in Part 2, or a statement in the running session in Part 3 | Claude.ai, in the session |
+| A research finding: a thinker, a study, a work, a model | The Addenda of the matching `research--` report, dated and with its source; a new `research--<area>--<topic>.md` only when no report fits. If it bears on the universe, a Part 2 candidate points at it | Claude.ai, when Stefan gives the finding or asks for it |
+| A business, product or technical question | The questions register, as a new CQ | Claude.ai or Claude Code |
+| A quote, a saying, a line for a story | The quotes collection, appended at the end | Claude.ai |
+| A platform decision | An ADR under `../architecture/decisions/`, then the specs it binds | Claude Code |
+| The order in which the open questions are taken up | [`../planning/universe-discovery-queue.md`](../planning/universe-discovery-queue.md) | Claude Code |
+
+---
+
 ## How to read a filename
 
 ```
@@ -39,7 +55,7 @@ The first token says **what kind of thing this is**. The second token is **what 
 |---|---|---|
 | `bible--` | **The Universe Bible** — the single truth about what the universe **is** and how it works, present tense, one file, nine chapters. The vocabulary authority is its glossary. | Through a discovery session, then Claude Code bakes the session's statements into it. Never edited ad hoc. |
 | `discovery--` | One file: where the discovery work stands, the ideas on the table, and the sessions record. Working notes, **never truth** on their own; the workshop where new thinking happens before it is baked into the bible. Part 3 (the sessions) is append-only and is never rewritten. | A session is appended to Part 3; its "Baked into the bible" list is carried into the bible. |
-| `research--` | Reports and studies — what we learned from studying something. Areas: `growth` (human development, flourishing, facilitation, the thinkers behind the Whisp), `worlds` (portals, parallel worlds), `method` (how a solo developer runs an ecosystem), `engineering`. **Core origin material: rename and rearrange if necessary, never delete.** | Informs the bible, ADRs and specs; the bible cites it and never absorbs it. |
+| `research--` | Reports and studies — what we learned from studying something. Areas: `growth` (human development, flourishing, facilitation, the thinkers behind the Whisp), `worlds` (portals, parallel worlds), `method` (how a solo developer runs an ecosystem), `engineering`. **Core origin material: rename and rearrange if necessary, never delete.** | Grows by dated addenda at the end of each report, newest last, each with its source; the body above them is never rewritten. Informs the bible, ADRs and specs; the bible cites it and never absorbs it. |
 | `questions--` | The ecosystem open-questions (CQ) register: business, product and technical questions. Universe questions live in the bible's Open boxes and chapter 8; the register points at them. | Resolved questions move to the register's Resolved section; strategic direction → `../ecosystem/strategy/`; constitutional change → `VISION.md` / `MANIFESTO.md`. |
 | `quotes--` | Quotes, sayings and lines kept for later — Whisp lines, breadcrumbs, seeds for seasons and episodes. Stored as they are, never analysed here. | Add at the end; never renumber. |
 

@@ -1,5 +1,7 @@
 # Performance budget and cold start — two engineering reports, one investigation (July 2026)
 
+**How this report grows:** open, append-only. New findings go to the Addenda section at the end, dated and with their source; the text above them is never rewritten (origin material, never deleted). A finding that bears on the universe also gets a candidate in Part 2 of `discovery--the-universe-in-the-making.md`; the bible changes only through a session.
+
 **What this file is:** the two reports behind the Hub's first-paint budget (locked as [ADR-U043](../architecture/decisions/ADR-U043-performance-budgets.md)) and the cold-start wave measured under it (fed [ADR-U036](../architecture/decisions/ADR-U036-edge-runtime-hot-read-routes.md)), three days apart. Report A is the 2026-07-07 budget research verbatim; Report B the 2026-07-10 cold-start research verbatim. Merged 2026-09-16 (TASK-UNI-05); nothing rewritten apart from heading levels.
 
 ---
@@ -141,3 +143,11 @@ Ranked by cost-effectiveness against the measured mechanism:
 
 - [Vercel — Fluid compute docs](https://vercel.com/docs/fluid-compute) · [Scale to one: How Fluid solves cold starts](https://vercel.com/blog/scale-to-one-how-fluid-solves-cold-starts) · [Edge Runtime docs](https://vercel.com/docs/functions/runtimes/edge) · [Edge Functions (deprecated)](https://vercel.com/docs/functions/runtimes/edge/edge-functions.rsc) · [How Fluid compute works](https://vercel.com/blog/how-fluid-compute-works-on-vercel) · [Vercel KB — improving cold start performance](https://vercel.com/kb/guide/how-can-i-improve-serverless-function-lambda-cold-start-performance-on-vercel)
 - [Yan Cui — cold starts all wrong](https://theburningmonk.com/2018/01/im-afraid-youre-thinking-about-aws-lambda-cold-starts-all-wrong/) · [Dashbird — can we solve serverless cold starts](https://dashbird.io/blog/can-we-solve-serverless-cold-starts/) · [lambda-warmer](https://github.com/jeremydaly/lambda-warmer) · [InfoQ on Vercel Fluid](https://www.infoq.com/news/2025/03/vercel-fluid/)
+
+---
+
+## Addenda
+
+New findings, newest last, each dated and with its source: the thinker, the work, the link. The report above is never rewritten. A finding that bears on the universe also gets a candidate in Part 2 of `discovery--the-universe-in-the-making.md`, and the bible changes only through a session; where the bible cites this report for an idea an addendum changes, the citation is refreshed at the next carry-over.
+
+*None yet.*

@@ -1,4 +1,6 @@
 # Kegan's Adult Development and Immunity to Change — A Research Report for FringeIsland
+
+**How this report grows:** open, append-only. New findings go to the Addenda section at the end, dated and with their source; the text above them is never rewritten (origin material, never deleted). A finding that bears on the universe also gets a candidate in Part 2 of `discovery--the-universe-in-the-making.md`; the bible changes only through a session.
 ## How Adults Actually Grow — and Why They Often Don't
 
 *A standalone research document. Prepared as a companion to "What Fills a Life: The Architecture of Human Flourishing" and "Theory U."*
@@ -348,3 +350,11 @@ The six specific contributions:
 ---
 
 *This report is the third companion to "What Fills a Life: The Architecture of Human Flourishing" and "Theory U." Together, the three documents provide: a map of what flourishing looks like (the dimensions report), a map of how transformation moves (Theory U), and a map of why it often doesn't (Kegan and ITC) — and what to do about that. These three together constitute a research foundation for FringeIsland's developmental architecture that is both honest about its limitations and rigorous about its implications.*
+
+---
+
+## Addenda
+
+New findings, newest last, each dated and with its source: the thinker, the work, the link. The report above is never rewritten. A finding that bears on the universe also gets a candidate in Part 2 of `discovery--the-universe-in-the-making.md`, and the bible changes only through a session; where the bible cites this report for an idea an addendum changes, the citation is refreshed at the next carry-over.
+
+*None yet.*

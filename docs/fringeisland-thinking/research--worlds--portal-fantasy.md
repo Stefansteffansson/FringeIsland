@@ -45,6 +45,8 @@ and always in the same order.
 
 # Portal Fantasy: Thresholds, Doorways, and Other Worlds
 
+**How this report grows:** open, append-only. New findings go to the Addenda section at the end, dated and with their source; the text above them is never rewritten (origin material, never deleted). A finding that bears on the universe also gets a candidate in Part 2 of `discovery--the-universe-in-the-making.md`; the bible changes only through a session.
+
 *A cross-media study of the portals in books, film, theatre, games, and folklore — what they are, how they are found, how they work, where they lead, and why audiences have loved them. Companion to the designed Word edition `Portal_Fantasy.docx`.*
 
 ## How to Read This Document
@@ -1029,3 +1031,11 @@ All embedded images are public-domain or Creative-Commons, sourced from Wikimedi
 ---
 
 *Generated from `data.js` (single source of truth shared with the `.docx` edition). 54 entries across 5 media. To regenerate: `node build_md.js`.*
+
+---
+
+## Addenda
+
+New findings, newest last, each dated and with its source: the thinker, the work, the link. The report above is never rewritten. A finding that bears on the universe also gets a candidate in Part 2 of `discovery--the-universe-in-the-making.md`, and the bible changes only through a session; where the bible cites this report for an idea an addendum changes, the citation is refreshed at the next carry-over.
+
+*None yet.*

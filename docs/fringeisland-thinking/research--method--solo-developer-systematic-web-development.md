@@ -1,5 +1,7 @@
 # The solo developer's complete guide to systematic web development
 
+**How this report grows:** open, append-only. New findings go to the Addenda section at the end, dated and with their source; the text above them is never rewritten (origin material, never deleted). A finding that bears on the universe also gets a candidate in Part 2 of `discovery--the-universe-in-the-making.md`; the bible changes only through a session.
+
 **You don't need a team to build like one.** A solo developer armed with AI coding agents, a clear process, and markdown files in a git repository can match the systematic rigor of a professional engineering organization. This guide covers the full lifecycle — from turning vague ideas into buildable specifications, to choosing the right agile methodology, to shipping and monitoring production software. It's designed for a junior developer building an edutainment web platform with Next.js, TypeScript, Tailwind CSS, and Supabase, but the principles apply broadly.
 
 The core insight is this: **your process should start minimal and grow with you**. Begin with a markdown backlog and a Kanban board. Add structure only when you feel pain. The goal is never the process itself — it's shipping software that users love.
@@ -407,3 +409,11 @@ The most important insight across all eight areas of this guide is that **system
 Three practices deliver outsized returns from day one: **write acceptance criteria in Given/When/Then format** (they serve as specs, tests, and AI prompts simultaneously), **use conventional commits** (zero ongoing cost, enables automated changelogs and versioning), and **write ADRs for major decisions** (5 minutes now saves hours of "why did I do this?" later).
 
 The emergence of AI coding agents like Claude Code shifts the solo developer's role from writing code to **orchestrating work** — decomposing problems, shaping specifications, reviewing output, and making architectural decisions. This makes the discovery and specification phases more important, not less. The pipeline from vague idea → explored concept → specified story → ready-to-build task is the conveyor belt that feeds your AI agents high-quality work. Invest in that pipeline, and the building takes care of itself.
+
+---
+
+## Addenda
+
+New findings, newest last, each dated and with its source: the thinker, the work, the link. The report above is never rewritten. A finding that bears on the universe also gets a candidate in Part 2 of `discovery--the-universe-in-the-making.md`, and the bible changes only through a session; where the bible cites this report for an idea an addendum changes, the citation is refreshed at the next carry-over.
+
+*None yet.*
