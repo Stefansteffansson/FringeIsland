@@ -11,8 +11,8 @@ Set on 2026-09-27 from the bible's chapter 8 as it stood that day; every box pla
 
 1. **Cheap first.** Boxes that need only Stefan's ruling are settled in one short sitting, pre-framed with options and a recommendation each, as Session 05 settled R-03 to R-50.
 2. **Unblock the most.** Sixteen boxes wait on "the fundamentals"; the standing rule of 2026-06-14 puts mechanics before experience design.
-3. **Serve Eid.** Of Eid's three themes, only the Whisp is gated hard by the bible's open boxes. The Journey Studio v1 study is about real-world journeys and needs little from them; the design foundation touches only W-01 and S-16.
-4. **Safety before a person meets a Whisp.** B-11 and B-12 are ruled before any Whisp prototype is shown to a real person.
+3. **Serve Eid.** Of Eid's three themes, only the Whisp is gated hard by the bible's open boxes. The Journey Studio v1 study is about real-world journeys and needs little from them; the design foundation touches only W-01 (S-16, the Nordic lineage, was answered in Session 06).
+4. **Safety before a person meets a Whisp.** B-11 and B-12 are ruled before any Whisp prototype is shown to a real person: B-11 was ruled in Session 06; B-12's form waits in row 5.
 5. **Experience last.** The first hour, the reveal and the founding moment follow the mechanics and the Whisp's specification.
 6. **Park** what waits on people, builds or documents that do not exist yet.
 
