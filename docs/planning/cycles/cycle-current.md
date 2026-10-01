@@ -14,7 +14,7 @@
 - **Thinking tree closed 2026-09-17** — 33 → 21 files, names that say what is inside, the discovery file content-reviewed, the manifestation map re-run; inputs for the kickoff in the [close bridge](../sessions/2026-09-17_01_-_THINKING-TREE-CLOSE.md)
 
 ## Waiting on Stefan
-- The two kickoff decisions in the plan §4 — the Eid appetite, and which theme goes first (it also picks the next discovery session: row 2 or 5 of the [queue](../../fringeisland-thinking/record--universe-bible-plan.md#the-session-queue)); and the breach-response tooling carry-over, in or out
+- The two kickoff decisions in the plan §4 — the Eid appetite, and which theme goes first (it also picks the next discovery session: row 2 or 5 of the [queue](../universe-discovery-queue.md)); and the breach-response tooling carry-over, in or out
 - Leaked-password protection — a Supabase Pro decision (the org is on Free; the toggle refuses to save)
 - The E2E smoke job in CI — Eid's first tooling item, a ruling on design before a build
 

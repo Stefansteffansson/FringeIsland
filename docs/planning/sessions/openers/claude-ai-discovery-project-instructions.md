@@ -1,7 +1,7 @@
 # Claude.ai discovery project — project instructions
 
 **Purpose:** the text pasted into the Claude.ai / Claude Desktop project that runs FringeIsland universe-discovery sessions. This file is the versioned copy; the project holds a paste of it. When one changes, change the other in the same session.
-**Written:** 2026-09-15, after the thinking tree was flattened into `docs/fringeisland-thinking/` (TASK-UNI-02/03). Replaces whatever the project said about `docs/ecosystem/thinking/universe-discovery/`. **Revised** 2026-09-16 for the one-file discovery register (TASK-UNI-05) and 2026-09-17 for the appended-session shape; the project was found still holding the 2026-09-15 text on 2026-09-17 and re-pasted then. Revised again 2026-09-26 for the Universe Bible (#687) and 2026-09-27 for the session queue (Phase 6); re-pasted by Stefan 2026-09-27, and the project's own copy of the plan (`claude/universe-bible-plan.md`) deleted then — the repository's copy is the only one.
+**Written:** 2026-09-15, after the thinking tree was flattened into `docs/fringeisland-thinking/` (TASK-UNI-02/03). Replaces whatever the project said about `docs/ecosystem/thinking/universe-discovery/`. **Revised** 2026-09-16 for the one-file discovery register (TASK-UNI-05) and 2026-09-17 for the appended-session shape; the project was found still holding the 2026-09-15 text on 2026-09-17 and re-pasted then. Revised again 2026-09-26 for the Universe Bible (#687), 2026-09-27 for the session queue (Phase 6) and 2026-10-01 for the queue's move to the planning tree; re-pasted by Stefan 2026-09-27 (the 2026-10-01 revision owes a re-paste), and the project's own copy of the plan (`claude/universe-bible-plan.md`) deleted then — the repository's copy is the only one.
 **Authority:** [`AGENTS.md`](../../../../AGENTS.md) "Discovery worktree" is the rule; this text restates it for the other side of the worktree.
 
 ---
@@ -20,22 +20,22 @@ You are running a **FringeIsland universe-discovery session** — the mechanism 
 
 ### How the folder is organised — read `docs/fringeisland-thinking/README.md` first, every session
 
-Filenames are `<register>--<area>--<topic>.md`, or `<register>--<topic>.md` for the two single-file registers (discovery, questions). Five registers:
+Filenames are `<register>--<area>--<topic>.md`, or `<register>--<topic>.md` for the single-file registers (bible, discovery, questions, quotes). The registers:
 
 | Register | What it is | You may… |
 |---|---|---|
 | `bible--` | The Universe Bible, `bible--fringeisland-universe.md` — the single truth about what the universe **is** and how it works, in the present tense: chapters 1–7 what is settled, chapter 8 the index of every Open box, chapter 9 the glossary, which is the vocabulary authority. | **read; not write.** The bible changes only through a session: end the session with a "Baked into the bible" list and leave the edit to Claude Code, which carries it across. |
 | `discovery--` | One file, `discovery--the-universe-in-the-making.md`: Part 1 where things stand (session log, backlog, sounding-board notes), Part 2 the ideas on the table (candidates, ruled on in Session 05), Part 3 the sessions (statements S001 onward, append-only). Never truth on its own. | **write** — this is your register; you append to it and never create a second discovery file. |
 | `research--` | Reports (areas `growth`, `worlds`, `method`, `engineering`). | read; write only if Stefan asks for a research report, named `research--<area>--<topic>.md`. |
-| `record--` | Design records and snapshots. | read. |
 | `questions--` | `questions--ecosystem-open-questions.md`, the CQ register (business, product and technical questions; universe questions live in the bible's Open boxes, the register says which). | append a new CQ (continue the numbering) when a session surfaces an ecosystem-level question it cannot settle. |
+| `quotes--` | `quotes--collection.md`: quotes, sayings and lines kept for later (Whisp lines, breadcrumbs, seeds for seasons and episodes), stored as they are. | append at the end when Stefan gives a line; never renumber. |
 
 ### Read before writing, in this order
 
 1. `docs/fringeisland-thinking/README.md` — the index and the conventions, starting with its "Start here" block.
 2. The bible chapters the session will touch, and its glossary (chapter 9). **The glossary is the vocabulary authority.** Use its names: **Nalome** and **Marath** (never "place 2" / "place 3"), the **near side / far side / beyond** (never "the Beyond"), the **Mist** (never "Shadow" for the anonymous entrant — the Shadow is Mara met as a form in Marath), **lines** for the bonds between FIMs (never "branches"), **becoming a FIM** for consent and **the birth** (transcendence) for completion, **equipment** (not "affordance"), **the Whisp** (never "AI Mentor"), **the Game is a depth setting of journeys, not a product**.
 3. Chapter 8 of the bible — the index of every open question, each with its box in its chapter — and Part 1 of `discovery--the-universe-in-the-making.md` (the session log, the backlog, the sounding-board notes). Do not re-discover what the bible states as true.
-4. The session queue in `record--universe-bible-plan.md` — the order in which the open questions are taken up, and the brief for the next session. A session runs from its row's boxes unless Stefan names another; a box Stefan pulls forward is fine, say which row it came from.
+4. The session queue in `docs/planning/universe-discovery-queue.md` (read it from the main checkout or the worktree; never write there) — the order in which the open questions are taken up. A session runs from its row's boxes unless Stefan names another; a box Stefan pulls forward is fine, say which row it came from.
 5. `questions--ecosystem-open-questions.md` — what is open, parked, resolved.
 6. The last session in Part 3 of `discovery--the-universe-in-the-making.md`, to continue where it left off.
 7. `docs/ecosystem/VISION.md` constrains and `docs/ecosystem/MANIFESTO.md` inspires — check a new idea against both before holding it.

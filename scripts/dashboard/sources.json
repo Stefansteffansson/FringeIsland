@@ -39,7 +39,7 @@
             { "label": "Thinking — index", "path": "docs/fringeisland-thinking/README.md" },
             { "label": "The universe in the making — where discovery stands, the ideas on the table, the sessions", "path": "docs/fringeisland-thinking/discovery--the-universe-in-the-making.md" },
             { "label": "Open questions (CQ register)", "path": "docs/fringeisland-thinking/questions--ecosystem-open-questions.md" },
-            { "label": "Universe → spec manifestation map", "path": "docs/fringeisland-thinking/record--universe-to-spec-manifestation.md" }
+            { "label": "Universe → spec manifestation map", "path": "docs/planning/reference/UNIVERSE-TO-SPEC-MANIFESTATION.md" }
           ] }
         ] }
       ]
@@ -147,7 +147,7 @@
       "blurb": "Specs vs. build, and the gap between them.",
       "blocks": [
         { "type": "metrics", "label": "Build snapshot (live)" },
-        { "type": "section", "label": "Design-vs-build", "path": "docs/fringeisland-thinking/record--universe-to-spec-manifestation.md", "heading": "## Headline" },
+        { "type": "section", "label": "Design-vs-build", "path": "docs/planning/reference/UNIVERSE-TO-SPEC-MANIFESTATION.md", "heading": "## Headline" },
         { "type": "links", "label": "Pipeline status", "items": [
           { "label": "Pipeline STATUS", "path": "docs/planning/sessions/openers/STATUS.md" },
           { "label": "Ferd capability map", "path": "docs/planning/waves/FERD-CAPABILITY-MAP.md" }

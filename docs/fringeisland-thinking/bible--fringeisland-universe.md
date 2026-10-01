@@ -912,7 +912,7 @@ The campaign launches after the full ecosystem vision is set, not before. Its de
 
 ## 8. Open questions — the index
 
-Every open question of the universe is written once, in an **Open** box in the chapter where its topic is discussed, and listed here. When a question is answered, its box is replaced by the answer and its line here is removed. Business, product and technical questions are not here: they stay in the [ecosystem open-questions register](questions--ecosystem-open-questions.md), which the universe questions among them cite. Priorities are set in the planning that follows the bible, not here: the order in which the questions are taken up, session by session, is kept in [the plan record's session queue](record--universe-bible-plan.md#the-session-queue).
+Every open question of the universe is written once, in an **Open** box in the chapter where its topic is discussed, and listed here. When a question is answered, its box is replaced by the answer and its line here is removed. Business, product and technical questions are not here: they stay in the [ecosystem open-questions register](questions--ecosystem-open-questions.md), which the universe questions among them cite. Priorities are set in the planning that follows the bible, not here: the order in which the questions are taken up, session by session, is kept in [the universe discovery queue](../planning/universe-discovery-queue.md).
 
 Two boxes are umbrellas: W-05, the working detail of both worlds, which blocks the first hour and all experience design; and B-01, the Whisp's full specification.
 
