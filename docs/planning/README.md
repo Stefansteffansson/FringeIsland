@@ -15,9 +15,11 @@ docs/planning/
 ├── README.md                              ← you are here
 ├── PROCESS.md                             ← canonical way of working (read this first)
 ├── SESSION-OPENER.md                      ← the session-start text injected by the `SessionStart` hook in `.claude/settings.json`
+├── universe-discovery-queue.md            ← the order in which the bible's open questions are taken up, session by session; kept at every session close
 │
 ├── waves/                                 ← strategic focus periods
-│   ├── ferd.md                            ← Wave 1 — current
+│   ├── ferd.md                            ← Wave 1 — closed 2026-09-07
+│   ├── eid.md                             ← Wave 2 — current
 │   └── FERD-CAPABILITY-MAP.md             ← 110 capabilities, launch blockers
 │
 ├── cycles/                                ← Shape Up betting cycles (2-3 weeks + cooldown)
